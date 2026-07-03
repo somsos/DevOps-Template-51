@@ -2,8 +2,11 @@
 
 ## Doing (First one is the current task)
 
-- [ ] Fix "Database Rollback" Jenkins pipeline, it does the rollback correctly,
-      but forward steps fail, I think is the .env deletion.
+- [ ] Fix the Frontend-Rollback pipeline, it does not fiend the .sh files,
+  it seems I forgot to change the path to reuse the deploy .sh files.
+
+- [ ] Why the backend deploy pipeline is downloading the dependencies again if
+  I did not change any pom.xml file.
 
 - [ ] Check why ./workspace/.env is empty
 
@@ -11,7 +14,10 @@
   - [ ] Tell about download the .env file
   - [ ] Mention about how to add a change in the pipelines
   - [ ] If I can NOT pre-approve the JCasC pipelines, mention to approve them when jenkins starts for firsts time.
-  
+
+- [ ] Backend-Rollback When I make a push because I delete the last commit in a
+  rollback, the deploy pipeline is triggered, check the way to avoid this,
+  nothing happens in the deploy bad triggered because I ask for confirmation.
 
 - [ ] Check why I got a different version of devops-project when I cloned from new Gitea instance in Virtual Machine
 
@@ -288,3 +294,8 @@ posible.
   - [X] Fix "Rollback Frontend" (It was a line out of place)
   - [X] Backup
   - [X] Restore
+- [X] Fix "Database Rollback" Jenkins pipeline, it does the rollback correctly,
+      but forward steps fail, I think is the .env deletion.
+
+
+

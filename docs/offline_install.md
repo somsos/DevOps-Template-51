@@ -10,12 +10,13 @@
   - [Database pipelines](#database-pipelines)
     - [Deploy Database](#deploy-database)
     - [Rollback Database](#rollback-database)
-  - [Frontend pipelines](#frontend-pipelines)
-    - [Deploy Frontend](#deploy-frontend)
-    - [Rollback Frontend](#rollback-frontend)
   - [Backend pipelines](#backend-pipelines)
     - [Deploy Backend](#deploy-backend)
     - [Rollback Backed](#rollback-backed)
+  - [Frontend pipelines](#frontend-pipelines)
+    - [Deploy Frontend](#deploy-frontend)
+    - [Rollback Frontend](#rollback-frontend)
+  - [After restart servers](#after-restart-servers)
 
 
 
@@ -28,13 +29,13 @@
 
 
 ```shell
-ssh mario1@192.168.1.81
+ssh mario1@192.168.1.8
 sudo mkdir -p /p1 && sudo chown -R mario1:mario1 /p1 && cd /p1
 git clone https://github.com/somsos/somsos-template51-devops .
-    # scp -r -P22 /home/mario/mine/empty_t51 mario1@192.168.1.81:/p1
+    # scp -r -P22 /home/mario/mine/empty_t51 mario1@192.168.1.8:/p1
 
 #In a machine with the files already downloaded
-scp -r -P22 /home/mario/mine/t51/dep_data mario1@192.168.1.81:/p1
+scp -r -P22 /home/mario/mine/t51/dep_data mario1@192.168.1.8:/p1
 ```
 
 Install and config docker
@@ -74,12 +75,12 @@ bash ./install.sh
 
 Copy and peste to `/etc/hosts`, for example
 ```yml
-192.168.1.81 tina-qa.com
-192.168.1.81 api.tina-qa.com
-192.168.1.81 gitea.tina-qa.com
-192.168.1.81 jenkins.tina-qa.com
-192.168.1.81 registry.tina-qa.com
-192.168.1.81 nexus.tina-qa.com
+192.168.1.8 tina-qa.com
+192.168.1.8 api.tina-qa.com
+192.168.1.8 gitea.tina-qa.com
+192.168.1.8 jenkins.tina-qa.com
+192.168.1.8 registry.tina-qa.com
+192.168.1.8 nexus.tina-qa.com
 ```
 
 Check created services
@@ -90,7 +91,7 @@ Check created services
 "http://nexus.tina-qa.com":                                    Nexus
 "http://api.tina-qa.com/swagger-ui/index.html":                Backend
 "http://tina-qa.com":                                          Frontend
-"psql postgresql://tina1:<DB_PASS>@192.168.1.81:5001/tina1db":     Database
+"psql postgresql://tina1:<DB_PASS>@192.168.1.8:5001/tina1db":  Database
 ```
 
 ## Clone repositories
@@ -100,7 +101,7 @@ private key to the PC we want to clone from.
 
 ```shell
 # the domain can be different in this case it's "gitea.tina-qa.com"
-scp -r -P22 mario1@192.168.1.81:/p1/setup/secrets/ssh_key.priv ~/.ssh/tina1.priv
+scp -r -P22 mario1@192.168.1.8:/p1/setup/secrets/ssh_key.priv ~/.ssh/tina1.priv
 
 cat >> ~/.ssh/config <<EOF
 
@@ -188,52 +189,6 @@ schema state without affected the data.
 
 1. Go to `http://jenkins.tina-qa.com/job/Database-Deploy-v1/`
 2. Push on "Build Now"
-3. 
-
-
-
-
-
-
-## Frontend pipelines
-
-### Deploy Frontend
-
-We add a change in our frontend project
-
-```shell
-cd /home/mario/mine/tina1/app/front/source
-
-cat > ./src/app/main/internals/view/pages/home/home.page.html <<EOF
-<div>
-  <ul>
-    <li>This is the change 1</li>
-  </ul>
-</div>
-EOF
-
-git status | grep modified
->        modified:   src/app/main/internals/view/pages/home/home.page.html
-
-git add . && git commit -m "My change number 1"
-
-# Open Gitea and Jenkins in the browser, and prepare to notice the pipeline 
-# to be triggered on push
-#   http://gitea.tina-qa.com/tina1/t51front
-#   http://jenkins.tina-qa.com/job/Frontend-Deploy-v1/
-git push origin main
-
-# The deploy Jenkins pipeline should have been triggered and the change deployed.
-```
-
-### Rollback Frontend
-
-1. Go to http://jenkins.tina-qa.com/job/Frontend-Rollback/
-
-2. Click on "Build Now"
-
-3. The last commit should have been deleted and the penultimate must 
-    be deployed
 
 
 
@@ -293,4 +248,73 @@ curl http://api.tina-qa.com/test | json_pp
 5. Return to http://gitea.tina-qa.com/tina1/t51back and the last commit
    should have been deleted.
 
+
+
+
+
+
+
+
+
+
+## Frontend pipelines
+
+### Deploy Frontend
+
+We add a change in our frontend project
+
+```shell
+cd /home/mario/mine/tina1/app/front/source
+
+cat > ./src/app/main/internals/view/pages/home/home.page.html <<EOF
+<div>
+  <ul>
+    <li>This is the change 1</li>
+  </ul>
+</div>
+EOF
+
+git status | grep modified
+>        modified:   src/app/main/internals/view/pages/home/home.page.html
+
+git add . && git commit -m "My change number 1"
+
+# Open Gitea and Jenkins in the browser, and prepare to notice the pipeline 
+# to be triggered on push
+#   http://gitea.tina-qa.com/tina1/t51front
+#   http://jenkins.tina-qa.com/job/Frontend-Deploy-v1/
+git push origin main
+
+# The deploy Jenkins pipeline should have been triggered and the change deployed.
+```
+
+### Rollback Frontend
+
+1. Go to http://jenkins.tina-qa.com/job/Frontend-Rollback/
+
+2. Click on "Build Now"
+
+3. The last commit should have been deleted and the penultimate must 
+    be deployed
+
+
+
+
+
+
+
+
+
+## After restart servers
+
+In my case I like to have docker disabled, so I need to start the docker services
+and app services manually.
+
+
+```shell
+sudo systemctl start containerd.service docker.socket docker.service docker
+
+cd /p1
+docker compose --profile all up -d
+```
 

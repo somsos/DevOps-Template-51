@@ -232,7 +232,7 @@ services:
 
   # docker compose run --rm nexus_configurator
   nexus_configurator:
-    profiles: ["devops", "all"]
+    profiles: ["utils"]
     image: ${IMAGE_CURL}
     container_name: temp_nexus_configurator
     environment:
