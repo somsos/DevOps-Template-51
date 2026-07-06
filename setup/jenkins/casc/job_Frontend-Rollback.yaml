@@ -17,7 +17,7 @@ jobs:
                   stage('1/4: Download DevOps Project') {
                     steps {
                       sh \'\'\'
-                        source $WORKSPACE/1fr-download.sh
+                        source $WORKSPACE/../Frontend-Deploy-v1/1fd-download.sh
                       \'\'\'
                     }
                   }
@@ -34,16 +34,24 @@ jobs:
                   stage('3/4: Download Penultimate Commit') {
                     steps {
                       sh \'\'\'
-                        source $WORKSPACE/3fr-download-penultimate-commit.sh
+                        source $WORKSPACE/../Frontend-Deploy-v1/1fd-download.sh
                       \'\'\'
                     }
                   }
 
 
-                  stage('4/4: Rebuild and deploy') {
+                  stage('4/4: Build image') {
                     steps {
                       sh \'\'\'
-                        source $WORKSPACE/4fr-rebuild-and-deploy.sh
+                        source $WORKSPACE/../Frontend-Deploy-v1/2fd-build-image.sh
+                      \'\'\'
+                    }
+                  }
+
+                  stage('4/5: Deploy') {
+                    steps {
+                      sh \'\'\'
+                        source $WORKSPACE/../Frontend-Deploy-v1/3fd-deploy.sh
                       \'\'\'
                     }
                   }
