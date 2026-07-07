@@ -209,7 +209,7 @@ services:
         ipv4_address: ${REGISTRY_IP}
     
   nexus:
-    profiles: ["devops", "all"]
+    profiles: ["devops", "all", "utils"]                              # Careful: nexus and nexus_configurator must have the same profile so they can see each other.
     user: "${MY_UID}:${DOCKER_GID}"
     image: ${IMAGE_NEXUS}
     container_name: nexus
@@ -232,7 +232,7 @@ services:
 
   # docker compose run --rm nexus_configurator
   nexus_configurator:
-    profiles: ["utils"]
+    profiles: ["utils"]                                               # Careful: nexus and nexus_configurator must have the same profile so they can see each other.
     image: ${IMAGE_CURL}
     container_name: temp_nexus_configurator
     environment:

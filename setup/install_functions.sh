@@ -384,8 +384,14 @@ function download_save_and_load_image {
         fi
         docker load --input $TAR_FILE_PATH
     else
-        docker pull $IMAGE_NAME
-        docker save --output $TAR_FILE_PATH $IMAGE_NAME
+        set +e
+        if docker pull $IMAGE_NAME; then
+            echo "[INFO] $IMAGE_NAME image pulled successfully."
+            docker save --output $TAR_FILE_PATH $IMAGE_NAME
+        else
+            echo "[WARN] The image $IMAGE_NAME could not be pulled."
+        fi
+        set -e
     fi
 
 }

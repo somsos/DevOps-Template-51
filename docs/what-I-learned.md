@@ -58,3 +58,26 @@
   also the groups info, but no, it's divided in two files and the `group` file
   contains info about groups, e.g., `cat /etc/group | grep docker`.
 
+
+
+
+
+I had this error `no such service: nexus` while in my docker-compose I had both,
+and both were up. THE PROBLEM was that they didn't share a profile, and that
+meant they didn't see each other. 
+
+```shell
+docker ps -a --format "table {{.Names}}\t{{.Status}} | grep nexus
+nexus                    Up
+
+docker compose run --rm nexus_configurator
+no such service: nexus
+```
+
+```yml
+  nexus:
+    profiles: ["devops", "all"] ...
+
+  nexus_configurator:   # docker compose run --rm nexus_configurator
+    profiles: ["utils"] ...
+```

@@ -2,9 +2,6 @@
 
 ## Doing (First one is the current task)
 
-- [ ] Fix the Frontend-Rollback pipeline, it does not fiend the .sh files,
-  it seems I forgot to change the path to reuse the deploy .sh files.
-
 - [ ] Why the backend deploy pipeline is downloading the dependencies again if
   I did not change any pom.xml file.
 
@@ -296,6 +293,8 @@ posible.
   - [X] Restore
 - [X] Fix "Database Rollback" Jenkins pipeline, it does the rollback correctly,
       but forward steps fail, I think is the .env deletion.
+- [X] Fix the Frontend-Rollback pipeline, it does not fiend the .sh files,
+  it seems I forgot to change the path to reuse the deploy .sh files.
 
 
 
