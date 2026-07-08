@@ -120,6 +120,79 @@ project
       secrets
       docker-compose-devops.yml
 
+<!--
 
-## Temporal
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+----
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+## How to test nexus_configuration from zero
+
+docker compose down nexus
+
+rm -rf ./setup/nexus/vol-data && mkdir -p ./setup/nexus/vol-data
+
+tar -xf ./setup/nexus/nexus-pre-initialized.tar.xz -C ./setup/nexus/vol-data
+
+docker compose up -d --wait nexus
+
+docker compose run -ti --entrypoint sh --rm nexus_configurator
+
+container> sh /nexus-entrypoint.sh
+
+container> less /tmp/docker_hosted_creation.log
+
+
+## How to test the nexus static file upload with credentials and anonymous download
+
+```shell
+# Upload without credentials
+curl -i -X PUT --upload-file workspace/0_static/badge_success.svg http://nexus.tina-qa.com:8081/repository/public-files/images/test.svg
+
+# Upload with credentials (green image)
+curl -i -u "tina1:tina123p" -X PUT --upload-file workspace/0_static/badge_success.svg http://nexus.tina-qa.com:8081/repository/public-files/images/test.svg
+
+# Upload with credentials (red image)
+curl -i -u "tina1:tina123p" -X PUT --upload-file workspace/0_static/badge_failing.svg http://nexus.tina-qa.com:8081/repository/public-files/images/test.svg
+
+# Download image
+curl -i http://nexus.tina-qa.com:8081/repository/public-files/images/test.svg
+
+```
+
+
+## How to test the nexus docker registry
+
+```shell
+docker login tina-qa.com:5000 -u tina1
+docker tag SOME_IMAGE:TAG tina-qa.com:8082/SOME_-_IMAGE:TAG
+docker push tina-qa.com:8082/SOME_-_IMAGE:TAG
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

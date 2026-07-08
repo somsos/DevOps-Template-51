@@ -37,16 +37,16 @@ jobs:
                     }
                     success {
                         sh \'\'\'
-                            cat "/var/jenkins_home/workspace/0_static/badge_success.svg" > \\
-                                $JENKINS_HOME/userContent/backend-tests-result.svg
-                            echo "published badge to: ^${JENKINS_URL}userContent/backend-tests-result.svg"
+                            SUCCESS_FILE="/var/jenkins_home/workspace/0_static/badge_success.svg"
+                            NEXUS_URL="http://nexus.tina-qa.com:8081/repository/public-files/images/tests-result.svg"
+                            curl -i -u ^${MY_USER}:^${MY_PASS} -X PUT --upload-file $SUCCESS_FILE $NEXUS_URL
                         \'\'\'
                     }
                     failure {
                         sh \'\'\'
-                            cat "/var/jenkins_home/workspace/0_static/badge_failing.svg" > \\ 
-                                $JENKINS_HOME/userContent/backend-tests-result.svg
-                            echo "published badge to: ^${JENKINS_URL}userContent/backend-tests-result.svg"
+                            FAILURE_FILE="/var/jenkins_home/workspace/0_static/badge_failing.svg"
+                            NEXUS_URL="http://nexus.tina-qa.com:8081/repository/public-files/images/tests-result.svg"
+                            curl -i -u ^${MY_USER}:^${MY_PASS} -X PUT --upload-file $FAILURE_FILE $NEXUS_URL
                         \'\'\'
                     }
                     

@@ -9,12 +9,8 @@
       containerized perspective, because stage and production environments
       work this way.
 
-2. We use the project in a recursive way, e.g., if we want to deploy/migrate the
-   database, we create a copy of devops and database projects in Database-deploy,
-   and we run the 
-
-4. Whe have two ways to deploy in our `local-container` environment:
-   - Getting in the `workspace/[action] via host-terminal` and run the
+2. Whe have two ways to deploy in our `local-container` environment:
+   - Getting in the `workspace/[action]` via host-terminal and run the
      scripts, where actions is what we want to do, e.g.
      workspace/Backend-Deploy, here we have 3 scripts, witch are necesary to
      deploy in out local-container environment.

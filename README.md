@@ -8,6 +8,10 @@
   - [How to deploy the frontend](#how-to-deploy-the-frontend)
   - [How to rollback](#how-to-rollback)
 
+
+
+
+
 ## Internal Links
 
 - IMPORTAN: Keep this file in sync with my journal.

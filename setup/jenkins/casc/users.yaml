@@ -7,6 +7,9 @@ jenkins:
         - id: ${MY_USER}
           password: ${MY_PASS}
 
+# CAUTION: "allowAnonymousRead: true" makes jenkins logs accessible without
+# auth, is risky because anyone see the logs, and this might have sensitive
+# information.
   authorizationStrategy:
     loggedInUsersCanDoAnything:
-      allowAnonymousRead: true
+      allowAnonymousRead: false

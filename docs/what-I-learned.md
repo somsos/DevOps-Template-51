@@ -58,9 +58,12 @@
   also the groups info, but no, it's divided in two files and the `group` file
   contains info about groups, e.g., `cat /etc/group | grep docker`.
 
+- `official docker registry vs nexus vs static file server`: It's easier to use
+  nexus, it has several uses, as a npm, mvn, docker-hosted and static-file-storage,
+  so in this nexus service we can have several in just one.
 
 
-
+## Error profiles and no such service
 
 I had this error `no such service: nexus` while in my docker-compose I had both,
 and both were up. THE PROBLEM was that they didn't share a profile, and that
@@ -80,4 +83,39 @@ no such service: nexus
 
   nexus_configurator:   # docker compose run --rm nexus_configurator
     profiles: ["utils"] ...
+```
+
+## Error docker registry and connection reset by peer
+
+Description
+
+```r
+# By default Docker only allows HTTP for localhost, other ones just allow HTTPS
+# in some configurations. Add localhost:8082 as an insecure registry
+```
+
+Error
+
+```shell
+docker login localhost:8082 -u tina1
+# Error response from daemon: Get "http://localhost:8082/v2/": read tcp [::1]:47016->[::1]:8082: read: connection reset by peer
+
+curl -v http://localhost:8082/v2/
+#* Host localhost:8082 was resolved.
+#* ...
+#* Recv failure: Connection reset by peer
+#curl: (56) Recv failure: Connection reset by peer
+```
+
+Solution
+
+```shell
+sudo nano /etc/docker/daemon.json
+# EDIT
+# {
+#   "insecure-registries": ["localhost:8082"]
+# }
+
+# Apply changes by restarting docker
+sudo systemctl restart docker
 ```

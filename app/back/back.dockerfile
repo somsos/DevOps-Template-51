@@ -65,9 +65,10 @@ RUN addgroup -g ${GROUP_ID} user1 && \
 RUN mkdir /opt/template51
 WORKDIR /opt/template51
 
-COPY --from=dep_downloader /opt/template51/           /opt/template51
-COPY --from=dep_downloader /opt/template51/pom.xml    /opt/template51/pom.xml
-COPY --from=dep_downloader /opt/template51/pom-spring-boot.xml    /opt/template51/pom-spring-boot.xml
+COPY --from=dep_downloader /home/user1/.m2/repository           /home/user1/.m2/repository
+COPY --from=dep_downloader /opt/template51/                     /opt/template51
+COPY --from=dep_downloader /opt/template51/pom.xml              /opt/template51/pom.xml
+COPY --from=dep_downloader /opt/template51/pom-spring-boot.xml  /opt/template51/pom-spring-boot.xml
 
 COPY source/common/src   /opt/template51/common/src
 COPY source/user/src     /opt/template51/user/src

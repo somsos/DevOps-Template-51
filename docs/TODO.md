@@ -2,10 +2,63 @@
 
 ## Doing (First one is the current task)
 
+- [x] Delete docker registry service and use nexus-docker-registry
+  - [X] In nexus_configurator.entrypoint.sh
+    - [X] Create Docker hosted
+    - [X] Create raw static file server and setup anonymous read and auth write
+  - [X] Check pipelines
+    - [X] Publish test results using nexus-raw-static-server
+    - [X] Upload image to nexus-docker-registry
+  - [X] In jenkins JCasC in users.yaml move from `allowAnonymousRead: true`
+        to `false`, because I'm using nexus as static server, so I do not need
+        this and it's a security hole
+  - [ ] 
+
+    
+
+- [X] Backend-Deploy, add start database service in case it's down
+- [X] `workspace/0_scripts/deploy.sh`  see if it's "--force-recreate" 
+  flaw the one that makes download the dependencies again.
+  **NOTE**: It was a silly mistake, I forget to add the line 
+  `COPY --from=dep_downloader /home/user1/.m2/repository  /home/user1/.m2/repository`
+  to copy the cached download to the repo
+
+
+- [ ] Create a package to publish to the public.
+  - [ ] Documentation
+    - [ ] Look for examples
+    - [ ] Create an external user perspective
+    - [ ] Explain by components
+    - [ ] Finish documents
+      - [X] howTo1_InstallOnServer.md
+      - [X] howTo2_setupADeveloperMachine.md
+      - [X] howTo3_DeployOrRollback.md
+      - [ ] howTo4_UndestandTheWholeProject.md
+        - [ ] DevOps general idea (CasC, cold-vs-warm-start, )
+        - [ ] Architecture based by components
+        - [ ] Hexagonal Architecture
+      - [ ] howTo5_DevelopDatabase.md
+        - [ ] What is LiquiBase
+        - [ ] Localhost workflow
+        - [ ] Local-containers workflow
+        - [ ] Stage workflow
+        - [ ] PRODUCTION workflow
+      - [ ] howTo6_DevelopBackend.md
+      - [ ] howTo7_DevelopFrontend.md
+      - [ ] howTo8_DevelopDevOps.md
+        - [ ] How to add/update a new pipeline
+      - [ ] howTo9_haveMultipleEnvironments.md
+
+
+- Reduce exposed ports
+  - devops.yml->registry: In theory I already deleted this service
+
+
+- [ ] Put the postgres service behind the reverse-proxy for better security and
+  using just one a entrance.
+
 - [ ] Why the backend deploy pipeline is downloading the dependencies again if
   I did not change any pom.xml file.
-
-- [ ] Check why ./workspace/.env is empty
 
 - [ ] Create an developer manual to set up his machine with the new environment server created
   - [ ] Tell about download the .env file
@@ -16,44 +69,15 @@
   rollback, the deploy pipeline is triggered, check the way to avoid this,
   nothing happens in the deploy bad triggered because I ask for confirmation.
 
-- [ ] Check why I got a different version of devops-project when I cloned from new Gitea instance in Virtual Machine
-
-- [ ] Add pre-approve to pipelines in JCasC or to the manual
+- [ ] Change the `reverse-proxy` from automatic to a static configuration because
+  sometimes gives weird surprises, and I will need a static server to publish
+  jenkins results to request images/svg from a repository for change `i3mj0`
 
 - [ ] Set jenkins as private again public users can see the logs and here there are sensible data.
-
-- [ ] Check if adding "user: "${MY_UID}:${DOCKER_GID}" to all services does
-      not affect the current, this might avoid permission errors.
-
-
-  - [ ] In ubuntu virtual machine
-    - [X] Clone repo
-    - [X] Copy dependencies
-    - [X] Use install.md
-    - [X] Use install.md again, just after finish
-    - [X] Link Virtual Machine and host and check services created
-    - [ ] Check jenkins pipeline for Database
-      - [ ] Clone, change and push
-      - [ ] check deploy
-      - [ ] rollback
-    - [ ] Check jenkins pipeline for Back
-      - [ ] Clone, change and push
-      - [ ] deploy
-      - [ ] rollback
-    - [ ] Check jenkins pipeline for Front
-      - [ ] Clone, change and push
-      - [ ] deploy
-      - [ ] rollback
-
-- [ ] Create a state/backup folder which takes the one called latest to start up,
-  - [ ] Restore Database
-  - [ ] Restore Backend
-  - [ ] Restore Frontend
+  - ID{`i3mj0`}
 
 - [ ] Decide how to test the UI code (Jest, Cypress, etc)
   - [ ] Run them on Jenkins
-
-- [ ] Check documentation of https://help.sonatype.com/en/sonatype-product-overview.html
 
 - [ ] Create pipeline to add the HTTPS/SSL config.
 
@@ -91,8 +115,6 @@
   but is not available for all proccesses
     - What happens if in my entrypoint I do this `export MY_PASS="$(cat /run/secrets/my_pass_secret)"` and then UNSET or override
     - What happends if i edit `jenkins.sh` the official file to start jenkins
-
-- [ ] Combine the download_{back|db|devops|front}_repo.sh in just one function
 
 - [ ] Automate Monitoring and Reporting
   - [ ] Study best approaches for this
@@ -295,6 +317,32 @@ posible.
       but forward steps fail, I think is the .env deletion.
 - [X] Fix the Frontend-Rollback pipeline, it does not fiend the .sh files,
   it seems I forgot to change the path to reuse the deploy .sh files.
+- [X] Check why ./workspace/.env is empty
+- [X] Add pre-approve to pipelines in JCasC or to the manual
+- [X] Check if adding "user: "${MY_UID}:${DOCKER_GID}" to all services does
+      not affect the current, this might avoid permission errors.
+- [X] Check documentation of https://help.sonatype.com/en/sonatype-product-overview.html
+- [X] In ubuntu virtual machine (Online mode and offline mode)
+    - [X] Clone repo
+    - [X] Copy dependencies
+    - [X] Use install.md
+    - [X] Use install.md again, just after finish
+    - [X] Link Virtual Machine and host and check services created
+    - [X] Check jenkins pipeline for **Database**
+      - [X] Clone, change and push
+      - [X] check deploy
+      - [X] rollback
+    - [X] Check jenkins pipeline for **Backed**
+      - [X] Clone, change and push
+      - [X] deploy
+      - [X] rollback
+    - [X] Check jenkins pipeline for **Frontend**
+      - [X] Clone, change and push
+      - [X] deploy
+      - [X] rollback
+- [X] Combine the download_{back|db|devops|front}_repo.sh in just one function
+      - **Omitted** To much abstraction, i prefer repeat a little of code than
+        make a complex one.
 
 
 

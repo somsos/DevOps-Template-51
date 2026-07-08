@@ -30,11 +30,21 @@ function deploy {
         exit 1
     fi
 
+    if [[ "$4" == "back" ]]; then
+        echo "[INFO] Starting DB service in case is down."
+        docker compose -f $1/docker-compose.yml up -d --wait --wait-timeout $2 db
+    fi
+
     # --build
     echo -e "\033[38;5;27;48;5;231m[INFO] Image to deploy: $3 \033[0m"
     set -x
     docker compose -f $1/docker-compose.yml stop $4
     # we reference the image by its build tag just to be sure to get the correct one
+    
+    # "--force-recreate": "Recreate containers even if their configuration and
+    #   image haven't changed", useful because sometimes the image is the same
+    #   but the container is not working properly, so we need to recreate it.
+    
     BACK_IMAGE=$3 docker compose -f $1/docker-compose.yml up  --force-recreate -d --wait-timeout $2 $4
     set +x
 }

@@ -121,6 +121,10 @@ function delete_default_admin_user {
 }
 
 
+
+################## NPM REPOSITORIES ##################
+
+
 function create_npm_proxy_repo {
   echo "Creating npm proxy repository..."
   curl -s -o /dev/null -w "%{http_code}" \
@@ -208,6 +212,134 @@ function if_npm_repos_exist_skip {
 
 
 
+################## DOCKER HOSTED REPOSITORY ##################
+
+function if_does_not_exist_docker_hosted_registry_create_it {
+  RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+    "$NEXUS_REPO_API/docker/hosted/docker-hosted" \
+    -u "$NEW_NEXUS_USER:$NEW_NEXUS_PASS")
+  if [ "$RESPONSE" == "200" ]; then
+    echo "docker-hosted registry already exists. Skipping creation."
+    return 1
+  fi
+
+  echo "Creating docker hosted registry..."
+  CREATE_DOCKER_HOSTED_RESPONSE=$(curl -s -o /tmp/docker_hosted_creation.log -w "%{http_code}" \
+    -X POST "$NEXUS_REPO_API/docker/hosted" \
+    -u "$NEW_NEXUS_USER:$NEW_NEXUS_PASS" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "name": "docker-hosted",
+      "online": true,
+      "storage": {
+        "blobStoreName": "default",
+        "strictContentTypeValidation": true,
+        "writePolicy": "ALLOW"
+      },
+      "docker": {
+        "v1Enabled": false,
+        "forceBasicAuth": true,
+        "httpPort": 5000
+      }
+    }')
+  
+  if [ "$CREATE_DOCKER_HOSTED_RESPONSE" != "201" ]; then
+    echo "Unexpected response $CREATE_DOCKER_HOSTED_RESPONSE for docker-hosted creation. Please check Nexus logs for more details."
+    exit 1;
+  fi
+
+  echo " docker-hosted created."
+}
+
+
+################## RAW STORAGE REPOSITORY FOR PUBLIC FILES ##################
+
+function enable_anonymous_access {
+  RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+    -X PUT "$NEXUS_URL/service/rest/v1/security/anonymous" \
+    -u "$NEW_NEXUS_USER:$NEW_NEXUS_PASS" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "enabled": true,
+      "userId": "anonymous",
+      "realmName": "NexusAuthorizingRealm"
+    }')
+
+  if [ "$RESPONSE" != "200" ]; then
+    echo "Unexpected response $RESPONSE enabling anonymous access."
+    exit 1
+  fi
+
+  echo "Anonymous access enabled."
+}
+
+function create_public_files_read_privilege {
+  echo "Creating read privilege for public-files..."
+  curl -s -o /dev/null -w "%{http_code}" \
+    -X POST "$NEXUS_URL/service/rest/v1/security/privileges/repository-view" \
+    -u "$NEW_NEXUS_USER:$NEW_NEXUS_PASS" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "name": "public-files-read",
+      "description": "Read access to public-files repository",
+      "actions": ["READ", "BROWSE"],
+      "format": "raw",
+      "repository": "public-files"
+    }'
+  echo " privilege created."
+}
+
+function assign_read_privilege_to_anonymous {
+  echo "Assigning public-files read to anonymous role..."
+  curl -s -o /dev/null -w "%{http_code}" \
+    -X PUT "$NEXUS_URL/service/rest/v1/security/roles/nx-anonymous" \
+    -u "$NEW_NEXUS_USER:$NEW_NEXUS_PASS" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "id": "nx-anonymous",
+      "name": "Anonymous",
+      "description": "Anonymous role",
+      "privileges": ["public-files-read"],
+      "roles": []
+    }'
+  echo " anonymous role updated."
+}
+
+
+function if_does_not_exist_public_raw_repo_create_it {
+  RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+    "$NEXUS_REPO_API/raw/hosted/public-files" \
+    -u "$NEW_NEXUS_USER:$NEW_NEXUS_PASS")
+
+  if [ "$RESPONSE" == "200" ]; then
+    echo "public-files raw repo already exists. Skipping."
+    return 0
+  fi
+
+  echo "Creating public-files raw repository..."
+  CREATE_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+    -X POST "$NEXUS_REPO_API/raw/hosted" \
+    -u "$NEW_NEXUS_USER:$NEW_NEXUS_PASS" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "name": "public-files",
+      "online": true,
+      "storage": {
+        "blobStoreName": "default",
+        "strictContentTypeValidation": false,
+        "writePolicy": "allow"
+      }
+    }')
+
+  if [ "$CREATE_RESPONSE" != "201" ]; then
+    echo "Unexpected response $CREATE_RESPONSE creating public-files repo."
+    exit 1
+  fi
+
+  echo "public-files raw repository created."
+}
+
+
 
 
 
@@ -228,6 +360,13 @@ echo "Setting new user end >>>"
 
 echo "<<< Setting up npm repositories start"
 if_npm_repos_exist_skip && create_npm_repositories
+if_does_not_exist_docker_hosted_registry_create_it
+
+enable_anonymous_access
+if_does_not_exist_public_raw_repo_create_it
+create_public_files_read_privilege
+assign_read_privilege_to_anonymous
+
 echo "npm repositories done end >>>"
 
 
