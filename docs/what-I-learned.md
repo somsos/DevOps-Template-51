@@ -2,6 +2,11 @@
 
 ## TL:DR
 
+- The image `nginxproxy/nginx-proxy:1.10-alpine` wa pretty useful while I was
+  creating the setup, because in automatic maps the **sub-domains and ports**,
+  I just needed to add 2 environment variables to the container I wanted to expose.
+  But it has the limitation of exposing 
+
 - When you create a `dockerfile` make sure you are creating and switching user,
   because by default use root and if create files this files belong to root and
   it's always a headache.

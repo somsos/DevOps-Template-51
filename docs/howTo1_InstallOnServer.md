@@ -2,23 +2,22 @@
 
 - [Offline install](#offline-install)
   - [Requirements](#requirements)
-  - [Clone project and copy heavy dependencies](#clone-project-and-copy-heavy-dependencies)
+  - [Clone project](#clone-project)
   - [Offline install](#offline-install-1)
-    - [Download pre-downloaded dependencies from Mega](#download-pre-downloaded-dependencies-from-mega)
+    - [Download heavy dependencies](#download-heavy-dependencies)
     - [Install docker offline](#install-docker-offline)
   - [Install docker online](#install-docker-online)
   - [Install and start project](#install-and-start-project)
-  - [Link domains](#link-domains)
-  - [Approve scrips](#approve-scrips)
+  - [Approve Jenkins pipelines scrips](#approve-jenkins-pipelines-scrips)
 
 ## Requirements
 
-- openssh-server
+- RAM 4Gb (Nexus uses 2gb)
 - 15GB free space minimum
 - Ubuntu Server 24.04 
   - This guide is for Ubuntu 24.04, but was tested also in CachyOS 7.1
 
-## Clone project and copy heavy dependencies
+## Clone project
 
 ```shell
 ssh mario1@192.168.1.8
@@ -30,7 +29,7 @@ git clone https://github.com/somsos/somsos-template51-devops .
 
 ## Offline install
 
-### Download pre-downloaded dependencies from Mega
+### Download heavy dependencies
 
 Download the pre-downloaded dependencies from this link
 
@@ -71,6 +70,23 @@ docker run hello-world
         sudo systemctl start containerd.service docker.socket docker.service docker
         sudo systemctl stop docker containerd.service docker.socket docker.service
 ```
+
+
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+----
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
 
 ## Install docker online
 
@@ -114,32 +130,22 @@ cd /p1
 bash ./install.sh
 ```
 
-## Link domains 
-
-Copy and peste to `/etc/hosts`, for example
-```yml
-192.168.1.8 yopi-test.com
-192.168.1.8 api.yopi-test.com
-192.168.1.8 gitea.yopi-test.com
-192.168.1.8 jenkins.yopi-test.com
-192.168.1.8 registry.yopi-test.com
-192.168.1.8 nexus.yopi-test.com
-```
-
 Check created services
+
 ```yml
-"http://gitea.yopi-test.com":                                    Gitea
-"http://jenkins.yopi-test.com":                                  Jenkins
-"http://registry.yopi-test.com":                                 Registry
-"http://nexus.yopi-test.com":                                    Nexus
-"http://api.yopi-test.com/swagger-ui/index.html":                Backend
-"http://yopi-test.com":                                          Frontend
+"http://gitea.tina-qa.com":                                    Gitea
+"http://jenkins.tina-qa.com":                                  Jenkins
+"http://nexus.tina-qa.com":                                    Nexus
+"http://api.tina-qa.com/swagger-ui/index.html":                Backend
+"http://registry.tina-qa.com":                                 Registry
+"http://tina-qa.com":                                          Frontend
 "psql postgresql://yopi1:<DB_PASS>@192.168.1.8:5001/yopi1db":  Database
 ```
 
-## Approve scrips
+## Approve Jenkins pipelines scrips
 
 By default the Jenkins pipelines are not approved, we need to do it manually.
 
-http://jenkins.yopi-test.com/manage/scriptApproval/
-
+```shell
+http://jenkins.tina-qa.com/manage/scriptApproval/
+```

@@ -1,135 +1,158 @@
-# README
+# T51
 
-- [README](#readme)
-  - [Internal Links](#internal-links)
-  - [How it works the DevOps pipeline](#how-it-works-the-devops-pipeline)
-  - [How to deploy database](#how-to-deploy-database)
-  - [How to deploy the backend](#how-to-deploy-the-backend)
-  - [How to deploy the frontend](#how-to-deploy-the-frontend)
-  - [How to rollback](#how-to-rollback)
-
-
-
+- [T51](#t51)
+  - [Introduction](#introduction)
+  - [Requirements](#requirements)
+  - [Overall features](#overall-features)
+  - [Installation](#installation)
+    - [Setup server services.](#setup-server-services)
+    - [Setup a Developer machine](#setup-a-developer-machine)
+  - [Guides](#guides)
 
 
-## Internal Links
+## Introduction
 
-- IMPORTAN: Keep this file in sync with my journal.
+T51 is a portable ready-to-use, self-hosted, and open-source DevOps project,
+which can be installed with just one command, either with or without internet,
+which can work as a productive single host environment, or an acceptance stage
+environment to select release docker images candidates, and publish them in a
+docker registry. The project is composed of the following sub-projects.
 
-- [ToDo](./docs/TODO.md)
+1. DevOps: Docker, Jenkins, Gitea, Nexus and Nginx as a reverse-proxy.
+2. Database: Postgres and Liquibase for a Evolutionary Database Design.
+3. Backend: A RESFul service using Spring boot with Hexagonal architecture.
+4. Frontend: Angular with a modularity through components.
+
+For example, we have pre-builded deploy and rollback pipelines for Database,
+Backend and Frontend, that are automatically triggered when we push to
+repository in Gitea, and other similar pipelines.
+
+## Requirements
+
+- 4GB RAM.
+- 15GB free hard drive.
+- Ubuntu Server 24.04 (This guide is for this OS, but was tested also on Arch Linux).
+- Docker Compose with rootless access.
+
+## Overall features
+
+Here resume of the setup from the services and their connections perspective.
+
+![setup connections](./docs/setup-connections.png)
+
+Here a resume of the pipelines workflow perspective.
+
+![pipelines workflow](./docs/pipelines-workflow.png)
+
+Here is a proposed workflow using github flow strategy.
+
+![workflow using github flow strategy](./docs/github-flow.png)
+
+Here some captures of the services of the setup, all off them use the same user
+and password as the ones introduced in the install.sh script input or the
+variables in the `.env` file.
+
+<div style="width: 100%; display: grid; grid-template-columns: repeat(2, auto); grid-template-rows: repeat(2, auto); grid-gap: 6px;">
+  <div><span>Gitea</span><img src="./docs/img/capture-1-gitea.png" /> </div>
+  <div><span>Jenkins</span><img src="./docs/img/capture-2-jenkins.png" /> </div>
+  <div><span>Nexus</span><img src="./docs/img/capture-3-nexus.png" /> </div>
+  <div><span>Docker registry</span><img src="./docs/img/capture-4-registry.png" /> </div>
+  <div><span>App Postgres Database</span><img src="./docs/img/capture-5-postgres.png" /> </div>
+  <div><span>App Backend Swagger</span><img src="./docs/img/capture-6-backend-app-swagger.png" /> </div>
+  <div><span>App Angular</span><img src="./docs/img/capture-7-angular-app.png" /> </div>
+</div>
+
 
 <!--
-.
-.
-.
-.
-.
-.
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
 -->
 
-## How it works the DevOps pipeline
-
-The idea is to abstract or reduce the commands to build and deploy,
-to only the following two docker commands:
-
-- `docker compose build { db-migration | back | front}`
-- `docker compose up -d { db-migration | back | front}`
-
-These two commands are standard on those who knows docker, and from
-just watching them, they can get an idea of how works by behind, with
-in resume, the `docker-compose.yml` defines how to run the containerized app,
-and the `Dockerfile` defines how to build it and deploy it.
-
-So in theory this two commands could build and deploy any kind of
-app, whether it uses MAriaDB, Java, GoLand, Angular, React, etc.
-
-Here a graph of the working flow which goes from the `git push` to the
-deploy of the app, and in case of rollback it's the same pipeline
-just instead of using `git commit` we use `git revert` to apply again the
-commit that was working before.
-
-![devops pipeline flow](./1_documentation/devops-pipeline.png)
-
-For the connections and https management, I'm using a reverse proxy
-to centralize and facilitate the implementation.
-
-![reverse-proxy-conf](./1_documentation/reverse-proxy-conf.png)
+----
 
 <!--
-.
-.
-.
-.
-.
-.
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
 -->
 
-## How to deploy database
+## Installation
 
-This particular layer works differently from the other ones because it's divided into two main components: the schema and the data. That's why I have two different services for the database layer, one to set up the database service and another to migrate the schema, either to deploy or to roll back the changes.
+We have two different parts here, set up the server and set up the developer
+machine. For more details, for example, how to install **without internet** and
+setup docker, please see, [this file](./docs/howTo1_InstallOnServer.md), but in
+resume, we just need the following steps in a host with docker compose
+installed.
 
-1, We need to have the database service running.
-
-```shell
-docker compose up db
-```
-
-2, Once we have the DB service running, we can install/update the schema, which
-we can apply using the next commands.
-
-- Note1: In this case I do not use the command `build`, because I prefer adding
-  the flag `--build`, so this way if I copy and peste the command I can make two
-  steps in one, making less likely to forget one.
-- Note2: We use `run` instead of `up` as usually because it's one time action, and
-  doing it like this makes more sense, for example, we can auto remove it.
+### Setup server services.
 
 ```shell
-docker compose run --rm --build --name temp db_utils { deploy / rollback / backup / restore }
+git clone https://github.com/somsos/somsos-template51-devops /my-project
+> bash ./install.sh
+# interaction example:
+# Enter the environment (local, test, qa, stage, PROD): test
+# Enter the domain (e.g., 'example.com', 'example1-test.com'): example1-test.com
+# Enter the App username: user1
+# Enter the App password (more than 8 letters): user1-pass1
+# Repeat the App password: user1-pass1
+# Enter the App email: user1@gmail.com
+# Enter the shared token: example1-token
+# Enter the database schema name: example1db
+# ... Omitted logs of installation to keep it short ...
+# Available Services all have the same credentials asked for the install.sh script .
+# Gitea     http://gitea.example1-test.com
+# Jenkins   http://jenkins.example1-test.com
+# Nexus     http://nexus.example1-test.com
+# Backend   http://api.example1-test.com/swagger-ui/index.html
+# Frontend  http://example1-test.com
+# Registry  http://registry.example1-test.com
+# Database  psql postgresql://user1:<DB_PASS>@example1-test.com:5001/example_db
 ```
 
-## How to deploy the backend
+### Setup a Developer machine
 
-This layer is easier to deploy because we just have a binary and a configuration
-that is modified through environment variables in our .env file and then passed
-to the container using the docker-compose.yml file, so we need to make sure we
-have the following things.
+Gitea is using a ssh public-private keys as authentication process, so:
 
-1, Make sure we have our desired config in the .env file.
+- If we are using the same machine to host the DevOps services and develop, this
+  is not necessary.
 
-```conf
-DB_USER=my-db-user
-```
-
-2, Make sure we are passing the variable to the container
-
-```yml
-back:
-  ...
-  environment:
-    - DB_USER=${DB_USER}
-```
-
-3, Make the config is being read by our .properties spring project.
-
-- Note: out of the box, Spring can get an environment variable using the
-  following expression: `${VARIABLE_NAME}`
-
-```conf
-spring.datasource.url=jdbc:postgresql://${DB_SERVER}:5432/${DB_SCHEMA}
-spring.datasource.username=${DB_USER}
-```
-
-Once we are sure we have our configuration right, we can start our service with
-the following command:
-
-- Note: We just need the build if we have a pending update, and if it's the
-  first time running the service, Docker will not find the image and it's going
-  to make the build automatically for us.
+- But If we are using different machines, one for the DevOps services and
+  another to develop, we need to import the private key, to be able to clone and
+  push changes to the Gitea repositories, so the pipelines would be triggered
+  automatically on a git push.
 
 ```shell
-docker compose build back
+scp -r -P22 my-user@example1-test.com:/my-project/setup/secrets/ssh_key.priv ~/.ssh/t51key.priv
 
-docker compose up back
+cat >> ~/.ssh/config <<EOF
+
+Host gitea.example1-test.com
+    HostName gitea.example1-test.com
+    Port 222
+    User git
+    IdentityFile ~/.ssh/t51key.priv
+
+EOF
+```
+
+Now we should be able to auth to the Gitea service.
+
+```shell
+ssh -T git@gitea.example1-test.com
+# OUTPUT: Hi there, XXXXX You've successfully authenticated ...
+```
+
+Now we can clone the repositories
+
+```shell
+git clone ssh://git@gitea.example1-test.com:222/user1/t51devops.git ~/my-project
+
+git clone ssh://git@gitea.example1-test.com:222/user1/t51mig-db.git ~/my-project/app/db/source
+
+git clone ssh://git@gitea.example1-test.com:222/user1/t51back.git ~/my-project/app/back/source
+
+git clone ssh://git@gitea.example1-test.com:222/user1/t51front.git ~/my-project/app/front/source
 ```
 
 <!--
@@ -146,92 +169,18 @@ docker compose up back
 
 -->
 
-## How to deploy the frontend
+## Guides
 
-It's the same as frontend, we just have the particular case that we inject the backend URL in build time, because this is different between environments, for example, for a stage environment our URL looks like this `api.{local | qa | staging}-example.com` or if its productions looks just like this `api.example.com`, for this I do this.
+For more details about how to install and make the necessary set ups, so we have
+an developing workflow working, I have the following guides where I explain the
+necessary details.
 
-1, I send the URL through `args` property to the dockerfile.
-
-```yml
-front:
-  container_name: ${FRONT_NAME}
-  build:
-    context: ./front
-    args:
-      BACK_URL: ${BACK_URL}
-    dockerfile: front.dockerfile
-```
-
-2, In my `front.dockerfile` I remplace the value.
-
-```dockerfile
-FROM node:25.7-alpine3.23 AS build
-...
-ARG BACK_URL
-RUN sed -i "s|__BACK_URL__|${BACK_URL}|g" src/environments/environment.ts
-...
-RUN ng build -c production
-```
-
-So that way we have the correct URL automatically for each environment, so as we said we do it the same way as the backend service.
-
-```shell
-docker compose build back
-
-docker compose up back
-```
-
-<!--
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-
--->
-
-----
-
-<!--
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-
--->
-
-## How to rollback
-
-There is two ways to rollback the project.
-
-1- Usando revert y push, lo cual re-utilizara el pipeline the deploy, solo que
-este comando pondrá el ultimo commit adelante, lo cual funciona como rollback,
-explicado de una forma mas visual, usar un revert pasa lo siguiente.
-
-the **advantage** of this approach is that the rollback keeps registered in the
-history.
-
-```r
-        revert
-          |      
-1 -> 2 -> 3 -> 2 -> 3b -> 4
-      \       /
-        -----
-```
-
-----
-
-2- Using `git push --force-with-lease origin +main^1:main`, which deletes the last
-commit
-
-Usando `git push --force-with-lease origin +main^1:main`, lo cual elimina el
-utltimo commit, se agrega `--force-with-lease` para evitar eliminar el ultimo
-commit si es que no esta bien sincronizados los repositorios, lo que pasa
-visualmente es lo siguiente.
-
-The **advantage** of this approach is that the history keeps clean, because
-sometimes keep an error in the history just add noise.
-
-```r
-Before
-1 -> 2 -> 3
-
-After
-1 -> 2
-```
-
+- [How To install on server](./docs/howTo1_InstallOnServer.md)
+- [How To setup A Developer Machine](./docs/howTo2_setupADeveloperMachine.md)
+- [How To Deploy Or Rollback some app layer](./docs/howTo3_DeployOrRollback.md)
+- [How To Understand The Whole Project](./docs/howTo4_UndestandTheWholeProject.md)
+- [How To Develop Database](./docs/howTo5_DevelopDatabase.md)
+- [How To Develop Backend](./docs/howTo6_DevelopBackend.md)
+- [How To Develop Frontend](./docs/howTo7_DevelopFrontend.md)
+- [How To Develop DevOps](./docs/howTo8_DevelopDevOps.md)
+- [How To have Multiple Environments](./docs/howTo9_haveMultipleEnvironments.md)

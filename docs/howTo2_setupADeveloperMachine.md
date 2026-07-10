@@ -1,9 +1,23 @@
 # Offline install
 
 - [Offline install](#offline-install)
+  - [Link domains (Optional)](#link-domains-optional)
   - [Clone repositories](#clone-repositories)
-  - [Approve scrips](#approve-scrips)
 
+## Link domains (Optional)
+
+In case of not having a public DNS, for example, we are making tests in a LAN
+network or in localhost, we need to add our domain name to our `/etc/hosts`
+file. for example.
+
+```yml
+192.168.1.8 example-test.com
+192.168.1.8 api.example-test.com
+192.168.1.8 gitea.example-test.com
+192.168.1.8 jenkins.example-test.com
+192.168.1.8 registry.example-test.com
+192.168.1.8 nexus.example-test.com
+```
 
 ## Clone repositories
 
@@ -11,16 +25,16 @@ I'm using ssh public-private keys as auth process, so we need to copy the
 private key to the PC we want to clone from.
 
 ```shell
-# the domain can be different in this case it's "gitea.yopi-test.com"
-scp -r -P22 mario1@192.168.1.8:/p1/setup/secrets/ssh_key.priv ~/.ssh/yopi1.priv
+# the domain can be different in this case it's "gitea.example-test.com"
+scp -r -P22 user1@example-test.com:/my-project/setup/secrets/ssh_key.priv ~/.ssh/user1.priv
 
 cat >> ~/.ssh/config <<EOF
 
-Host gitea.yopi-test.com
-    HostName gitea.yopi-test.com
+Host gitea.example-test.com
+    HostName gitea.example-test.com
     Port 222
     User git
-    IdentityFile ~/.ssh/yopi1.priv
+    IdentityFile ~/.ssh/user1.priv
 
 EOF
 ```
@@ -28,23 +42,18 @@ EOF
 We should be able to auth to the Gitea server
 
 ```shell
-ssh -T git@gitea.yopi-test.com
+ssh -T git@gitea.example-test.com
 # OUTPUT: Hi there, XXXXX You've successfully authenticated ...
 ```
 
 Now we can clone the repositories
 
 ```shell
-git clone ssh://git@gitea.yopi-test.com:222/yopi1/t51devops.git /home/mario/mine/yopi1
+git clone ssh://git@gitea.example-test.com:222/user1/t51devops.git ~/my-project/
 
-git clone ssh://git@gitea.yopi-test.com:222/yopi1/t51mig-db.git /home/mario/mine/yopi1/app/db/source
+git clone ssh://git@gitea.example-test.com:222/user1/t51mig-db.git ~/my-project/app/db/source
 
-git clone ssh://git@gitea.yopi-test.com:222/yopi1/t51back.git /home/mario/mine/yopi1/app/back/source
+git clone ssh://git@gitea.example-test.com:222/user1/t51back.git ~/my-project/app/back/source
 
-git clone ssh://git@gitea.yopi-test.com:222/yopi1/t51front.git /home/mario/mine/yopi1/app/front/source
+git clone ssh://git@gitea.example-test.com:222/user1/t51front.git ~/my-project/app/front/source
 ```
-
-## Approve scrips
-
-http://jenkins.yopi-test.com/manage/scriptApproval/
-

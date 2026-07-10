@@ -1,37 +1,18 @@
 # ToDo
 
-## Doing (First one is the current task)
-
-- [x] Delete docker registry service and use nexus-docker-registry
-  - [X] In nexus_configurator.entrypoint.sh
-    - [X] Create Docker hosted
-    - [X] Create raw static file server and setup anonymous read and auth write
-  - [X] Check pipelines
-    - [X] Publish test results using nexus-raw-static-server
-    - [X] Upload image to nexus-docker-registry
-  - [X] In jenkins JCasC in users.yaml move from `allowAnonymousRead: true`
-        to `false`, because I'm using nexus as static server, so I do not need
-        this and it's a security hole
-  - [ ] 
-
-    
-
-- [X] Backend-Deploy, add start database service in case it's down
-- [X] `workspace/0_scripts/deploy.sh`  see if it's "--force-recreate" 
-  flaw the one that makes download the dependencies again.
-  **NOTE**: It was a silly mistake, I forget to add the line 
-  `COPY --from=dep_downloader /home/user1/.m2/repository  /home/user1/.m2/repository`
-  to copy the cached download to the repo
-
+## Doing (The upper top is the current task)
 
 - [ ] Create a package to publish to the public.
   - [ ] Documentation
-    - [ ] Look for examples
+    - [X] Look for examples
+    - [X] Explain by components
     - [ ] Create an external user perspective
-    - [ ] Explain by components
+    
     - [ ] Finish documents
       - [X] howTo1_InstallOnServer.md
+        - [X] Mention to approve manually the jenkins pipelines on the first run.
       - [X] howTo2_setupADeveloperMachine.md
+        - [X] Tell about and why download the .env file
       - [X] howTo3_DeployOrRollback.md
       - [ ] howTo4_UndestandTheWholeProject.md
         - [ ] DevOps general idea (CasC, cold-vs-warm-start, )
@@ -48,73 +29,66 @@
       - [ ] howTo8_DevelopDevOps.md
         - [ ] How to add/update a new pipeline
       - [ ] howTo9_haveMultipleEnvironments.md
+    - %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    - [ ] Add to doc my last try to create the install.sh
+      - [ ] Create/Prepare to create install script and manual.
+      - [ ] Install script
+        - [X] Add host public key to gitea so the docker host can clone.
+        - [X] Ask for user/pass, domain, email, env-type(local, stage, prod), 
+        - [X] Pull images and set them for offline use.
+        - [X] Start/build gitea
+          - [X] Check initial repositories.
+        - [X] Start/build Jenkins
+          - [X] add `docker compose build --build-arg DOCKER_GID=$(getent group docker | cut -d: -f3) jenkins`
+        - [X] Start reverse proxy
+      - [ ] MANUAL (using just Jenkins)
+        - [ ] Mention to 
+          - [ ] Run Gitea first then Jenkins
+          - [ ] Download the source code in the source directories
+          - [ ] create the .env file using as template the .env.example file because for security is ignored in git
+          - [ ] Add local domains to etc/hosts
+          - [ ] Create secrets reading `setup/secrets/README_secrets.md`
+          - [ ] Pre approve pipelines, so the first time the user execute a pipeline, it doesn't give an error ofr this
+          - [ ] Add in `/etc/docker/daemon.json` the content `{ "insecure-registries": ["registry.$MY_DOMAIN:5000"] }` for docker login
+        - [X] X. Database.
+          - [X] X. Start service
+          - [X] X. Build the db_utils container
+          - [X] X. Install schema.
+        - [X] X. Build/Start the backend container
+        - [X] X. Build/Start the frontend container
 
 
-- Reduce exposed ports
-  - devops.yml->registry: In theory I already deleted this service
+- [ ] Change Nginx to Caddy with "static" config
+  - NOTE: start asking claude replacing my message "And to create an SSH tunnel for Gitea->port 22"
+  - [ ] Map nexus->5000 to register.example.com
+  - [ ] Create a ssh tunneling for Gitea->222
+  - [ ] Change postgres to just expose it internally
 
-
-- [ ] Put the postgres service behind the reverse-proxy for better security and
-  using just one a entrance.
-
-- [ ] Why the backend deploy pipeline is downloading the dependencies again if
-  I did not change any pom.xml file.
-
-- [ ] Create an developer manual to set up his machine with the new environment server created
-  - [ ] Tell about download the .env file
-  - [ ] Mention about how to add a change in the pipelines
-  - [ ] If I can NOT pre-approve the JCasC pipelines, mention to approve them when jenkins starts for firsts time.
+- [ ] nexus consumes a lot of RAM (2.2Gb), Check replace it with
+  [harbor](https://github.com/goharbor/harbor) and similar services.
 
 - [ ] Backend-Rollback When I make a push because I delete the last commit in a
   rollback, the deploy pipeline is triggered, check the way to avoid this,
   nothing happens in the deploy bad triggered because I ask for confirmation.
 
-- [ ] Change the `reverse-proxy` from automatic to a static configuration because
-  sometimes gives weird surprises, and I will need a static server to publish
-  jenkins results to request images/svg from a repository for change `i3mj0`
+- [ ] Test in redlap
 
-- [ ] Set jenkins as private again public users can see the logs and here there are sensible data.
-  - ID{`i3mj0`}
+- [ ] Test in bluelap
 
-- [ ] Decide how to test the UI code (Jest, Cypress, etc)
-  - [ ] Run them on Jenkins
-
-- [ ] Create pipeline to add the HTTPS/SSL config.
-
-- [ ] Create/Prepare to create install script and manual.
-  - [ ] Install script
-    - [ ] Last tests in PC and start test in redlap
-    - [X] Add host public key to gitea so the docker host can clone.
-    - [X] Ask for user/pass, domain, email, env-type(local, stage, prod), 
-    - [X] Pull images and set them for offline use.
-    - [X] Start/build gitea
-      - [X] Check initial repositories.
-    - [X] Start/build Jenkins
-      - [X] add `docker compose build --build-arg DOCKER_GID=$(getent group docker | cut -d: -f3) jenkins`
-    - [X] Start reverse proxy
-  - [ ] MANUAL (using just Jenkins)
-    - [ ] Mention to 
-      - [ ] Run Gitea first then Jenkins
-      - [ ] Download the source code in the source directories
-      - [ ] create the .env file using as template the .env.example file because for security is ignored in git
-      - [ ] Add local domains to etc/hosts
-      - [ ] Create secrets reading `setup/secrets/README_secrets.md`
-      - [ ] Pre approve pipelines, so the first time the user execute a pipeline, it doesn't give an error ofr this
-      - [ ] Add in `/etc/docker/daemon.json` the content `{ "insecure-registries": ["registry.$MY_DOMAIN:5000"] }` for docker login
-    - [X] X. Database.
-      - [X] X. Start service
-      - [X] X. Build the db_utils container
-      - [X] X. Install schema.
-    - [X] X. Build/Start the backend container
-    - [X] X. Build/Start the frontend container
+- [ ] Upload to a productive server
+  - [ ] Test the SSL pipeline or command.
 
 - [ ] Check how to avoid exposing secrets for example
+  - [ ] Some logs in jenkins pipelines.
   - `docker exec jenkins printenv | grep PASS`
   - `docker exec gitea printenv | grep PASS`
-  secrets that still can see them using `docker exec jenkins cat /run/secrets/my_secret` 
+  - secrets that still can see them using `docker exec jenkins cat /run/secrets/my_secret` 
   but is not available for all proccesses
     - What happens if in my entrypoint I do this `export MY_PASS="$(cat /run/secrets/my_pass_secret)"` and then UNSET or override
     - What happends if i edit `jenkins.sh` the official file to start jenkins
+
+- [ ] Decide how to test the UI code (Jest, Cypress, etc)
+  - [ ] Run them on Jenkins
 
 - [ ] Automate Monitoring and Reporting
   - [ ] Study best approaches for this
@@ -343,6 +317,22 @@ posible.
 - [X] Combine the download_{back|db|devops|front}_repo.sh in just one function
       - **Omitted** To much abstraction, i prefer repeat a little of code than
         make a complex one.
-
-
+- [x] Delete docker registry service and use nexus-docker-registry
+  - [X] In nexus_configurator.entrypoint.sh
+    - [X] Create Docker hosted
+    - [X] Create raw static file server and setup anonymous read and auth write
+  - [X] Check pipelines
+    - [X] Publish test results using nexus-raw-static-server
+    - [X] Upload image to nexus-docker-registry
+  - [X] In jenkins JCasC in users.yaml move from `allowAnonymousRead: true`
+        to `false`, because I'm using nexus as static server, so I do not need
+        this and it's a security hole
+- [X] Backend-Deploy, add start database service in case it's down
+- [X] `workspace/0_scripts/deploy.sh`  see if it's "--force-recreate" 
+  flaw the one that makes download the dependencies again.
+  **NOTE**: It was a silly mistake, I forget to add the line 
+  `COPY --from=dep_downloader /home/user1/.m2/repository  /home/user1/.m2/repository`
+  to copy the cached download to the repo
+- [X] fix the sync time in jenkins pipelines
+  - Note: it's fix though a Java variable `JAVA_OPTS=-Duser.timezone=America/Mexico_City`
 

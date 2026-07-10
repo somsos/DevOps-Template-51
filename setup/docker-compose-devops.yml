@@ -72,10 +72,12 @@ services:
     privileged: true
     environment:
       - JENKINS_JAVA_OPTS="-Dhudson.model.ParametersAction.keepUndefinedParameters=false"
+      - JAVA_OPTS=-Duser.timezone=America/Mexico_City
       - VIRTUAL_HOST=jenkins.${MY_DOMAIN}
+      - VIRTUAL_PORT=8080
       - LETSENCRYPT_HOST=jenkins.${MY_DOMAIN}
       - LETSENCRYPT_EMAIL=${MY_EMAIL}
-      - VIRTUAL_PORT=8080
+      
       # JCasC (Jenkins Code as Configuration)
       - MY_ENV=${MY_ENV}
       - MY_USER=${MY_USER}
@@ -183,8 +185,9 @@ services:
     image: ${IMAGE_NEXUS}
     container_name: nexus
     ports:
-      - "${NEXUS_PORT}:8081"
       - "5000:5000"                                       # docker registry port
+    expose:
+      - "8081"                                            # nexus web port
     environment:
       # Domain and SSL
       - VIRTUAL_HOST=nexus.${MY_DOMAIN}
