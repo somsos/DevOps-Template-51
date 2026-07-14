@@ -38,9 +38,9 @@
   going to start with a new state, more details in
   `docker_pitfalls#{id:6fn04mh87}`.
 
-- Be careful with the the order of `ARG` and `FROM` in the dockerfile when is
-   passed trought docker-compose.yml using `build.args`
-   `docker_pitfalls#id{mcg385nvh502hrc}#`
+- Be careful with the the order of `ARG` and `FROM` in the dockerfile, when the
+  arguments go from one stage to another stage, docker-compose.yml using `build.args`
+  `docker_pitfalls#id{mcg385nvh502hrc}#`
 
 - In docker we have 2 runtimes, build-time and run-time, and in both we have to
   declare what network use, *it happened me* that I set up with the builder

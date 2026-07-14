@@ -19,7 +19,7 @@ docker run --rm \
 
 
 docker run --rm -ti --name temp_123 \
-  -v t51_t51m2_vol2:/home/mario1/.m2 \
+  -v t51_t51m2_vol2:/home/user1/.m2 \
   nginx:stable-alpine3.23 \
   sh
 ```

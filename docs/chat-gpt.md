@@ -56,7 +56,7 @@ DATE="$(date +"%Y-%m-%d_%H.%M.%S")"
 
 DEVOPS_DIR="devops_$DATE"
 
-DEVOPS_REPO="ssh://git@host.docker.internal:222/mario1/template51_devops.git"
+DEVOPS_REPO="ssh://git@host.docker.internal:222/user1/template51_devops.git"
 
 
 
@@ -491,4 +491,15 @@ server {
 }
 
 ```
+
+## Create compressed file split in chunks
+
+```shell
+# Create compressed files
+tar czf - /home/mario/mine/t51/dep_data | split -b 2000M - /home/mario/mine/t51/dep_data/dep_data.tar.gz
+
+# Uncompress compressed files
+cat /path/to/output/prefix.tar.gz.* | tar xzf /p1/dep_data/dep_data.tar.xz -C /p1
+```
+
 

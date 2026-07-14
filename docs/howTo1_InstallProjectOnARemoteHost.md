@@ -1,29 +1,39 @@
-# Offline install
+# Install Project On A Remote Host
 
-- [Offline install](#offline-install)
+- [Install Project On A Remote Host](#install-project-on-a-remote-host)
+  - [Introduction](#introduction)
   - [Requirements](#requirements)
   - [Clone project](#clone-project)
-  - [Offline install](#offline-install-1)
+  - [Offline install](#offline-install)
     - [Download heavy dependencies](#download-heavy-dependencies)
     - [Install docker offline](#install-docker-offline)
   - [Install docker online](#install-docker-online)
   - [Install and start project](#install-and-start-project)
   - [Approve Jenkins pipelines scrips](#approve-jenkins-pipelines-scrips)
 
+## Introduction
+
+As the idea is to have a self-hosted DevOps setup, so the most likely scenario is
+to use it on a remote server with linux, thought a SSH connection, in my case, I
+use to create VPS (Virtual private servers) on any cloud supplier as AWS,
+Google Cloud Platform, Contabo, etc with Ubuntu server 24.4 or similar.
+
 ## Requirements
 
 - RAM 4Gb (Nexus uses 2gb)
 - 15GB free space minimum
-- Ubuntu Server 24.04 
-  - This guide is for Ubuntu 24.04, but was tested also in CachyOS 7.1
+- Any linux that passes the `setup/install_functions.sh -> check_dependencies` function
+  - Tested in Ubuntu Server 24.04 and Arch Linux.
+- Docker compose (Tested on version 5.1.4)
+- OpenSSH (Tested on version 10.3, OpenSSL 3.6)
 
 ## Clone project
 
 ```shell
-ssh mario1@192.168.1.8
-sudo mkdir -p /p1 && sudo chown -R mario1:mario1 /p1 && cd /p1
-git clone https://github.com/somsos/somsos-template51-devops .
-    # scp -r -P22 /home/mario/mine/empty_t51 mario1@192.168.1.8:/p1
+ssh user1@<HOST_IP>
+sudo mkdir -p /p1 && sudo chown -R user1:user1 /p1 && cd /p1
+git clone https://github.com/somsos/DevOps-Template-51 .
+    # scp -r -P22 /home/mario/mine/empty_t51 user1@<HOST_IP>:/p1
 ```
 
 
@@ -34,15 +44,19 @@ git clone https://github.com/somsos/somsos-template51-devops .
 Download the pre-downloaded dependencies from this link
 
 ```shell
-wget --quiet -O /p1/dep_data/dep_data.tar.xz https://mega.nz/file/SixW3T6C#zYgECe0Lj5Safwn18taN05rsyLEnKHLx7oSwqab-zX8
-tar -xf /p1/dep_data/dep_data.tar.xz -C /p1
+# Download
+wget --quiet -O /p1/dep_data/dep_data.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzaa
+wget --quiet -O /p1/dep_data/dep_data.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzab
+
+# Uncompress
+cat /p1/dep_data/dep_data.tar.* | tar xzf - -C /p1
 ```
 
 In a machine with the files already downloaded you can upload them with the
 following command.
 
 ```shell
-scp -r -P22 /home/mario/mine/t51/dep_data mario1@192.168.1.8:/p1
+scp -r -P22 /home/mario/mine/t51/dep_data user1@<HOST_IP>:/p1
 ```
 
 ### Install docker offline
@@ -139,7 +153,7 @@ Check created services
 "http://api.tina-qa.com/swagger-ui/index.html":                Backend
 "http://registry.tina-qa.com":                                 Registry
 "http://tina-qa.com":                                          Frontend
-"psql postgresql://yopi1:<DB_PASS>@192.168.1.8:5001/yopi1db":  Database
+"psql postgresql://yopi1:<DB_PASS>@<HOST_IP>:5001/yopi1db":  Database
 ```
 
 ## Approve Jenkins pipelines scrips

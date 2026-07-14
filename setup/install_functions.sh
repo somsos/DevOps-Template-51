@@ -12,6 +12,11 @@ ENV_EXAMPLE_FILE=".env.example"
 
 function check_dependencies {
     # check if sudo is available
+    if ! command -v bash &> /dev/null; then
+        echo "[ERROR] bash command is not available. Please install the necessary packages and try again."
+        exit 1
+    fi
+
     if ! command -v sudo &> /dev/null; then
         echo "[ERROR] sudo command is not available. Please install the necessary packages and try again."
         exit 1
@@ -219,7 +224,7 @@ function create_env_file_and_load_it {
 
 
 
-    read -p "Enter the domain (e.g., 'example.com', 'example-test.com'): " MY_DOMAIN
+    read -p "Enter the domain (e.g., 'example.com', 'example1-test.com'): " MY_DOMAIN
     if [[ -z "$MY_DOMAIN" || ! "$MY_DOMAIN" =~ ^[a-zA-Z0-9-]{3,16}.[a-zA-Z0-9.-]{2,5}+$ ]]; then
         echo "[ERROR] Domain is required and must be a valid domain name."
         exit 1

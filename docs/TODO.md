@@ -2,6 +2,14 @@
 
 ## Doing (The upper top is the current task)
 
+- [ ] Check if I can delete...
+  -  setup/nexus/mvn-settings-template.xml
+  -  setup/registry
+  -  setup/reverse-proxy/conf.d/localhost_ip.conf
+  -  setup/reverse-proxy/html/index.html
+  -  app/back/test_reports
+  -  app/back/t51back.tar.xz
+
 - [ ] Create a package to publish to the public.
   - [ ] Documentation
     - [X] Look for examples
@@ -9,13 +17,15 @@
     - [ ] Create an external user perspective
     
     - [ ] Finish documents
-      - [X] howTo1_InstallOnServer.md
+      - [X] howTo1_InstallProjectOnARemoteHost.md
         - [X] Mention to approve manually the jenkins pipelines on the first run.
+        - [X] Upload compressed file to github divided in two.
       - [X] howTo2_setupADeveloperMachine.md
         - [X] Tell about and why download the .env file
       - [X] howTo3_DeployOrRollback.md
       - [ ] howTo4_UndestandTheWholeProject.md
         - [ ] DevOps general idea (CasC, cold-vs-warm-start, )
+        - [ ] Folder-file-naming conventions
         - [ ] Architecture based by components
         - [ ] Hexagonal Architecture
       - [ ] howTo5_DevelopDatabase.md
