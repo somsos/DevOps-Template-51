@@ -1,3 +1,12 @@
+################################################################################
+## IMPORTANT
+##  "back.dockerfile" AND "back_utils.dockerfile" must be synchronized, because they 
+##  are the same, but different entrypoints.
+##  "back.dockerfile" one is for building and running as in production.
+##  "back_utils.dockerfile" the other is for building and running tasks as
+##  unit tests, integration tests, etc.
+################################################################################
+
 ARG IMAGE_MVN
 ARG IMAGE_JAVA
 

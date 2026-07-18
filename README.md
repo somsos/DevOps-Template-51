@@ -2,7 +2,6 @@
 
 - [T51](#t51)
   - [Introduction](#introduction)
-  - [Overall features](#overall-features)
   - [Installation](#installation)
     - [Requirements](#requirements)
     - [Setup server services.](#setup-server-services)
@@ -12,34 +11,7 @@
 
 ## Introduction
 
-T51 is a portable ready-to-use, self-hosted, and open-source DevOps project,
-which can be installed with just one command, either with or without internet,
-which can work as a productive single host environment, or an acceptance stage
-environment to select release docker images candidates, and publish them in a
-docker registry. The project is composed of the following sub-projects.
-
-1. DevOps: Docker, Jenkins, Gitea, Nexus and Nginx as a reverse-proxy.
-2. Database: Postgres and Liquibase for a Evolutionary Database Design.
-3. Backend: A RESFul service using Spring boot with Hexagonal architecture.
-4. Frontend: Angular with a modularity through components.
-
-For example, we have pre-builded deploy and rollback pipelines for Database,
-Backend and Frontend, that are automatically triggered when we push to
-repository in Gitea, and other similar pipelines.
-
-## Overall features
-
-Here resume of the setup from the services and their connections perspective.
-
-![setup connections](./docs/setup-connections.png)
-
-Here a resume of the pipelines workflow perspective.
-
-![pipelines workflow](./docs/pipelines-workflow.png)
-
-Here is a proposed workflow using github flow strategy.
-
-![workflow using github flow strategy](./docs/github-flow.png)
+<!-- Copy and paste from 0intro_introduction.md#Resume -->
 
 
 <!--

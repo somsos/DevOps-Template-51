@@ -9,6 +9,14 @@
   -  setup/reverse-proxy/html/index.html
   -  app/back/test_reports
   -  app/back/t51back.tar.xz
+  -  app/db/schema_installation.log
+  -  buildx
+  -  docs/test/temporal.md
+  -  docs/chat-gpt.md
+  -  setup/jenkins/casc/credentials.yaml
+  -  registry.password
+  -  README_devops.md
+  -  ***_devops.md
 
 - [ ] Create a package to publish to the public.
   - [ ] Documentation
@@ -23,11 +31,22 @@
       - [X] howTo2_setupADeveloperMachine.md
         - [X] Tell about and why download the .env file
       - [X] howTo3_DeployOrRollback.md
+        - [ ] 2 types of rollbacks
       - [ ] howTo4_UndestandTheWholeProject.md
-        - [ ] DevOps general idea (CasC, cold-vs-warm-start, )
-        - [ ] Folder-file-naming conventions
-        - [ ] Architecture based by components
-        - [ ] Hexagonal Architecture
+        - [X] DevOps general idea (CasC, cold-vs-warm-start, )
+        - [X] Folder-file-naming conventions
+        - [X] It's a building docker images setup. It's planned a second part to
+          create a Kubernetes setup, like a API json backend and a SPA frontend
+          idea, this setup is like the API and kubernetes like the SPA.
+        - [X] The repositories are the central state
+        - [X]Each layer can work independently between them or the developers
+          have the tools to download/create/run their own dependencies, the
+          devops projects inter-connect all together.
+        - [X] Execution orders (these happen in containers with versioned CasC
+          to ensure determinism)
+        - [X] compose->dockerfile->entrypoint->scripts-in-volumes.
+        - [X] User->Jenkins->Pipeline in yml->scripts-in-volumes.
+        - [ ] Architecture based by components and Hexagonal Architecture
       - [ ] howTo5_DevelopDatabase.md
         - [ ] What is LiquiBase
         - [ ] Localhost workflow
@@ -39,6 +58,7 @@
       - [ ] howTo8_DevelopDevOps.md
         - [ ] How to add/update a new pipeline
       - [ ] howTo9_haveMultipleEnvironments.md
+      - [ ] MANIFEST.md
     - %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     - [ ] Add to doc my last try to create the install.sh
       - [ ] Create/Prepare to create install script and manual.

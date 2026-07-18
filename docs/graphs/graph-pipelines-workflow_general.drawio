@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="N_nXRupYKBVcjGF1MNJq" name="Page-1">
-        <mxGraphModel dx="2101" dy="643" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" background="#222222" math="0" shadow="0">
+        <mxGraphModel dx="1964" dy="573" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" background="#222222" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -267,7 +267,7 @@
                 <mxCell id="155" value="(button) Database Migration Rollback" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;fontSize=21;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="868.5" y="1076" width="365" height="37" as="geometry"/>
                 </mxCell>
-                <mxCell id="156" value="" style="endArrow=none;startArrow=classic;html=1;strokeColor=#FFFFFF;rounded=0;curved=0;startFill=1;labelBackgroundColor=none;fontColor=#FFFFFF;verticalAlign=top;fontSize=15;endFill=0;exitX=0.503;exitY=-0.035;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.997;entryY=0.494;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="155" edge="1" target="9">
+                <mxCell id="156" value="" style="endArrow=none;startArrow=classic;html=1;strokeColor=#FFFFFF;rounded=0;curved=0;startFill=1;labelBackgroundColor=none;fontColor=#FFFFFF;verticalAlign=top;fontSize=15;endFill=0;exitX=0.503;exitY=-0.035;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.997;entryY=0.494;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="155" target="9" edge="1">
                     <mxGeometry x="-0.0015" width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="1233" y="1034" as="sourcePoint"/>
                         <mxPoint x="123" y="799" as="targetPoint"/>
@@ -293,8 +293,8 @@
                 <mxCell id="161" style="edgeStyle=none;shape=connector;rounded=1;html=1;strokeColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="159" target="160" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="159" value="docker compose run --no-deps { db-migrate | back | front }" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;fontSize=21;rounded=0;spacing=-1;" parent="1" vertex="1">
-                    <mxGeometry x="769" y="1135" width="551" height="31" as="geometry"/>
+                <mxCell id="159" value="docker compose run {db-mig | back | front } rollback" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#FFFFFF;fontSize=21;rounded=0;spacing=-1;" parent="1" vertex="1">
+                    <mxGeometry x="799" y="1135" width="491" height="31" as="geometry"/>
                 </mxCell>
                 <mxCell id="162" style="edgeStyle=none;shape=connector;rounded=1;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" parent="1" source="160" target="158" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -311,7 +311,7 @@
                 <mxCell id="168" value="docker-compose.yml" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=#222222;fontColor=#FFFFFF;fontSize=21;rounded=0;spacing=-2;fillStyle=solid;gradientColor=none;" parent="1" vertex="1">
                     <mxGeometry x="-305.5" y="1193" width="204" height="29" as="geometry"/>
                 </mxCell>
-                <mxCell id="175" value="Rollback buttons" style="text;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#FFFFFF;fontSize=21;" vertex="1" parent="1">
+                <mxCell id="175" value="Rollback buttons" style="text;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#FFFFFF;fontSize=21;" parent="1" vertex="1">
                     <mxGeometry x="71" y="622" width="109" height="38" as="geometry"/>
                 </mxCell>
             </root>

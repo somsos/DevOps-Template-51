@@ -1,8 +1,10 @@
-
 ################################################################################
 ## IMPORTANT
-##  - THIS FILE IS A COPY AND PASTE OF "back.dockerfile" SO CHECK IF IT'S SYNC
-##
+##  "back.dockerfile" AND "back_utils.dockerfile" must be synchronized, because they 
+##  are the same, but different entrypoints.
+##  "back.dockerfile" one is for building and running as in production.
+##  "back_utils.dockerfile" the other is for building and running tasks as
+##  unit tests, integration tests, etc.
 ################################################################################
 
 ARG IMAGE_MVN
@@ -66,5 +68,5 @@ RUN chown -R user1:user1 /home/user1
 RUN chown -R user1:user1 /opt/template51
 USER user1
 
-#RUN mvn -B -e clean install -DskipTests
+#RUN mvn -B -e clean install -DskipTests -Dspring.profiles.active=***
   
