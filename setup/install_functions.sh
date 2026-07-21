@@ -500,7 +500,6 @@ function install_nexus {
     NEXUS_VOL_DIR="./setup/nexus/vol-data"
     PRE_INITIALIZED_TAR="./setup/nexus/nexus-pre-initialized.tar.xz"
     PRE_INITIALIZED_AND_DOWNLOADED_DEPS_TAR="./dep_data/pre_initialized_nexus_mvn_npm.tar.xz"
-    BACK_XML_TEMPLATE="setup/nexus/mvn-settings-template.xml"
 
     if [ ! -f "$PRE_INITIALIZED_TAR" ]; then
         echo "[ERROR] Nexus pre-initialized tar file not found at $PRE_INITIALIZED_TAR. Please make sure the file exists and try again."
@@ -508,18 +507,6 @@ function install_nexus {
     fi
     if [ ! -d "$NEXUS_VOL_DIR" ]; then
         mkdir -p $NEXUS_VOL_DIR
-    fi
-    if ! grep -q "\${env.MY_USER}" $BACK_XML_TEMPLATE; then
-        echo "[ERROR] \${env.MY_USER} variable placeholder not found in $BACK_XML_TEMPLATE file."
-        exit 1
-    fi
-    if ! grep -q "\${env.MY_PASS}" $BACK_XML_TEMPLATE; then
-        echo "[ERROR] \${env.MY_PASS} variable placeholder not found in $BACK_XML_TEMPLATE file."
-        exit 1
-    fi
-    if ! grep -q "\${env.NEXUS_URL}" $BACK_XML_TEMPLATE; then
-        echo "[ERROR] \${env.NEXUS_URL} variable placeholder not found in $BACK_XML_TEMPLATE file."
-        exit 1
     fi
     
     if [ ! -n "$(ls -A $NEXUS_VOL_DIR | grep .md -v)" ]; then
@@ -533,12 +520,6 @@ function install_nexus {
             rm -f $NEXUS_VOL_DIR/credentials.txt
             echo "[INFO] Nexus pre-initialized data extracted to $NEXUS_VOL_DIR directory."
         fi
-    fi
-
-    BACK_XML="app/back/mvn-settings.xml"
-    if [ ! -f $BACK_XML ]; then
-        cp $BACK_XML_TEMPLATE $BACK_XML
-        echo "[INFO] Maven settings file created at $BACK_XML."
     fi
     
 }

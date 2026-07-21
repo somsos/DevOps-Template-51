@@ -1,5 +1,25 @@
 # chat-gpt
 
+## INTRO
+
+Here I save important parts of conversations with AI.
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+----
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+## First
+
 Do you see why the TRIGGERING_REPO variable is not getting set by generic-webhook-trigger plugin?
 
 Plugin conf

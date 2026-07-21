@@ -1,22 +1,8 @@
 # ToDo
 
 ## Doing (The upper top is the current task)
-
-- [ ] Check if I can delete...
-  -  setup/nexus/mvn-settings-template.xml
-  -  setup/registry
-  -  setup/reverse-proxy/conf.d/localhost_ip.conf
-  -  setup/reverse-proxy/html/index.html
-  -  app/back/test_reports
-  -  app/back/t51back.tar.xz
-  -  app/db/schema_installation.log
-  -  buildx
-  -  docs/test/temporal.md
-  -  docs/chat-gpt.md
-  -  setup/jenkins/casc/credentials.yaml
-  -  registry.password
-  -  README_devops.md
-  -  ***_devops.md
+  
+- [ ] Check if I really need buildx, because I'm already not using vol-type-cache.
 
 - [ ] Create a package to publish to the public.
   - [ ] Documentation
@@ -365,4 +351,17 @@ posible.
   to copy the cached download to the repo
 - [X] fix the sync time in jenkins pipelines
   - Note: it's fix though a Java variable `JAVA_OPTS=-Duser.timezone=America/Mexico_City`
-
+- [X] Check if I can delete...
+  - [X] setup/nexus/mvn-settings-template.xml
+  - [X] setup/registry
+  - [X] setup/reverse-proxy/conf.d/localhost_ip.conf
+  - [X] setup/reverse-proxy/html/index.html
+  - [X] app/back/test_reports
+  - [X] app/back/t51back.tar.xz
+  - [X] app/db/schema_installation.log
+  - [X] docs/test/temporal.md
+  - [X] docs/chat-gpt.md
+  - [X] setup/jenkins/casc/credentials.yaml
+  - [X] registry.password
+  - [X] README_devops.md
+  - [X] ***_devops.md

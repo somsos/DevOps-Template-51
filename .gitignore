@@ -1,4 +1,5 @@
 !**/README_*.md
+!**/README*.md
 
 **/vol-*/*
 !**/vol-*/*.md
@@ -34,5 +35,3 @@ setup/reverse-proxy/certs
 **/*.log
 **/.m2
 
-app/back/test_reports/*/*
-!app/back/test_reports/*/*.md
