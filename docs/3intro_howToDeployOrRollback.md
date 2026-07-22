@@ -21,21 +21,22 @@
 In this case I have a change already prepared.
 
 ```sh
-cd ~/my-project//app/db/source
+cd ~/my-project/app/db/source
 
-psql postgresql://user1:user123p@example1-test.com:5001/user1db -c "\dt"
+MY_PASS=mySecretPass
+psql postgresql://myUser:${MY_PASS}@example1-test.com:5001/myUserdb -c "\dt"
 # EXPECTED OUTPUT (NOTICE THAT THERE IS NO TABLE CALLED "bad_design")
 #                  List of tables
 #  Schema |         Name          | Type  | Owner
 # --------+-----------------------+-------+-------
-#  public | databasechangelog     | table | user1
-#  public | databasechangeloglock | table | user1
-#  public | product_images        | table | user1
-#  public | products              | table | user1
-#  public | roles                 | table | user1
-#  public | users                 | table | user1
-#  public | users_picture         | table | user1
-#  public | users_roles           | table | user1
+#  public | databasechangelog     | table | myUser
+#  public | databasechangeloglock | table | myUser
+#  public | product_images        | table | myUser
+#  public | products              | table | myUser
+#  public | roles                 | table | myUser
+#  public | users                 | table | myUser
+#  public | users_picture         | table | myUser
+#  public | users_roles           | table | myUser
 
 mv ./docs/03-testTable.changelog.xml  ./changelogs
 
@@ -46,14 +47,14 @@ git add . && git status | grep renamed
 git commit -m "The first database change." && git log --oneline
 
 # Get ready to notice the pipeline being triggered by the git push
-#   http://gitea.example1-test.com/user1/t51mig-db
+#   http://gitea.example1-test.com/myUser/t51mig-db
 #   http://jenkins.example1-test.com/job/Database-Deploy-v1
 git push origin main
 #   Click on "Yes, proceed!" in the triggered pipeline.
 
-psql postgresql://user1:user123p@example1-test.com:5001/user1db -c "\dt" | grep bad_design
+psql postgresql://myUser:${MY_PASS}@example1-test.com:5001/myUserdb -c "\dt" | grep bad_design
 # EXPECTED OUTPUT
-# public | bad_design            | table | user1
+# public | bad_design            | table | myUser
 ```
 
 ### Rollback Database
@@ -64,9 +65,9 @@ schema state without affected the data.
 
 1. Go to `http://jenkins.example1-test.com/job/Database-Rollback-v1/`
 2. Push on "Build Now"
-3. If we run `psql postgresql://user1:user123p@example1-test.com:5001/user1db -c "\dt"`
+3. If we run `psql postgresql://myUser:${MY_PASS}@example1-test.com:5001/myUserdb -c "\dt"`
    we should not be able to see the table bad_design
-4. If we go to `http://gitea.example1-test.com/user1/t51mig-db` we should see
+4. If we go to `http://gitea.example1-test.com/myUser/t51mig-db` we should see
    as the last commit the message `Initial commit`.
 
 
@@ -82,7 +83,7 @@ We add a change in our frontend project
 ```shell
 cd ~/my-project/app/back/source
 
-nano ./adapter/src/main/java/daj/adapter/AdapterApplication.java 
+nano ./adapter/src/main/java/daj/adapter/AdapterApplication.java
 # Edit this Line:
 # return Map.of("message", "One is the number of this change.");
 
@@ -97,7 +98,7 @@ git add . && git commit -m "Change One" && git log --oneline
 # 0d88925 (origin/main, origin/HEAD) Initial commit
 
 # Get ready to notice the pipeline being triggered by the git push
-#   http://gitea.example1-test.com/user1/t51back
+#   http://gitea.example1-test.com/myUser/t51back
 #   http://jenkins.example1-test.com/job/Backend-Deploy-v1/
 git push origin main
 
@@ -112,7 +113,7 @@ curl http://api.example1-test.com/test | json_pp
 
 ### Rollback Backed
 
-1. Go to http://gitea.example1-test.com/user1/t51back and notice what is the last commit
+1. Go to http://gitea.example1-test.com/myUser/t51back and notice what is the last commit
 
 2. Go to http://jenkins.example1-test.com/job/Backend-Rollback/
 
@@ -129,7 +130,7 @@ curl http://api.example1-test.com/test | json_pp
 # }
 ```
 
-5. Return to http://gitea.example1-test.com/user1/t51back and the last commit
+5. Return to http://gitea.example1-test.com/myUser/t51back and the last commit
    should have been deleted, keeping a commit with a message of `Initial commit`.
 
 
@@ -166,7 +167,7 @@ git status | grep modified && git add . && git commit -m "My change number 1" &&
 # Open Gitea and Jenkins in the browser, and prepare to notice the pipeline 
 # to be triggered on push
 #   Notice the last look before the change  http://example1-test.com/
-#   Notice the last commit message:         http://gitea.example1-test.com/user1/t51front
+#   Notice the last commit message:         http://gitea.example1-test.com/myUser/t51front
 #   http://jenkins.example1-test.com/job/Frontend-Deploy-v1/
 git push origin main
 #   The deploy Jenkins pipeline should have been triggered and the change deployed.
@@ -175,7 +176,7 @@ git push origin main
 
 ### Rollback Frontend
 
-1. Notice the last commit message http://gitea.example1-test.com/user1/t51front
+1. Notice the last commit message http://gitea.example1-test.com/myUser/t51front
 
 2. Notice the last look before the rollback  http://example1-test.com/
 
@@ -183,7 +184,7 @@ git push origin main
 
 4. Click on "Build Now"
 
-5. Notice how the the last commit message changed to the one was before http://gitea.example1-test.com/user1/t51front
+5. Notice how the the last commit message changed to the one was before http://gitea.example1-test.com/myUser/t51front
 
 6. Notice that the look changed to the one was before on http://example1-test.com/
 

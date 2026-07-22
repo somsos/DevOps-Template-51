@@ -2,6 +2,10 @@
 
 ## Doing (The upper top is the current task)
 
+- [ ] Update initial_repos/devops.tar.xz
+- [ ] Try without internet again
+  - [ ] Check that the badge_tests_result stills work
+
 - [ ] Documentation Add an interaction example in gif/webm format
 - [ ] Summarize more the README.md and include the howToDocuments
 
@@ -348,7 +352,7 @@ posible.
 - [X] `workspace/0_scripts/deploy.sh`  see if it's "--force-recreate" 
   flaw the one that makes download the dependencies again.
   **NOTE**: It was a silly mistake, I forget to add the line 
-  `COPY --from=dep_downloader /home/user1/.m2/repository  /home/user1/.m2/repository`
+  `COPY --from=dep_downloader /home/myUser/.m2/repository  /home/myUser/.m2/repository`
   to copy the cached download to the repo
 - [X] fix the sync time in jenkins pipelines
   - Note: it's fix though a Java variable `JAVA_OPTS=-Duser.timezone=America/Mexico_City`

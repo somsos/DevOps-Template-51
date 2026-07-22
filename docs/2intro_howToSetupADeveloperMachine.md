@@ -11,12 +11,16 @@ network or in localhost, we need to add our domain name to our `/etc/hosts`
 file. for example.
 
 ```yml
+sudo tee -a /etc/hosts <<EOF
+
 192.168.1.8 example1-test.com
 192.168.1.8 api.example1-test.com
 192.168.1.8 gitea.example1-test.com
 192.168.1.8 jenkins.example1-test.com
 192.168.1.8 registry.example1-test.com
 192.168.1.8 nexus.example1-test.com
+
+EOF
 ```
 
 ## Clone repositories
@@ -26,7 +30,7 @@ private key to the PC we want to clone from.
 
 ```shell
 # the domain can be different in this case it's "gitea.example1-test.com"
-scp -r -P22 user1@example1-test.com:/my-project/setup/secrets/ssh_key.priv ~/.ssh/user1.priv
+scp -r -P22 myUser@example1-test.com:/my-project/setup/secrets/ssh_key.priv ~/.ssh/myUser.priv
 
 cat >> ~/.ssh/config <<EOF
 
@@ -34,7 +38,7 @@ Host gitea.example1-test.com
     HostName gitea.example1-test.com
     Port 222
     User git
-    IdentityFile ~/.ssh/user1.priv
+    IdentityFile ~/.ssh/myUser.priv
 
 EOF
 ```
@@ -49,11 +53,11 @@ ssh -T git@gitea.example1-test.com
 Now we can clone the repositories
 
 ```shell
-git clone ssh://git@gitea.example1-test.com:222/user1/t51devops.git ~/my-project/
+git clone ssh://git@gitea.example1-test.com:222/myUser/t51devops.git ~/my-project/
 
-git clone ssh://git@gitea.example1-test.com:222/user1/t51mig-db.git ~/my-project/app/db/source
+git clone ssh://git@gitea.example1-test.com:222/myUser/t51mig-db.git ~/my-project/app/db/source
 
-git clone ssh://git@gitea.example1-test.com:222/user1/t51back.git ~/my-project/app/back/source
+git clone ssh://git@gitea.example1-test.com:222/myUser/t51back.git ~/my-project/app/back/source
 
-git clone ssh://git@gitea.example1-test.com:222/user1/t51front.git ~/my-project/app/front/source
+git clone ssh://git@gitea.example1-test.com:222/myUser/t51front.git ~/my-project/app/front/source
 ```

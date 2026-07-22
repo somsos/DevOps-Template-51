@@ -67,6 +67,10 @@
   nexus, it has several uses, as a npm, mvn, docker-hosted and static-file-storage,
   so in this nexus service we can have several in just one.
 
+- `If buildX is added`, please add at the start "DOCKER_BUILDKIT=0" so
+  BuildKit's registry metadata does not try to reach metadata, so the
+  installation can work offline
+
 
 ## Error profiles and no such service
 

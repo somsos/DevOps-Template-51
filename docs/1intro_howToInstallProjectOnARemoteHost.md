@@ -15,7 +15,7 @@
 
 As the idea is to have a self-hosted DevOps setup, so the most likely scenario is
 to use it on a remote server with linux, thought a SSH connection, in my case, I
-use to create VPS (Virtual private servers) on any cloud supplier as AWS,
+use to create a VPS (Virtual private servers) on any cloud supplier as AWS,
 Google Cloud Platform, Contabo, etc with Ubuntu server 24.4 or similar.
 
 ## Requirements
@@ -47,31 +47,32 @@ Download the pre-downloaded dependencies from this link
 # Download
 sudo mkdir -p /my-project && sudo chown -R user1:user1 /my-project && cd /my-project
 git clone https://github.com/somsos/DevOps-Template-51 /my-project
-wget -O /my-project/dep_data/dep_data.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzaa
-wget -O /my-project/dep_data/dep_data.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzab
+wget -O ~/my-project/dep_data/dep_data.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzaa
+wget -O ~/my-project/dep_data/dep_data.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzab
+# Or if one already downloaded the files
+# DEV_PC> HOST_IP=192.168.1.8
+# DEV_PC> HOST_USER=mario1
+# DEV_PC> scp -r -P22 ./dep_data.tar.gzaa ${HOST_USER}@${HOST_IP}:~/my-project/dep_data
+# DEV_PC> scp -r -P22 ./dep_data.tar.gzab ${HOST_USER}@${HOST_IP}:~/my-project/dep_data
 
 # Uncompress
-cat /my-project/dep_data/dep_data.tar.* | tar xzf - -C /my-project
-```
-
-In a machine with the files already downloaded you can upload them with the
-following command.
-
-```shell
-scp -r -P22 /home/mario/mine/t51/dep_data user1@<HOST_IP>:/my-project
+cd ~/my-project/dep_data/
+test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong path"
+cat dep_data.tar.* | tar xzf - -C .
 ```
 
 ### Install docker offline
 
 ```shell
+wget -q --spider https://www.google.com && echo "You have internet" || echo "NO INTERNET"
 cd /my-project/dep_data/docker_installer/
 
 # In this point change to a network without internet
+# ./docker-buildx-plugin_0.34.1-1~ubuntu.24.04~noble_amd64.deb \
 
 sudo dpkg -i ./containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
-    ./docker-buildx-plugin_0.34.1-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
 
 sudo groupadd docker

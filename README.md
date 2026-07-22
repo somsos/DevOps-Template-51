@@ -46,8 +46,8 @@ installed.
 ### Setup server services.
 
 ```shell
-git clone https://github.com/somsos/DevOps-Template-51 /my-project
-cd /my-project
+git clone https://github.com/somsos/DevOps-Template-51 ~/my-project
+cd ~/my-project
 bash ./install.sh
 ```
 
@@ -112,13 +112,13 @@ ssh -T git@gitea.example1-test.com
 Now we can clone the repositories
 
 ```shell
-git clone ssh://git@gitea.example1-test.com:222/user1/t51devops.git ~/my-project
+git clone ssh://git@gitea.example1-test.com:222/myUser/t51devops.git ~/my-project
 
-git clone ssh://git@gitea.example1-test.com:222/user1/t51mig-db.git ~/my-project/app/db/source
+git clone ssh://git@gitea.example1-test.com:222/myUser/t51mig-db.git ~/my-project/app/db/source
 
-git clone ssh://git@gitea.example1-test.com:222/user1/t51back.git ~/my-project/app/back/source
+git clone ssh://git@gitea.example1-test.com:222/myUser/t51back.git ~/my-project/app/back/source
 
-git clone ssh://git@gitea.example1-test.com:222/user1/t51front.git ~/my-project/app/front/source
+git clone ssh://git@gitea.example1-test.com:222/myUser/t51front.git ~/my-project/app/front/source
 ```
 
 <!--
