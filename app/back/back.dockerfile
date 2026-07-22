@@ -38,10 +38,8 @@ COPY mvn-settings.xml             /home/user1/.m2/settings.xml
 
 ARG MY_USER
 ARG MY_PASS
-ARG NEXUS_URL
 RUN test -n "$MY_USER" || (echo "ERROR: MY_USER required." && exit 1)
 RUN test -n "$MY_PASS" || (echo "ERROR: MY_PASS required." && exit 1)
-RUN test -n "$NEXUS_URL" || (echo "ERROR: NEXUS_URL required." && exit 1)
 
 RUN test -f /home/user1/.m2/settings.xml && \
     test $(stat -c%s /home/user1/.m2/settings.xml) -ge 900 \
@@ -87,10 +85,8 @@ COPY mvn-settings.xml    /home/user1/.m2/settings.xml
 
 ARG MY_USER
 ARG MY_PASS
-ARG NEXUS_URL
 RUN test -n "$MY_USER" || (echo "ERROR: MY_USER required." && exit 1)
 RUN test -n "$MY_PASS" || (echo "ERROR: MY_PASS required." && exit 1)
-RUN test -n "$NEXUS_URL" || (echo "ERROR: NEXUS_URL required." && exit 1)
 
 RUN mkdir -p /home/user1/.m2/repository
 RUN chown -R user1:user1 /home/user1/.m2

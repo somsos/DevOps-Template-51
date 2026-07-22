@@ -22,7 +22,6 @@ download_save_and_load_image $IMAGE_T51DB_UTILS "IMAGE_T51DB_UTILS"
 download_save_and_load_image $DB_MIG_IMAGE "DB_MIG_IMAGE"
 download_save_and_load_image $IMAGE_REVERSE_PROXY "IMAGE_REVERSE_PROXY"
 download_save_and_load_image $IMAGE_ACME_COMPANION "IMAGE_ACME_COMPANION"
-download_save_and_load_image $IMAGE_REGISTRY "IMAGE_REGISTRY"
 download_save_and_load_image $IMAGE_MVN "IMAGE_MVN"
 download_save_and_load_image $IMAGE_NEXUS "IMAGE_NEXUS"
 download_save_and_load_image $IMAGE_CURL "IMAGE_CURL"
@@ -38,13 +37,11 @@ add_domain_to_hosts_file $MY_DOMAIN
 add_domain_to_hosts_file api.$MY_DOMAIN
 add_domain_to_hosts_file gitea.$MY_DOMAIN
 add_domain_to_hosts_file jenkins.$MY_DOMAIN
-add_domain_to_hosts_file registry.$MY_DOMAIN
 add_domain_to_hosts_file nexus.$MY_DOMAIN
 
 docker compose up -d reverse-proxy
 start_and_check_health_devops_service gitea
 start_and_check_health_devops_service jenkins
-start_and_check_health_devops_service registry
 start_and_check_health_devops_service nexus
 
 
@@ -62,15 +59,10 @@ echo "Installation completed successfully."
 
 
 # example of running the install.sh script:
-# bash ./install.sh <<EOF 
-#   test
-#   neey1-test.com
-#   neey1
-#   neey1p
-#   neey1p
-#   neey1@email.com
-#   neey1token
-#   neey1db
-#   neey1
-#   neey1p
+# bash ./install.sh <<EOF
+# qa
+# zuko-qa.com
+# zuko 
+# zukoPassWd 
+# zukoPassWd
 # EOF

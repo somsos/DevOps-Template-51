@@ -40,14 +40,16 @@ installed.
 
 - 4GB RAM.
 - 15GB free hard drive.
-- Any linux that passes the `setup/install_functions.sh -> check_dependencies` function
-  - Tested in Ubuntu Server 24.04 and Arch Linux.
+- Linux (Tested in Ubuntu Server 24.04 and Arch Linux.)
 - Docker Compose with rootless access.
+  - [Docker Official Doc 1](https://docs.docker.com/engine/install/#installation-procedures-for-supported-platforms)
+  - [Docker Official Doc 2](https://docs.docker.com/engine/install/linux-postinstall/)
 
 ### Setup server services.
 
 ```shell
 git clone https://github.com/somsos/DevOps-Template-51 /my-project
+cd /my-project
 > bash ./install.sh
 # interaction example:
 # Enter the environment (local, test, qa, stage, PROD): test
@@ -55,9 +57,6 @@ git clone https://github.com/somsos/DevOps-Template-51 /my-project
 # Enter the App username: user1
 # Enter the App password (more than 8 letters): user1-pass1
 # Repeat the App password: user1-pass1
-# Enter the App email: user1@gmail.com
-# Enter the shared token: example1-token
-# Enter the database schema name: example1db
 # ... Omitted logs of installation to keep it short ...
 # Available Services all have the same credentials asked for the install.sh script .
 # Gitea     http://gitea.example1-test.com
@@ -65,7 +64,6 @@ git clone https://github.com/somsos/DevOps-Template-51 /my-project
 # Nexus     http://nexus.example1-test.com
 # Backend   http://api.example1-test.com/swagger-ui/index.html
 # Frontend  http://example1-test.com
-# Registry  http://registry.example1-test.com
 # Database  psql postgresql://user1:<DB_PASS>@example1-test.com:5001/example_db
 ```
 

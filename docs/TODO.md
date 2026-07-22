@@ -1,7 +1,10 @@
 # ToDo
 
 ## Doing (The upper top is the current task)
-  
+
+- delete NEXUS_URL variable calls
+- delete NEXUS_GW variable calls
+
 - [ ] Check if I really need buildx, because I'm already not using vol-type-cache.
 
 - [ ] Create a package to publish to the public.

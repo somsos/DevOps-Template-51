@@ -158,11 +158,6 @@ function check_repository_state {
         exit 1
     fi
 
-    if ! grep -q "registry:" setup/docker-compose-devops.yml; then
-        echo "[ERROR] registry service not found in docker-compose-devops.yml file. Please make sure the service is defined and try again."
-        exit 1
-    fi
-
     if [ ! -f "setup/shared/known_hosts" ]; then
         echo "[WARN] known_hosts file not found in setup/shared creating it"
         touch setup/shared/known_hosts
@@ -205,6 +200,11 @@ function create_env_file_and_load_it {
     # CAUTION do not use UID or GID name variables because can be confused with
     # the already defined by the system. I got the error "local: UID: readonly variable".
     local UID_TEMP=$(id -u)
+    if [ "$UID_TEMP" -eq 0 ]; then
+        echo "[ERROR] The script is running as root (UID=0, (id -u)=0). Please run it as a non-root user. The UID must be different from 0."
+        exit 1
+    fi
+
     local DOCKER_GID=$(getent group docker | cut -d: -f3)
     if [ -z "$DOCKER_GID" ]; then
         echo "[ERROR] Docker group not found. Please make sure Docker is installed and the docker group exists."
@@ -267,40 +267,40 @@ function create_env_file_and_load_it {
 
 
 
-    
-    read -p "Enter the App email: " MY_EMAIL
-    if [[ -z "$MY_EMAIL" || ! "$MY_EMAIL" =~ ^[a-zA-Z0-9_+-]{2,16}+@[a-zA-Z0-9-]{2,16}+\.[a-zA-Z]{2,16}$ ]]; then
-        echo "[ERROR] App email is required and must be between 6 and 40 characters, and must be a valid email address."
-        exit 1
-    fi
-    if ! grep -q "MY_EMAIL=■■■" $ENV_EXAMPLE_FILE; then
-        echo "[ERROR] MY_EMAIL variable not found in $ENV_EXAMPLE_FILE file. Please check the $ENV_EXAMPLE_FILE file and make sure it contains the line 'MY_EMAIL=■■■'."
-        exit 1
-    fi
+    MY_EMAIL="${MY_USER}@mail.com"    
+    #read -p "Enter the App email: " MY_EMAIL
+    #if [[ -z "$MY_EMAIL" || ! "$MY_EMAIL" =~ ^[a-zA-Z0-9_+-]{2,16}+@[a-zA-Z0-9-]{2,16}+\.[a-zA-Z]{2,16}$ ]]; then
+    #    echo "[ERROR] App email is required and must be between 6 and 40 characters, and must be a valid email address."
+    #    exit 1
+    #fi
+    #if ! grep -q "MY_EMAIL=■■■" $ENV_EXAMPLE_FILE; then
+    #    echo "[ERROR] MY_EMAIL variable not found in $ENV_EXAMPLE_FILE file. Please check the $ENV_EXAMPLE_FILE file and make sure it contains the line 'MY_EMAIL=■■■'."
+    #    exit 1
+    #fi
 
 
-    
-    read -p "Enter the shared token: " SHARED_TOKEN
-    if [[ -z "$SHARED_TOKEN" || ! "$SHARED_TOKEN" =~ ^[a-zA-Z0-9]{3,16}+$ ]]; then
-        echo "[ERROR] Shared token is required and must be less than 40 characters."
-        exit 1
-    fi
-    if ! grep -q "SHARED_TOKEN=■■■" $ENV_EXAMPLE_FILE; then
-        echo "[ERROR] SHARED_TOKEN variable not found in $ENV_EXAMPLE_FILE file. Please check the $ENV_EXAMPLE_FILE file and make sure it contains the line 'SHARED_TOKEN=■■■'."
-        exit 1
-    fi
+    SHARED_TOKEN="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 6)"
+    #read -p "Enter the shared token: " SHARED_TOKEN
+    #if [[ -z "$SHARED_TOKEN" || ! "$SHARED_TOKEN" =~ ^[a-zA-Z0-9]{3,16}+$ ]]; then
+    #    echo "[ERROR] Shared token is required and must be between 3 and 16 characters and contain only letters and numbers."
+    #    exit 1
+    #fi
+    #if ! grep -q "SHARED_TOKEN=■■■" $ENV_EXAMPLE_FILE; then
+    #    echo "[ERROR] SHARED_TOKEN variable not found in $ENV_EXAMPLE_FILE file. Please check the $ENV_EXAMPLE_FILE file and make sure it contains the line 'SHARED_TOKEN=■■■'."
+    #    exit 1
+    #fi
 
 
-    
-    read -p "Enter the database schema name: " DB_SCHEMA
-    if [[ -z "$DB_SCHEMA" || ! "$DB_SCHEMA" =~ ^[a-zA-Z0-9_-]{3,16}+$ ]]; then
-        echo "[ERROR] Database schema name is required and must be less than 40 characters."
-        exit 1
-    fi
-    if ! grep -q "DB_SCHEMA=■■■" $ENV_EXAMPLE_FILE; then
-        echo "[ERROR] DB_SCHEMA variable not found in $ENV_EXAMPLE_FILE file. Please check the $ENV_EXAMPLE_FILE file and make sure it contains the line 'DB_SCHEMA=■■■'."
-        exit 1
-    fi
+    DB_SCHEMA="${MY_USER}1db"
+    #read -p "Enter the database schema name: " DB_SCHEMA
+    #if [[ -z "$DB_SCHEMA" || ! "$DB_SCHEMA" =~ ^[a-zA-Z0-9]{3,16}+$ ]]; then
+    #    echo "[ERROR] Database schema name is required and must be between 3 and 16 characters and contain only letters and numbers."
+    #    exit 1
+    #fi
+    #if ! grep -q "DB_SCHEMA=■■■" $ENV_EXAMPLE_FILE; then
+    #    echo "[ERROR] DB_SCHEMA variable not found in $ENV_EXAMPLE_FILE file. Please check the $ENV_EXAMPLE_FILE file and make sure it contains the line 'DB_SCHEMA=■■■'."
+    #    exit 1
+    #fi
 
 
 
@@ -644,7 +644,7 @@ function start_app_backend_service {
         return
     fi
 
-    DOCKER_BUILDKIT=0 docker compose up -d --wait --wait-timeout 240 --pull never back
+    DOCKER_BUILDKIT=0 docker compose up -d --progress plain --wait --wait-timeout 240 --pull never back
     
     until curl -I --retry 5 --retry-max-time 30 $BACK_URL > /dev/null 2>&1; do
         echo "[INFO] Waiting for App Backend to be up..."
@@ -655,7 +655,7 @@ function start_app_backend_service {
 
 function start_app_frontend_service {
     is_env_file_loaded_or_exit_with_error
-
+    LOGS_FILE="./app/front/frontend_installation.log"
     FRONT_URL="http://$MY_DOMAIN"
 
     if docker compose ps --services --filter "status=running" | grep -q "^front$"; then
@@ -663,7 +663,8 @@ function start_app_frontend_service {
         return
     fi
 
-    DOCKER_BUILDKIT=0 docker compose up -d --wait --wait-timeout 240 --pull never front
+    echo "[INFO] Building and starting frontend service. Logs in $LOGS_FILE."
+    DOCKER_BUILDKIT=0 docker compose up -d --progress plain --wait --wait-timeout 240 --pull never front  &> $LOGS_FILE
 
     until curl -I --retry 5 --retry-max-time 30 $FRONT_URL > /dev/null 2>&1; do
         echo "[INFO] Waiting for App Frontend to be up..."

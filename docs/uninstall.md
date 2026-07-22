@@ -14,8 +14,8 @@ rm -rf setup/gitea/vol-data && git restore setup/gitea/vol-data
 rm -rf setup/nexus/vol-data && git restore setup/nexus/vol-data/0vol-data.md
 
 # delete the added host
-sudo nano /home/mario/.ssh/config
-sudo nano /home/mario/.ssh/known_hosts
+sudo nano ~/.ssh/config
+sudo nano ~/.ssh/known_hosts
 sudo nano /etc/hosts
 
 
@@ -29,6 +29,7 @@ docker container prune
 docker builder prune -af
 docker buildx prune -af
 docker images -f dangling=true -q | xargs docker rmi
+# CAUTION: his will make download again the images.
 docker image prune -af
 # Description: Running "docker compose up ..." gives this error.
 # Most probable causes

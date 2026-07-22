@@ -21,20 +21,18 @@ COPY source/package*.json ./
 
 ARG MY_USER
 ARG MY_PASS
-ARG NEXUS_GW
 
 RUN test -n "$MY_USER" || (echo "ERROR: MY_USER required." && exit 1)
 RUN test -n "$MY_PASS" || (echo "ERROR: MY_PASS required." && exit 1)
-RUN test -n "$NEXUS_GW" || (echo "ERROR: NEXUS_GW required." && exit 1)
 
 # Generate .npmrc at build time with resolved values
 RUN NPM_TOKEN=$(echo -n "${MY_USER}:${MY_PASS}" | base64) && \
-    echo "registry=http://${NEXUS_GW}:8081/repository/npm-public/" > .npmrc && \
-    echo "//${NEXUS_GW}:8081/repository/npm-public/:_auth=${NPM_TOKEN}" >> .npmrc && \
+    echo "registry=http://nexus:8081/repository/npm-public/" > .npmrc && \
+    echo "//nexus:8081/repository/npm-public/:_auth=${NPM_TOKEN}" >> .npmrc && \
     echo "always-auth=true" >> .npmrc
 
 # I remove this line, because buildX is required and it's less portable: --mount=type=cache,target=/root/.npm \
-RUN npm install    
+RUN npm ci --prefer-offline --loglevel info 2>&1
 
 #npm ci --prefer-offline # I think it's better for CI/CD, but still don't why
 

@@ -38,14 +38,14 @@ jobs:
                     success {
                         sh \'\'\'
                             SUCCESS_FILE="/var/jenkins_home/workspace/0_static/badge_success.svg"
-                            NEXUS_URL="http://nexus.tina-qa.com:8081/repository/public-files/images/tests-result.svg"
+                            NEXUS_URL="http://nexus:8081/repository/public-files/images/tests-result.svg"
                             curl -i -u ^${MY_USER}:^${MY_PASS} -X PUT --upload-file $SUCCESS_FILE $NEXUS_URL
                         \'\'\'
                     }
                     failure {
                         sh \'\'\'
                             FAILURE_FILE="/var/jenkins_home/workspace/0_static/badge_failing.svg"
-                            NEXUS_URL="http://nexus.tina-qa.com:8081/repository/public-files/images/tests-result.svg"
+                            NEXUS_URL="http://nexus:8081/repository/public-files/images/tests-result.svg"
                             curl -i -u ^${MY_USER}:^${MY_PASS} -X PUT --upload-file $FAILURE_FILE $NEXUS_URL
                         \'\'\'
                     }
