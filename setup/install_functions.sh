@@ -38,12 +38,6 @@ function check_dependencies {
         exit 1
     fi
 
-    if ! docker buildx version &> /dev/null; then
-        echo "[ERROR] Docker Buildx is not available. Please make sure you have Docker Buildx installed and try again."
-        echo "          sudo pacman -S docker-buildx (Arch Linux) or sudo apt install docker-buildx-plugin (Debian/Ubuntu) or sudo dnf install docker-buildx-plugin (Fedora)."
-        exit 1
-    fi
-
     if ! command -v ssh-keygen &> /dev/null; then
         echo "[ERROR] ssh-keygen is not installed. Please install the necessary package (e.g., openssh-client) and try again."
         exit 1
@@ -556,9 +550,10 @@ function start_and_check_health_devops_service {
         return
     fi
 
-    # Addded "DOCKER_BUILDKIT=0" so BuildKit's registry metadata does not try to
-    # reach metadata, so the installation can work offline
-    DOCKER_BUILDKIT=0 docker compose up -d $SERVICE_NAME
+    # If buildx is added, please add at the start "DOCKER_BUILDKIT=0" so
+    # BuildKit's registry metadata does not try to reach metadata, so the
+    # installation can work offline
+    docker compose up -d $SERVICE_NAME
 
     until curl -I --retry 5 --retry-max-time 30 $SERVICE_URL > /dev/null 2>&1; do
         echo "Waiting for $SERVICE_NAME to be up..."
@@ -626,7 +621,7 @@ function start_app_database_service_and_install_schema {
 
     LOGS_FILE="./app/db/schema_installation.log"
     echo "[INFO] Installing database schema started. Logs in $LOGS_FILE."
-    DOCKER_BUILDKIT=0 docker compose run -q --rm --name temp db_utils deploy &> $LOGS_FILE
+    docker compose run -q --rm --name temp db_utils deploy &> $LOGS_FILE
     if [ "$?" != 0 ]; then
         echo "[ERROR] Failed to install database schema. Please check the logs in $LOGS_FILE."
         exit 1
@@ -644,7 +639,7 @@ function start_app_backend_service {
         return
     fi
 
-    DOCKER_BUILDKIT=0 docker compose up -d --progress plain --wait --wait-timeout 240 --pull never back
+    docker compose up -d --wait --wait-timeout 240 --pull never back
     
     until curl -I --retry 5 --retry-max-time 30 $BACK_URL > /dev/null 2>&1; do
         echo "[INFO] Waiting for App Backend to be up..."
@@ -664,7 +659,7 @@ function start_app_frontend_service {
     fi
 
     echo "[INFO] Building and starting frontend service. Logs in $LOGS_FILE."
-    DOCKER_BUILDKIT=0 docker compose up -d --progress plain --wait --wait-timeout 240 --pull never front  &> $LOGS_FILE
+    docker compose up -d --wait --wait-timeout 240 --pull never front  &> $LOGS_FILE
 
     until curl -I --retry 5 --retry-max-time 30 $FRONT_URL > /dev/null 2>&1; do
         echo "[INFO] Waiting for App Frontend to be up..."

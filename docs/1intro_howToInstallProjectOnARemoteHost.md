@@ -31,9 +31,9 @@ Google Cloud Platform, Contabo, etc with Ubuntu server 24.4 or similar.
 
 ```shell
 ssh user1@<HOST_IP>
-sudo mkdir -p /p1 && sudo chown -R user1:user1 /p1 && cd /p1
+sudo mkdir -p /my-project && sudo chown -R user1:user1 /my-project && cd /my-project
 git clone https://github.com/somsos/DevOps-Template-51 .
-    # scp -r -P22 /home/mario/mine/empty_t51 user1@<HOST_IP>:/p1
+    # scp -r -P22 /home/mario/mine/empty_t51 user1@<HOST_IP>:/my-project
 ```
 
 
@@ -45,24 +45,26 @@ Download the pre-downloaded dependencies from this link
 
 ```shell
 # Download
-wget --quiet -O /p1/dep_data/dep_data.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzaa
-wget --quiet -O /p1/dep_data/dep_data.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzab
+sudo mkdir -p /my-project && sudo chown -R user1:user1 /my-project && cd /my-project
+git clone https://github.com/somsos/DevOps-Template-51 /my-project
+wget -O /my-project/dep_data/dep_data.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzaa
+wget -O /my-project/dep_data/dep_data.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzab
 
 # Uncompress
-cat /p1/dep_data/dep_data.tar.* | tar xzf - -C /p1
+cat /my-project/dep_data/dep_data.tar.* | tar xzf - -C /my-project
 ```
 
 In a machine with the files already downloaded you can upload them with the
 following command.
 
 ```shell
-scp -r -P22 /home/mario/mine/t51/dep_data user1@<HOST_IP>:/p1
+scp -r -P22 /home/mario/mine/t51/dep_data user1@<HOST_IP>:/my-project
 ```
 
 ### Install docker offline
 
 ```shell
-cd /p1/dep_data/docker_installer/
+cd /my-project/dep_data/docker_installer/
 
 # In this point change to a network without internet
 
@@ -140,7 +142,7 @@ docker run --rm --name temp-test hello-world
 ## Install and start project
 
 ```shell
-cd /p1
+cd /my-project
 bash ./install.sh
 ```
 

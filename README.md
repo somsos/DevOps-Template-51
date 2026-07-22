@@ -41,30 +41,14 @@ installed.
 - 4GB RAM.
 - 15GB free hard drive.
 - Linux (Tested in Ubuntu Server 24.04 and Arch Linux.)
-- Docker Compose with rootless access.
-  - [Docker Official Doc 1](https://docs.docker.com/engine/install/#installation-procedures-for-supported-platforms)
-  - [Docker Official Doc 2](https://docs.docker.com/engine/install/linux-postinstall/)
+- Docker Compose installed with rootless access [Docker Official.](https://docs.docker.com/engine/install/#installation-procedures-for-supported-platforms).
 
 ### Setup server services.
 
 ```shell
 git clone https://github.com/somsos/DevOps-Template-51 /my-project
 cd /my-project
-> bash ./install.sh
-# interaction example:
-# Enter the environment (local, test, qa, stage, PROD): test
-# Enter the domain (e.g., 'example.com', 'example1-test.com'): example1-test.com
-# Enter the App username: user1
-# Enter the App password (more than 8 letters): user1-pass1
-# Repeat the App password: user1-pass1
-# ... Omitted logs of installation to keep it short ...
-# Available Services all have the same credentials asked for the install.sh script .
-# Gitea     http://gitea.example1-test.com
-# Jenkins   http://jenkins.example1-test.com
-# Nexus     http://nexus.example1-test.com
-# Backend   http://api.example1-test.com/swagger-ui/index.html
-# Frontend  http://example1-test.com
-# Database  psql postgresql://user1:<DB_PASS>@example1-test.com:5001/example_db
+bash ./install.sh
 ```
 
 Here some captures of the services of the setup, all off them use the same user
@@ -157,7 +141,7 @@ For more details about how to install and make the necessary set ups, so we have
 an developing workflow working, I have the following guides where I explain the
 necessary details.
 
-- [How to install project on a remote host](./docs/howTo1_InstallProjectOnARemoteHost.md)
+- [How to install project on a remote host](./docs/1intro_howToInstallProjectOnARemoteHost.md)
 - [How to setup a developer machine](./docs/howTo2_setupADeveloperMachine.md)
 - [How to deploy or rollback some app layer](./docs/howTo3_DeployOrRollback.md)
 - [How to understand the whole project](./docs/howTo4_UnderstandTheWholeProject.md)

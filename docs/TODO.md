@@ -2,10 +2,8 @@
 
 ## Doing (The upper top is the current task)
 
-- delete NEXUS_URL variable calls
-- delete NEXUS_GW variable calls
-
-- [ ] Check if I really need buildx, because I'm already not using vol-type-cache.
+- [ ] Documentation Add an interaction example in gif/webm format
+- [ ] Summarize more the README.md and include the howToDocuments
 
 - [ ] Create a package to publish to the public.
   - [ ] Documentation
@@ -368,3 +366,8 @@ posible.
   - [X] registry.password
   - [X] README_devops.md
   - [X] ***_devops.md
+  - [X] NEXUS_URL variable calls
+  - [X] NEXUS_GW variable calls
+  - [X] Check if I really need buildx, because I'm already not using vol-type-cache.  
+
+
