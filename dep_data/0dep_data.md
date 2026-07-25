@@ -18,8 +18,8 @@ docker save --output ./IMAGE_HTTPD.tar httpd:2
 docker save --output ./IMAGE_NEXUS.tar sonatype/nexus3:3.93.0-alpine
 docker save --output ./IMAGE_CURL.tar curlimages/curl:8.20.0
 docker save --output ./IMAGE_T51DB_UTILS.tar db_utils:latest
-docker save --output ./DB_IMAGE.tar postgres:17.6-alpine3.22
-docker save --output ./DB_MIG_IMAGE.tar liquibase:4.33-alpine
+docker save --output ./IMAGE_DB.tar postgres:17.6-alpine3.22
+docker save --output ./IMAGE_DB_MIG.tar liquibase:4.33-alpine
 
 # Download the files following the guide https://docs.docker.com/engine/install/ubuntu/#install-from-a-package
 # and save them in docker_installer.
@@ -57,8 +57,8 @@ cat /path/to/output/prefix.tar.gz.* | tar xzf /p1/dep_data/dep_data.tar.xz -C /p
   docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb
   docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
 pre_initialized_nexus_mvn_npm.tar.xz
-DB_IMAGE.tar
-DB_MIG_IMAGE.tar
+IMAGE_DB.tar
+IMAGE_DB_MIG.tar
 IMAGE_ACME_COMPANION.tar
 IMAGE_CURL.tar
 IMAGE_GITEA.tar
@@ -83,8 +83,8 @@ Tal y como las entrega el comando `docker save --output <path/file.tar> <IMAGE_N
 Em mi caso la ultima vez tuve esta lista de imagenes.
 
 ```yml
-DB_IMAGE.tar
-DB_MIG_IMAGE.tar
+IMAGE_DB.tar
+IMAGE_DB_MIG.tar
 IMAGE_ACME_COMPANION.tar
 IMAGE_CURL.tar
 IMAGE_GITEA.tar

@@ -2,7 +2,7 @@
 set -e
 #set -x
 
-# this file is thinked to be executed from install.sh, at root of the project.
+# this file is thought to be executed from install.sh, at root of the project.
 
 
 NEW_ENV_FILE=".env"
@@ -29,7 +29,7 @@ function check_dependencies {
 
     if ! systemctl is-active --quiet docker; then
         echo "[ERROR] Docker service is not active. Please start the Docker service and try again."
-        echo "        You can run: systemctl start docker.socket docker.service docker"
+        echo "        You can run: sudo systemctl start containerd.service docker.socket docker.service docker"
         exit 1
     fi
 
@@ -119,12 +119,12 @@ function check_repository_state {
         echo "[ERROR] IMAGE_NGINX variable not found in $NEW_ENV_FILE file."
         exit 1
     fi
-    if ! grep -q "DB_IMAGE=" $ENV_EXAMPLE_FILE; then
-        echo "[ERROR] DB_IMAGE variable not found in $NEW_ENV_FILE file."
+    if ! grep -q "IMAGE_DB=" $ENV_EXAMPLE_FILE; then
+        echo "[ERROR] IMAGE_DB variable not found in $NEW_ENV_FILE file."
         exit 1
     fi
-    if ! grep -q "DB_MIG_IMAGE=" $ENV_EXAMPLE_FILE; then
-        echo "[ERROR] DB_MIG_IMAGE variable not found in $NEW_ENV_FILE file."
+    if ! grep -q "IMAGE_DB_MIG=" $ENV_EXAMPLE_FILE; then
+        echo "[ERROR] IMAGE_DB_MIG variable not found in $NEW_ENV_FILE file."
         exit 1
     fi
     if ! grep -q "IMAGE_HTTPD=" $ENV_EXAMPLE_FILE; then
@@ -374,24 +374,42 @@ function download_save_and_load_image {
     IMAGE_NAME=$1
     TAR_FILE_PATH="$DEP_DATA_DIR/$2.tar"
 
+    if docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "^$IMAGE_NAME$"; then
+        echo "[INFO] $IMAGE_NAME image is already loaded in Docker. Skipping loading from tar file."
+        return
+    fi
+
     if [ -f $TAR_FILE_PATH ]; then
         echo "[INFO] $TAR_FILE_PATH file already exists, loading from tar file."
-        # check if is already loaded
-        if docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "^$IMAGE_NAME$"; then
-            echo "[INFO] $IMAGE_NAME image is already loaded in Docker. Skipping loading from tar file."
-            return
-        fi
         docker load --input $TAR_FILE_PATH
-    else
-        set +e
-        if docker pull $IMAGE_NAME; then
-            echo "[INFO] $IMAGE_NAME image pulled successfully."
-            docker save --output $TAR_FILE_PATH $IMAGE_NAME
-        else
-            echo "[WARN] The image $IMAGE_NAME could not be pulled."
-        fi
-        set -e
+        return
     fi
+
+    # The image $IMAGE_DB_MIG is built from a Dockerfile, so we need to build it instead of pulling it from Docker Hub.
+    if [ "$IMAGE_NAME" == "$IMAGE_DB_MIG" ]; then
+        if [ -z "$IMAGE_DB_MIG_BASE" ]; then
+            echo "[ERROR] IMAGE_DB_MIG_BASE variable not set. Please set it in the environment file."
+            exit 1
+        fi
+        echo "[INFO] Building $IMAGE_NAME image from $DB_DF."
+        DB_DF="./app/db/base_db_utils.dockerfile"
+        if [ ! -f $DB_DF ]; then
+            echo "[ERROR] $DB_DF file not found. Please make sure the file exists and try again."
+            exit 1
+        fi
+        
+        docker build -t $IMAGE_NAME -f $DB_DF --build-arg IMAGE_DB_MIG_BASE=$IMAGE_DB_MIG_BASE ./app/db
+        docker save --output $TAR_FILE_PATH $IMAGE_NAME
+        return
+    fi
+
+    echo "[INFO] Pulling $IMAGE_NAME image from Docker Hub."
+    if docker pull $IMAGE_NAME; then
+        echo "[INFO] $IMAGE_NAME image pulled successfully."
+        docker save --output $TAR_FILE_PATH $IMAGE_NAME
+    else
+        echo "[WARN] The image $IMAGE_NAME could not be pulled."
+    fi    
 
 }
 
@@ -468,7 +486,7 @@ function create_registry_auth {
     fi
     REGISTRY_AUTH_FILE="$KEY_DIR/registry.password"
     if [ -f $REGISTRY_AUTH_FILE ]; then
-        echo "[ERROR] Registry auth file already exists at $REGISTRY_AUTH_FILE."
+        echo "[INFO] Registry auth file already exists at $REGISTRY_AUTH_FILE."
         return
     fi
     docker run --rm $IMAGE_HTTPD htpasswd -Bbn ${MY_USER} ${MY_PASS} > $REGISTRY_AUTH_FILE
@@ -627,19 +645,22 @@ function start_app_database_service_and_install_schema {
         exit 1
     fi
 
-    echo "[INFO] Database schema installed successfully."
+    echo "[INFO] Database schema $DB_SCHEMA installed successfully."
 }
 
 function start_app_backend_service {
     is_env_file_loaded_or_exit_with_error
-
+    LOGS_FILE="./app/back/backend_installation.log"
     BACK_URL="http://api.$MY_DOMAIN"
     if docker compose ps --services --filter "status=running" | grep -q "^back$"; then
         echo "[INFO] Backend already available on \"$BACK_URL/swagger-ui/index.html\"."
         return
     fi
 
-    docker compose up -d --wait --wait-timeout 240 --pull never back
+    # Caution: Do not remove "DOCKER_BUILDKIT=0" because I'm using "back.build.network: t51Net"
+    # which is a custom network, and BuildKit does not support custom networks.
+    echo "[INFO] Building and starting frontend service. Logs in $LOGS_FILE."
+    DOCKER_BUILDKIT=0 docker compose --progress plain up -d --wait --wait-timeout 240 --pull never back &> $LOGS_FILE
     
     until curl -I --retry 5 --retry-max-time 30 $BACK_URL > /dev/null 2>&1; do
         echo "[INFO] Waiting for App Backend to be up..."
@@ -658,8 +679,10 @@ function start_app_frontend_service {
         return
     fi
 
+    # Caution: Do not remove "DOCKER_BUILDKIT=0" because I'm using "back.build.network: t51Net"
+    # which is a custom network, and BuildKit does not support custom networks.
     echo "[INFO] Building and starting frontend service. Logs in $LOGS_FILE."
-    docker compose up -d --wait --wait-timeout 240 --pull never front  &> $LOGS_FILE
+    DOCKER_BUILDKIT=0 docker compose --progress plain up -d --wait --wait-timeout 240 --pull never front &> $LOGS_FILE
 
     until curl -I --retry 5 --retry-max-time 30 $FRONT_URL > /dev/null 2>&1; do
         echo "[INFO] Waiting for App Frontend to be up..."

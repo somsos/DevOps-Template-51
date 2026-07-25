@@ -1,16 +1,7 @@
 # RUN
-ARG DB_MIG_IMAGE
+ARG IMAGE_DB_MIG
 
-FROM $DB_MIG_IMAGE
-
-USER root
-
-RUN apk add --no-cache tzdata postgresql17-client
-
-RUN mkdir -p /t51/app/db/source && \
-    chown -R liquibase:liquibase /t51/app/db/source
-
-USER liquibase
+FROM $IMAGE_DB_MIG
 
 COPY ./source /t51/app/db/source
 

@@ -23,8 +23,10 @@ In this case I have a change already prepared.
 ```sh
 cd ~/my-project/app/db/source
 
+MY_USER=myUser
 MY_PASS=mySecretPass
-psql postgresql://myUser:${MY_PASS}@example1-test.com:5001/myUserdb -c "\dt"
+MY_DOMAIN=example1-qa.com
+psql postgresql://$MY_USER:$MY_PASS@$MY_DOMAIN:5001/${MY_USER}1db -c "\dt"
 # EXPECTED OUTPUT (NOTICE THAT THERE IS NO TABLE CALLED "bad_design")
 #                  List of tables
 #  Schema |         Name          | Type  | Owner
@@ -52,7 +54,7 @@ git commit -m "The first database change." && git log --oneline
 git push origin main
 #   Click on "Yes, proceed!" in the triggered pipeline.
 
-psql postgresql://myUser:${MY_PASS}@example1-test.com:5001/myUserdb -c "\dt" | grep bad_design
+psql postgresql://$MY_USER:$MY_PASS@$MY_DOMAIN:5001/${MY_USER}1db -c "\dt" | grep bad_design
 # EXPECTED OUTPUT
 # public | bad_design            | table | myUser
 ```
@@ -104,7 +106,8 @@ git push origin main
 
 # The deploy Jenkins pipeline should have been triggered and the change deployed.
 
-curl http://api.example1-test.com/test | json_pp
+MY_DOMAIN=example1-test.com
+curl http://api.$MY_DOMAIN/test | json_pp
 # EXPECTED OUTPUT
 # {
 #    "message" : "One is the number of this change"
@@ -122,8 +125,8 @@ curl http://api.example1-test.com/test | json_pp
 4. At the end of the pipeline execution we should see the last message that was before
 
 ```shell
-# 
-curl http://api.example1-test.com/test | json_pp
+MY_DOMAIN=example1-test.com
+curl http://api.$MY_DOMAIN/test | json_pp
 # EXPECTED OUTPUT
 # {
 #    "message" : "33-3 Some random change 3-33"

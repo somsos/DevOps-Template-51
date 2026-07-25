@@ -3,7 +3,7 @@
 
   artt_db_dev:
     profiles: ["artt"]
-    image: ${ART51_DB_IMAGE}
+    image: ${ART51_IMAGE_DB}
     container_name: artt_db_dev
     volumes:
       - ./data/artt/data/postgresql_dev:/var/lib/postgresql/data

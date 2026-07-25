@@ -30,10 +30,13 @@ Google Cloud Platform, Contabo, etc with Ubuntu server 24.4 or similar.
 ## Clone project
 
 ```shell
-ssh user1@<HOST_IP>
-sudo mkdir -p /my-project && sudo chown -R user1:user1 /my-project && cd /my-project
-git clone https://github.com/somsos/DevOps-Template-51 .
-    # scp -r -P22 /home/mario/mine/empty_t51 user1@<HOST_IP>:/my-project
+DEV_PC> HOST_IP=192.168.50.8
+DEV_PC> HOST_USER=mario1
+DEV_PC> ssh $HOST_USER@$HOST_IP
+# If the project is downloaded we can avoid the cloning with...
+# DEV_PC> [**scp -r -P22 ~/developing/my-project $HOST_USER@$HOST_IP:~/my-project**]
+
+HOST> git clone https://github.com/somsos/DevOps-Template-51 ~/my-project
 ```
 
 
@@ -41,21 +44,28 @@ git clone https://github.com/somsos/DevOps-Template-51 .
 
 ### Download heavy dependencies
 
-Download the pre-downloaded dependencies from this link
+We follow the same steps as docker official in the guide 
+[install from a packages](https://docs.docker.com/engine/install/ubuntu/#install-from-a-package),
+this is a copy and paste, for as quick reference.
 
+1, Option A, Download the pre-downloaded dependencies from this link
 ```shell
-# Download
-sudo mkdir -p /my-project && sudo chown -R user1:user1 /my-project && cd /my-project
-git clone https://github.com/somsos/DevOps-Template-51 /my-project
+cd ~/my-project
 wget -O ~/my-project/dep_data/dep_data.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzaa
 wget -O ~/my-project/dep_data/dep_data.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzab
-# Or if one already downloaded the files
-# DEV_PC> HOST_IP=192.168.1.8
-# DEV_PC> HOST_USER=mario1
-# DEV_PC> scp -r -P22 ./dep_data.tar.gzaa ${HOST_USER}@${HOST_IP}:~/my-project/dep_data
-# DEV_PC> scp -r -P22 ./dep_data.tar.gzab ${HOST_USER}@${HOST_IP}:~/my-project/dep_data
+```
 
-# Uncompress
+1, Option B, Or if one already downloaded the files
+```shell
+DEV_PC> HOST_IP=192.168.50.8
+DEV_PC> HOST_USER=mario1
+DEV_PC> scp -r -P22 ./dep_data.tar.gzaa $HOST_USER@$HOST_IP:~/my-project/dep_data
+DEV_PC> scp -r -P22 ./dep_data.tar.gzab $HOST_USER@$HOST_IP:~/my-project/dep_data
+```
+
+2, Uncompress
+
+```shell
 cd ~/my-project/dep_data/
 test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong path"
 cat dep_data.tar.* | tar xzf - -C .
@@ -63,12 +73,17 @@ cat dep_data.tar.* | tar xzf - -C .
 
 ### Install docker offline
 
-```shell
-wget -q --spider https://www.google.com && echo "You have internet" || echo "NO INTERNET"
-cd /my-project/dep_data/docker_installer/
+If you want to test without internet this is the moment to disconnect.
 
-# In this point change to a network without internet
-# ./docker-buildx-plugin_0.34.1-1~ubuntu.24.04~noble_amd64.deb \
+```shell
+# Just as checking if we really want to test it without internet.
+wget -qT 3 --spider https://www.google.com && echo "There's internet" || echo "NO INTERNET"
+
+cd ~/my-project/dep_data/docker_installer/
+
+# Note: The official docker install trough package (offline), it says to install
+# also this "./docker-buildx-plugin_0.34.1-1~ubuntu.24.04~noble_amd64.deb" but
+# for this we do not need buildX
 
 sudo dpkg -i ./containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
@@ -78,14 +93,9 @@ sudo dpkg -i ./containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb \
 sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
-docker run hello-world
-
-# To avoid docker starts automatically at the start
-        sudo systemctl disable docker.service containerd.service docker.socket docker
-
-        # each time the machine starts
-        sudo systemctl start containerd.service docker.socket docker.service docker
-        sudo systemctl stop docker containerd.service docker.socket docker.service
+# EXPECTED OUTPUT (it fails because there is no internet, what matters here is 
+# checking we have rootless access)
+# ... failed to do request: Head "https://registry-1.docker...
 ```
 
 
@@ -109,6 +119,7 @@ docker run hello-world
 
 The project requires a normal docker install, so as the we can follow the
 [official documentation](https://docs.docker.com/engine/install/#installation-procedures-for-supported-platforms).
+I put this guide just as a quick reference.
 
 Also do not forget the [post-installation](https://docs.docker.com/engine/install/linux-postinstall/) steps,
 so we can use docker without root.
@@ -143,20 +154,20 @@ docker run --rm --name temp-test hello-world
 ## Install and start project
 
 ```shell
-cd /my-project
+cd ~/my-project
 bash ./install.sh
 ```
 
 Check created services
 
-```yml
-"http://gitea.tina-qa.com":                                    Gitea
-"http://jenkins.tina-qa.com":                                  Jenkins
-"http://nexus.tina-qa.com":                                    Nexus
-"http://api.tina-qa.com/swagger-ui/index.html":                Backend
-"http://registry.tina-qa.com":                                 Registry
-"http://tina-qa.com":                                          Frontend
-"psql postgresql://yopi1:<DB_PASS>@<HOST_IP>:5001/yopi1db":  Database
+```shell
+Gitea     http://gitea.tina-qa.com
+Jenkins   http://jenkins.tina-qa.com
+Nexus     http://nexus.tina-qa.com
+Backend   http://api.tina-qa.com/swagger-ui/index.html
+Registry  http://registry.tina-qa.com
+Frontend  http://tina-qa.com
+Database  psql postgresql://${MY_USER}:$DB_PASS@$HOST_IP:5001/${MY_USER}1db
 ```
 
 ## Approve Jenkins pipelines scrips
@@ -164,5 +175,5 @@ Check created services
 By default the Jenkins pipelines are not approved, we need to do it manually.
 
 ```shell
-http://jenkins.tina-qa.com/manage/scriptApproval/
+http://jenkins.$MY_DOMAIN/manage/scriptApproval/
 ```

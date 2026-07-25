@@ -2,9 +2,12 @@
 
 ## Doing (The upper top is the current task)
 
-- [ ] Update initial_repos/devops.tar.xz
 - [ ] Try without internet again
   - [ ] Check that the badge_tests_result stills work
+
+- [ ] Mention on docs to exec again install.sh to see the available services.
+
+- [ ] Create script/pipeline to create dep_data folder
 
 - [ ] Documentation Add an interaction example in gif/webm format
 - [ ] Summarize more the README.md and include the howToDocuments
@@ -373,5 +376,9 @@ posible.
   - [X] NEXUS_URL variable calls
   - [X] NEXUS_GW variable calls
   - [X] Check if I really need buildx, because I'm already not using vol-type-cache.  
+- [X] Update initial_repos/devops.tar.xz
+- [X] Send docker-compose-app.yml->[db_utils and back_utils] to docker-compose-devops.yml
+
+
 
 

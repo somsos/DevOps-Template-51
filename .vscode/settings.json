@@ -4,19 +4,27 @@
         "workdir/devops*/**": true,
     },
     "cSpell.words": [
+        "BUILDKIT",
+        "buildx",
         "configurator",
         "healthcheck",
+        "htpasswd",
         "isready",
         "jdbc",
         "jenkins",
+        "keygen",
+        "libc",
         "localtime",
         "mariomv",
         "nginxproxy",
         "PGDATABASE",
         "PGPASSWORD",
         "postgresql",
+        "psql",
+        "urandom",
         "vhost",
         "workdir",
-        "WORKDIRBACK"
+        "WORKDIRBACK",
+        "zoneinfo"
     ]
 }
