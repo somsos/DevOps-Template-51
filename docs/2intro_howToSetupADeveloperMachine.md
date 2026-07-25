@@ -12,7 +12,7 @@ network or in localhost, we need to add our domain name to our `/etc/hosts`
 file. for example.
 
 ```yml
-MY_DOMAIN=example1-qa.com
+MY_DOMAIN=example1-test.com
 HOST_IP=192.168.50.8
 
 sudo tee -a /etc/hosts <<EOF
@@ -32,7 +32,8 @@ EOF
 By default the Jenkins pipelines are not approved, we need to do it manually.
 
 ```shell
-http://jenkins.$MY_DOMAIN/manage/scriptApproval/
+MY_DOMAIN=example1-test.com
+echo http://jenkins.$MY_DOMAIN/manage/scriptApproval/
 ```
 
 ## Clone repositories
@@ -46,7 +47,7 @@ HOST_USER=mario1
 # The user you inserted in the install.sh script
 MY_USER=myUser
 # The domain you inserted in the install.sh script and goes to your server
-MY_DOMAIN=example1-qa.com
+MY_DOMAIN=example1-test.com
 scp -r -P22 ${HOST_USER}@${MY_DOMAIN}:~/my-project/setup/secrets/ssh_key.priv ~/.ssh/${MY_USER}.priv
 
 cat >> ~/.ssh/config <<EOF
@@ -63,7 +64,7 @@ EOF
 We should be able to auth to the Gitea server
 
 ```shell
-MY_DOMAIN=example1-qa.com
+MY_DOMAIN=example1-test.com
 ssh -T git@gitea.$MY_DOMAIN
 # OUTPUT: Hi there, $MY_DOMAIN You've successfully authenticated ...
 ```
@@ -74,7 +75,7 @@ Now we can clone the repositories
 # The user you inserted in the install.sh script
 MY_USER=myUser
 # The domain you inserted in the install.sh script and goes to your server
-MY_DOMAIN=example1-qa.com
+MY_DOMAIN=example1-test.com
 
 git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51devops.git ~/my-project/
 

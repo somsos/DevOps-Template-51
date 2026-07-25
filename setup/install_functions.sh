@@ -659,7 +659,7 @@ function start_app_backend_service {
 
     # Caution: Do not remove "DOCKER_BUILDKIT=0" because I'm using "back.build.network: t51Net"
     # which is a custom network, and BuildKit does not support custom networks.
-    echo "[INFO] Building and starting frontend service. Logs in $LOGS_FILE."
+    echo "[INFO] Building and starting backend service. Logs in $LOGS_FILE."
     DOCKER_BUILDKIT=0 docker compose --progress plain up -d --wait --wait-timeout 240 --pull never back &> $LOGS_FILE
     
     until curl -I --retry 5 --retry-max-time 30 $BACK_URL > /dev/null 2>&1; do

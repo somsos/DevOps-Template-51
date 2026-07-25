@@ -10,8 +10,6 @@
   - [Frontend pipelines](#frontend-pipelines)
     - [Deploy Frontend](#deploy-frontend)
     - [Rollback Frontend](#rollback-frontend)
-  - [Useful Commands](#useful-commands)
-    - [After restart servers](#after-restart-servers)
 
 
 ## Database pipelines
@@ -24,8 +22,8 @@ In this case I have a change already prepared.
 cd ~/my-project/app/db/source
 
 MY_USER=myUser
-MY_PASS=mySecretPass
-MY_DOMAIN=example1-qa.com
+MY_PASS=myPass123p
+MY_DOMAIN=example1-test.com
 psql postgresql://$MY_USER:$MY_PASS@$MY_DOMAIN:5001/${MY_USER}1db -c "\dt"
 # EXPECTED OUTPUT (NOTICE THAT THERE IS NO TABLE CALLED "bad_design")
 #                  List of tables
@@ -193,34 +191,4 @@ git push origin main
 
 
 
-
-<!--
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-
--->
-
-----
-
-<!--
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-
--->
-
-
-## Useful Commands
-
-### After restart servers
-
-In my case I like to have docker disabled on the start, so I need to start the
-docker services and app services manually, in case I restart the server.
-
-
-```shell
-sudo systemctl start containerd.service docker.socket docker.service docker
-
-cd /p1
-docker compose --profile all up -d
-```
 

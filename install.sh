@@ -61,9 +61,9 @@ echo "Installation completed successfully."
 
 # example of running the install.sh script:
 # bash ./install.sh <<EOF
-# qa
-# zuko-qa.com
-# zuko 
-# zukoPassWd 
-# zukoPassWd
+# test
+# example1-test.com
+# myUser
+# myPass123p
+# myPass123p
 # EOF

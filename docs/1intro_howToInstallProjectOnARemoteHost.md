@@ -9,7 +9,6 @@
     - [Install docker offline](#install-docker-offline)
   - [Install docker online](#install-docker-online)
   - [Install and start project](#install-and-start-project)
-  - [Approve Jenkins pipelines scrips](#approve-jenkins-pipelines-scrips)
 
 ## Introduction
 
@@ -32,10 +31,11 @@ Google Cloud Platform, Contabo, etc with Ubuntu server 24.4 or similar.
 ```shell
 DEV_PC> HOST_IP=192.168.50.8
 DEV_PC> HOST_USER=mario1
-DEV_PC> ssh $HOST_USER@$HOST_IP
-# If the project is downloaded we can avoid the cloning with...
-# DEV_PC> [**scp -r -P22 ~/developing/my-project $HOST_USER@$HOST_IP:~/my-project**]
 
+# If the project is downloaded we can avoid the cloning with...
+# DEV_PC> scp -r -P22 ./dep_data/empty_t51.tar.gz $HOST_USER@$HOST_IP:~/my-project
+
+DEV_PC> ssh $HOST_USER@$HOST_IP
 HOST> git clone https://github.com/somsos/DevOps-Template-51 ~/my-project
 ```
 
@@ -55,15 +55,16 @@ wget -O ~/my-project/dep_data/dep_data.tar.gzaa https://github.com/somsos/DevOps
 wget -O ~/my-project/dep_data/dep_data.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzab
 ```
 
-1, Option B, Or if one already downloaded the files
+1, Option B, Or if one already downloaded the files, we run this commands in the
+machine of the developer.
 ```shell
-DEV_PC> HOST_IP=192.168.50.8
-DEV_PC> HOST_USER=mario1
-DEV_PC> scp -r -P22 ./dep_data.tar.gzaa $HOST_USER@$HOST_IP:~/my-project/dep_data
-DEV_PC> scp -r -P22 ./dep_data.tar.gzab $HOST_USER@$HOST_IP:~/my-project/dep_data
+HOST_IP=192.168.50.8
+HOST_USER=mario1
+scp -r -P22 ./dep_data.tar.gzaa $HOST_USER@$HOST_IP:~/my-project/dep_data
+scp -r -P22 ./dep_data.tar.gzab $HOST_USER@$HOST_IP:~/my-project/dep_data
 ```
 
-2, Uncompress
+2, Uncompress, executing in the remote host.
 
 ```shell
 cd ~/my-project/dep_data/
@@ -93,6 +94,7 @@ sudo dpkg -i ./containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb \
 sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
+docker run hello-world
 # EXPECTED OUTPUT (it fails because there is no internet, what matters here is 
 # checking we have rootless access)
 # ... failed to do request: Head "https://registry-1.docker...
@@ -168,12 +170,4 @@ Backend   http://api.tina-qa.com/swagger-ui/index.html
 Registry  http://registry.tina-qa.com
 Frontend  http://tina-qa.com
 Database  psql postgresql://${MY_USER}:$DB_PASS@$HOST_IP:5001/${MY_USER}1db
-```
-
-## Approve Jenkins pipelines scrips
-
-By default the Jenkins pipelines are not approved, we need to do it manually.
-
-```shell
-http://jenkins.$MY_DOMAIN/manage/scriptApproval/
 ```
