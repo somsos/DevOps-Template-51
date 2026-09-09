@@ -2,15 +2,28 @@
 
 ## Doing (The upper top is the current task)
 
-- [ ] Try without internet again
-  - [ ] Check that the badge_tests_result stills work
+- [X] Update `t51devops.tar.xz` docker-compose-devops.yml build context path fixes applied.
+
+- [X] Upload dep_data/offlineDeps.tar.gza[a|b] I updated them.
+
+- [ ] Add instructions starting from the release download for offline a install.
+
+- [ ] Blog with title "What if we first deploy and then start to develop"
+
+- [ ] Fix, Summarize more the README.md and include the howToDocuments
+  - [ ] Finish Trigger some deploy pipeline
+
+- [ ] Check that the badge_tests_result stills works
+
+- [ ] Create an more extensive steps to check that is working the project
+  - [ ] I think i'm not telling anything about registry without HTTPS.
+  - [ ] Sey that the badge_tests_result.svg exists
 
 - [ ] Mention on docs to exec again install.sh to see the available services.
 
 - [ ] Create script/pipeline to create dep_data folder
 
 - [ ] Documentation Add an interaction example in gif/webm format
-- [ ] Summarize more the README.md and include the howToDocuments
 
 - [ ] Create a package to publish to the public.
   - [ ] Documentation
@@ -65,7 +78,7 @@
         - [X] Start/build Jenkins
           - [X] add `docker compose build --build-arg DOCKER_GID=$(getent group docker | cut -d: -f3) jenkins`
         - [X] Start reverse proxy
-      - [ ] MANUAL (using just Jenkins)
+      - [ ] Documentation explain what it does the install.sh script.
         - [ ] Mention to 
           - [ ] Run Gitea first then Jenkins
           - [ ] Download the source code in the source directories
@@ -378,6 +391,7 @@ posible.
   - [X] Check if I really need buildx, because I'm already not using vol-type-cache.  
 - [X] Update initial_repos/devops.tar.xz
 - [X] Send docker-compose-app.yml->[db_utils and back_utils] to docker-compose-devops.yml
+- [X] Try without internet again
 
 
 

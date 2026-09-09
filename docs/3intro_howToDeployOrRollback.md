@@ -71,7 +71,19 @@ schema state without affected the data.
    as the last commit the message `Initial commit`.
 
 
+<!--
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% divider
+
+-->
+
+----
+
+<!--
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% divider
+
+-->
 
 
 ## Backend pipelines
@@ -138,7 +150,19 @@ curl http://api.$MY_DOMAIN/test | json_pp
 
 
 
+<!--
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% divider
+
+-->
+
+----
+
+<!--
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% divider
+
+-->
 
 
 

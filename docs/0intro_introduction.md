@@ -61,6 +61,10 @@ Proposed workflow using github flow strategy.
 First, the project is not trying to invent anything new, it just apply already
 well known concepts and tools, Here is a list of these applied terms.
 
+- `PaaS`: (Platform as a Service) It's a cloud computing model that provides a
+  complete, managed environment for developers to build, test, deploy, and
+  manage applications, without maintaining the underlying infrastructure.
+
 - `DevOps`: It's a methodology and philosophy that combines software
   development (Dev) and IT operations (Ops) to accelerate delivery. It breaks
   down traditional silos between teams, fostering a culture of shared

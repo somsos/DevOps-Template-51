@@ -326,7 +326,7 @@ function create_env_file_and_load_it {
 
     if [ ! -f $NEW_ENV_FILE ]; then
         cp $ENV_EXAMPLE_FILE $NEW_ENV_FILE
-        echo "Created $NEW_ENV_FILE file from $ENV_EXAMPLE_FILE."
+        echo "[INFO] Created $NEW_ENV_FILE file from $ENV_EXAMPLE_FILE."
     else
         echo "[ERROR] $NEW_ENV_FILE file already exists. Skipping creation."
         exit 1

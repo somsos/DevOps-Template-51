@@ -175,16 +175,16 @@ container> less /tmp/docker_hosted_creation.log
 
 ```shell
 # Upload without credentials
-curl -i -X PUT --upload-file workspace/0_static/badge_success.svg http://nexus.tina-qa.com:8081/repository/public-files/images/test.svg
+curl -i -X PUT --upload-file workspace/0_static/badge_success.svg http://nexus.example1-test.com:8081/repository/public-files/images/test.svg
 
 # Upload with credentials (green image)
-curl -i -u "tina1:tina123p" -X PUT --upload-file workspace/0_static/badge_success.svg http://nexus.tina-qa.com:8081/repository/public-files/images/test.svg
+curl -i -u "tina1:tina123p" -X PUT --upload-file workspace/0_static/badge_success.svg http://nexus.example1-test.com:8081/repository/public-files/images/test.svg
 
 # Upload with credentials (red image)
-curl -i -u "tina1:tina123p" -X PUT --upload-file workspace/0_static/badge_failing.svg http://nexus.tina-qa.com:8081/repository/public-files/images/test.svg
+curl -i -u "tina1:tina123p" -X PUT --upload-file workspace/0_static/badge_failing.svg http://nexus.example1-test.com:8081/repository/public-files/images/test.svg
 
 # Download image
-curl -i http://nexus.tina-qa.com:8081/repository/public-files/images/test.svg
+curl -i http://nexus.example1-test.com:8081/repository/public-files/images/test.svg
 
 ```
 
@@ -192,9 +192,9 @@ curl -i http://nexus.tina-qa.com:8081/repository/public-files/images/test.svg
 ## How to test the nexus docker registry
 
 ```shell
-docker login tina-qa.com:5000 -u tina1
-docker tag SOME_IMAGE:TAG tina-qa.com:8082/SOME_-_IMAGE:TAG
-docker push tina-qa.com:8082/SOME_-_IMAGE:TAG
+docker login example1-test.com:5000 -u tina1
+docker tag SOME_IMAGE:TAG example1-test.com:8082/SOME_-_IMAGE:TAG
+docker push example1-test.com:8082/SOME_-_IMAGE:TAG
 ```
 
 
@@ -213,18 +213,18 @@ Questions
   much maintaining, like the map and proxy_set_header commands, and those that might
   require more attention as the upstream and server commands
 
-IMPORTANT consideration: the domain tina-qa.com it's just a test
+IMPORTANT consideration: the domain example1-test.com it's just a test
 domain, it must be taken from .env file, so I think the configuration must be
 generated on the `install.sh` script or use a wildcard.
 
 I see this info.
 
 Services that I want the same behavior, 
-- http://gitea.tina-qa.com
-- http://jenkins.tina-qa.com
-- http://nexus.tina-qa.com
-- http://api.tina-qa.com
-- http://tina-qa.com":
+- http://gitea.example1-test.com
+- http://jenkins.example1-test.com
+- http://nexus.example1-test.com
+- http://api.example1-test.com
+- http://example1-test.com":
 
 `nginx:1.31.2-alpine3.23` I would like to use a specific image version, to avoid
 unexpected automatic upgrades
@@ -339,8 +339,8 @@ server {
         return 503;
     }
 }
-# api.tina-qa.com/
-upstream api.tina-qa.com {
+# api.example1-test.com/
+upstream api.example1-test.com {
     # Container: t51back
     #     networks:
     #         t51Net (reachable)
@@ -353,7 +353,7 @@ upstream api.tina-qa.com {
     keepalive 2;
 }
 server {
-    server_name api.tina-qa.com;
+    server_name api.example1-test.com;
     access_log /var/log/nginx/access.log vhost;
     http2 on;
     listen 80;
@@ -369,12 +369,12 @@ server {
     # No certificate for this vhost nor default certificate found, so reject SSL handshake.
     ssl_reject_handshake on;
     location / {
-        proxy_pass http://api.tina-qa.com;
+        proxy_pass http://api.example1-test.com;
         set $upstream_keepalive true;
     }
 }
-# gitea.tina-qa.com/
-upstream gitea.tina-qa.com {
+# gitea.example1-test.com/
+upstream gitea.example1-test.com {
     # Container: gitea
     #     networks:
     #         t51Net (reachable)
@@ -387,7 +387,7 @@ upstream gitea.tina-qa.com {
     keepalive 2;
 }
 server {
-    server_name gitea.tina-qa.com;
+    server_name gitea.example1-test.com;
     access_log /var/log/nginx/access.log vhost;
     http2 on;
     listen 80;
@@ -403,12 +403,12 @@ server {
     # No certificate for this vhost nor default certificate found, so reject SSL handshake.
     ssl_reject_handshake on;
     location / {
-        proxy_pass http://gitea.tina-qa.com;
+        proxy_pass http://gitea.example1-test.com;
         set $upstream_keepalive true;
     }
 }
-# jenkins.tina-qa.com/
-upstream jenkins.tina-qa.com {
+# jenkins.example1-test.com/
+upstream jenkins.example1-test.com {
     # Container: jenkins
     #     networks:
     #         t51Net (reachable)
@@ -421,7 +421,7 @@ upstream jenkins.tina-qa.com {
     keepalive 2;
 }
 server {
-    server_name jenkins.tina-qa.com;
+    server_name jenkins.example1-test.com;
     access_log /var/log/nginx/access.log vhost;
     http2 on;
     listen 80;
@@ -437,12 +437,12 @@ server {
     # No certificate for this vhost nor default certificate found, so reject SSL handshake.
     ssl_reject_handshake on;
     location / {
-        proxy_pass http://jenkins.tina-qa.com;
+        proxy_pass http://jenkins.example1-test.com;
         set $upstream_keepalive true;
     }
 }
-# nexus.tina-qa.com/
-upstream nexus.tina-qa.com {
+# nexus.example1-test.com/
+upstream nexus.example1-test.com {
     # Container: nexus
     #     networks:
     #         t51Net (reachable)
@@ -455,7 +455,7 @@ upstream nexus.tina-qa.com {
     keepalive 2;
 }
 server {
-    server_name nexus.tina-qa.com;
+    server_name nexus.example1-test.com;
     access_log /var/log/nginx/access.log vhost;
     http2 on;
     listen 80;
@@ -471,12 +471,12 @@ server {
     # No certificate for this vhost nor default certificate found, so reject SSL handshake.
     ssl_reject_handshake on;
     location / {
-        proxy_pass http://nexus.tina-qa.com;
+        proxy_pass http://nexus.example1-test.com;
         set $upstream_keepalive true;
     }
 }
-# tina-qa.com/
-upstream tina-qa.com {
+# example1-test.com/
+upstream example1-test.com {
     # Container: t51front
     #     networks:
     #         t51Net (reachable)
@@ -489,7 +489,7 @@ upstream tina-qa.com {
     keepalive 2;
 }
 server {
-    server_name tina-qa.com;
+    server_name example1-test.com;
     access_log /var/log/nginx/access.log vhost;
     http2 on;
     listen 80;
@@ -505,7 +505,7 @@ server {
     # No certificate for this vhost nor default certificate found, so reject SSL handshake.
     ssl_reject_handshake on;
     location / {
-        proxy_pass http://tina-qa.com;
+        proxy_pass http://example1-test.com;
         set $upstream_keepalive true;
     }
 }

@@ -1,7 +1,12 @@
-# T51
+# DevOps-Template-51: (Prebuilt, Self-hostable Application With A PaaS Setup)
 
-- [T51](#t51)
-  - [Introduction](#introduction)
+This is a ready to start to develop application, with preconfigured deploy and
+rollback pipelines in Jenkins, for the stack SpringBoot3, Angular18, and
+Postgres17. Easy to install and offline mode.
+
+![Capture of the different services that are installed.](./docs/img/capturesOfServices.png)
+
+- [DevOps-Template-51: (Prebuilt, Self-hostable Application With A PaaS Setup)](#devops-template-51-prebuilt-self-hostable-application-with-a-paas-setup)
   - [Installation](#installation)
     - [Requirements](#requirements)
     - [Setup server services.](#setup-server-services)
@@ -9,39 +14,45 @@
   - [Guides](#guides)
 
 
-## Introduction
+## Installation
 
-<!-- Copy and paste from 0intro_introduction.md#Resume -->
+We have two different parts here, set up the server that runs the pipelines, and
+set up the developer machine that is going to download the code and push the
+changes.
 
+For more details of for example, how to install **without internet**, install
+rootless docker, etc, please see [this document](./docs/howTo1_InstallOnServer.md),
+but overall, we just need to follow the next steps in a host with Linux and
+docker compose installed.
 
-<!--
+### Requirements
 
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+- 4GB RAM (Nexus consumes 2GB).
+- 15GB free hard drive.
+- Linux (Tested on Ubuntu Server 24.04 and an Arch Linux sub-distro).
+- Docker compose with rootless access.
+
+<!-- 
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%
 
 -->
 
 ----
 
-<!--
+<!-- 
 
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%
 
 -->
-
-## Installation
-
-We have two different parts here, set up the server and set up the developer
-machine. For more details of for example, how to install **without internet**
-and setup docker, please see, [this file](./docs/howTo1_InstallOnServer.md), but
-in resume, we just need the following steps in a host with docker compose
-installed.
-
-### Requirements
-
-- 4GB RAM.
-- 15GB free hard drive.
-- Linux (Tested in Ubuntu Server 24.04 and Arch Linux.)
-- Docker Compose installed with rootless access [Docker Official.](https://docs.docker.com/engine/install/#installation-procedures-for-supported-platforms).
 
 ### Setup server services.
 
@@ -49,32 +60,28 @@ installed.
 git clone https://github.com/somsos/DevOps-Template-51 ~/my-project
 cd ~/my-project
 bash ./install.sh
+# Enter the environment (local, test, qa, stage, PROD): test
+# Enter the domain (e.g., 'example.com', 'example1-test.com'): example1-test.com
+# Enter the App username: myUser
+# Enter the App password (more than 8 letters): myPassword
+# Repeat the App password: myPassword
+# [INFO] Created ...
 ```
 
-Here some captures of the services of the setup, all off them use the same user
-and password introduced in the `install.sh` script input, the script saves this
-credentials in the `.env` file.
+The services that are installed are the following ones. All off them use the
+**same credential** introduced in the `install.sh` which are saved in the `.env`
+file.
 
-Gitea:  
-<img height="280" alt="Gitea" src="./docs/img/capture-1-gitea.png" />
+```yml
+Gitea:    http://gitea.example1-test.com
+Jenkins:  http://jenkins.example1-test.com
+Nexus:    http://nexus.example1-test.com
+Backend:  http://api.example1-test.com/swagger-ui/index.html
+Frontend: http://example1-test.com
+Database: psql postgresql://myUser:myPassword@$example1-test.com:5001/myUser1db
+Docker-Registry: http://registry.example1-test.com
+```
 
-Jenkins:  
-<img height="280" alt="Jenkins" src="./docs/img/capture-2-jenkins.png" />
-
-Nexus:  
-<img height="280" alt="Nexus" src="./docs/img/capture-3-nexus.png" />
-
-Docker registry:  
-<img height="180" alt="Docker registry" src="./docs/img/capture-4-registry.png" />
-
-App Postgres Database:  
-<img height="280" alt="App Postgres Database" src="./docs/img/capture-5-postgres.png" />
-
-App Backend Swagger:  
-<img height="280" alt="App Backend Swagger" src="./docs/img/capture-6-backend-app-swagger.png" />
-
-App Angular:  
-<img height="280" alt="App Angular" src="./docs/img/capture-7-angular-app.png" />
 
 ### Setup a Developer machine
 
@@ -89,7 +96,7 @@ Gitea is using a ssh public-private keys as authentication process, so:
   automatically on a git push.
 
 ```shell
-scp -r -P22 my-user@example1-test.com:/my-project/setup/secrets/ssh_key.priv ~/.ssh/t51key.priv
+scp -r -P22 myUser@example1-test.com:/my-project/setup/secrets/ssh_key.priv ~/.ssh/t51key.priv
 
 cat >> ~/.ssh/config <<EOF
 
@@ -102,7 +109,7 @@ Host gitea.example1-test.com
 EOF
 ```
 
-Now we should be able to auth to the Gitea service.
+Now we should be able to authenticate to the Gitea service.
 
 ```shell
 ssh -T git@gitea.example1-test.com

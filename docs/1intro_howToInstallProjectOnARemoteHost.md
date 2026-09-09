@@ -3,6 +3,7 @@
 - [Install Project On A Remote Host](#install-project-on-a-remote-host)
   - [Introduction](#introduction)
   - [Requirements](#requirements)
+  - [Install using release assets](#install-using-release-assets)
   - [Clone project](#clone-project)
   - [Offline install](#offline-install)
     - [Download heavy dependencies](#download-heavy-dependencies)
@@ -20,20 +21,103 @@ Google Cloud Platform, Contabo, etc with Ubuntu server 24.4 or similar.
 ## Requirements
 
 - RAM 4Gb (Nexus uses 2gb)
-- 15GB free space minimum
+- Hard drive: 15GB  free space minimum
 - Any linux that passes the `setup/install_functions.sh -> check_dependencies` function
   - Tested in Ubuntu Server 24.04 and Arch Linux.
 - Docker compose (Tested on version 5.1.4)
 - OpenSSH (Tested on version 10.3, OpenSSL 3.6)
 
+## Install using release assets
+
+1, Download code and heavy dependencies
+
+```shell
+mkdir -p ~/my-project && cd ~/my-project
+
+wget -O code.tar.gz https://github.com/somsos/DevOps-Template-51/archive/refs/tags/V0.10.tar.gz
+
+tar xzf code.tar.gz --strip-components=1 -C . && rm ./code.tar.gz
+
+wget -O dep_data/offlineDeps.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/offlineDeps.tar.gzaa && wget -O dep_data/offlineDeps.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/offlineDeps.tar.gzab
+
+cd dep_data/ && cat offlineDeps.tar.gza* | tar xzf - -C . && rm ./offlineDeps.tar.gza*
+cd ~/my-project
+```
+
+2, Install docker
+
+```shell
+# Just as checking if we really want to test it without internet.
+wget -qT 3 --spider https://www.google.com && echo "There's internet" || echo "NO INTERNET, CONTINUE"
+
+cd ~/my-project/dep_data/docker_installer/
+
+# Note: The official docker install trough package (offline), it says to install
+# also this "./docker-buildx-plugin_0.34.1-1~ubuntu.24.04~noble_amd64.deb" but
+# for this we do not need buildX
+
+sudo dpkg -i ./containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb \
+    ./docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
+    ./docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
+    ./docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
+
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+docker run hello-world
+# EXPECTED OUTPUT (it fails because there is no internet, what matters here is 
+# checking we have rootless access)
+# ... failed to do request: Head "https://registry-1.docker...
+```
+
+
+3, Start DevOps Template 51 project
+
+```shell
+cd ~/my-project
+
+bash ./install.sh <<EOF
+test
+example1-test.com
+myUser
+myPass123p
+myPass123p
+EOF
+```
+
+
+
+
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+----
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+
 ## Clone project
 
 ```shell
-DEV_PC> HOST_IP=192.168.50.8
+DEV_PC> HOST_IP=192.168.1.8
+#DEV_PC> HOST_IP=10.222.58.8 # IP of my phone hotSpot
 DEV_PC> HOST_USER=mario1
 
-# If the project is downloaded we can avoid the cloning with...
-# DEV_PC> scp -r -P22 ./dep_data/empty_t51.tar.gz $HOST_USER@$HOST_IP:~/my-project
+# If we downloaded the project,  we can avoid the cloning with...
+# DEV_PC> ssh $HOST_USER@$HOST_IP 'mkdir -p ~/my-project/dep_data/'
+# DEV_PC> scp -r -P22 ./dep_data/empty_t51.tar.gz $HOST_USER@$HOST_IP:~/my-project/code.tar.gz
+# DEV_PC> scp -r -P22 ./dep_data/offlineDeps.tar.gzaa $HOST_USER@$HOST_IP:~/my-project/dep_data/
+# DEV_PC> scp -r -P22 ./dep_data/offlineDeps.tar.gzab $HOST_USER@$HOST_IP:~/my-project/dep_data/
+# DEV_PC> ssh $HOST_USER@$HOST_IP 'cd ~/my-project/ && tar xzf code.tar.gz -C . && rm ./code.tar.gz'
+# DEV_PC> ssh $HOST_USER@$HOST_IP 'cd ~/my-project/dep_data/ && cat offlineDeps.tar.gza* | tar xzf - -C . && rm ./offlineDeps.tar.gza*'
 
 DEV_PC> ssh $HOST_USER@$HOST_IP
 HOST> git clone https://github.com/somsos/DevOps-Template-51 ~/my-project
@@ -50,26 +134,27 @@ this is a copy and paste, for as quick reference.
 
 1, Option A, Download the pre-downloaded dependencies from this link
 ```shell
-cd ~/my-project
-wget -O ~/my-project/dep_data/dep_data.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzaa
-wget -O ~/my-project/dep_data/dep_data.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzab
+HOST> cd ~/my-project
+HOST> wget -O ~/my-project/dep_data/dep_data.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzaa
+HOST> wget -O ~/my-project/dep_data/dep_data.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzab
 ```
 
 1, Option B, Or if one already downloaded the files, we run this commands in the
 machine of the developer.
 ```shell
-HOST_IP=192.168.50.8
-HOST_USER=mario1
-scp -r -P22 ./dep_data.tar.gzaa $HOST_USER@$HOST_IP:~/my-project/dep_data
-scp -r -P22 ./dep_data.tar.gzab $HOST_USER@$HOST_IP:~/my-project/dep_data
+DEV_PC> HOST_IP=192.168.1.8
+#DEV_PC> HOST_IP=10.222.58.8 # IP of my phone hotSpot
+DEV_PC> HOST_USER=mario1
+DEV_PC> scp -r -P22 ./dep_data.tar.gzaa $HOST_USER@$HOST_IP:~/my-project/dep_data
+DEV_PC> scp -r -P22 ./dep_data.tar.gzab $HOST_USER@$HOST_IP:~/my-project/dep_data
 ```
 
 2, Uncompress, executing in the remote host.
 
 ```shell
-cd ~/my-project/dep_data/
-test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong path"
-cat dep_data.tar.* | tar xzf - -C .
+HOST> cd ~/my-project/dep_data/
+HOST> test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong path"
+HOST> cat dep_data.tar.* | tar xzf - -C .
 ```
 
 ### Install docker offline
@@ -78,7 +163,7 @@ If you want to test without internet this is the moment to disconnect.
 
 ```shell
 # Just as checking if we really want to test it without internet.
-wget -qT 3 --spider https://www.google.com && echo "There's internet" || echo "NO INTERNET"
+wget -qT 3 --spider https://www.google.com && echo "There's internet" || echo "NO INTERNET, CONTINUE"
 
 cd ~/my-project/dep_data/docker_installer/
 
@@ -157,17 +242,33 @@ docker run --rm --name temp-test hello-world
 
 ```shell
 cd ~/my-project
+
+# Option 1 (Introduce the inputs directly)
+bash ./install.sh <<EOF
+test
+example1-test.com
+myUser
+myPass123p
+myPass123p
+EOF
+
+# Option 2 (Making the script ask us for the input)
+bash ./install.sh
+
+
+
+# Optional: To see the available URLs clearer we can run it again
 bash ./install.sh
 ```
 
 Check created services
 
 ```shell
-Gitea     http://gitea.tina-qa.com
-Jenkins   http://jenkins.tina-qa.com
-Nexus     http://nexus.tina-qa.com
-Backend   http://api.tina-qa.com/swagger-ui/index.html
-Registry  http://registry.tina-qa.com
-Frontend  http://tina-qa.com
+Gitea     http://gitea.example1-test.com
+Jenkins   http://jenkins.example1-test.com
+Nexus     http://nexus.example1-test.com
+Backend   http://api.example1-test.com/swagger-ui/index.html
+Registry  http://registry.example1-test.com
+Frontend  http://example1-test.com
 Database  psql postgresql://${MY_USER}:$DB_PASS@$HOST_IP:5001/${MY_USER}1db
 ```
