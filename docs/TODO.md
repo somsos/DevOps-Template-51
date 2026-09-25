@@ -2,10 +2,6 @@
 
 ## Doing (The upper top is the current task)
 
-- [ ] Check that the badge_tests_result stills works
-  - [X] Update the backend repo with the new README with the part to remplace on install.
-  - [ ] Update t51devops.tar.xz
-
 - [ ] Blog with title "What if we first deploy and then start to develop"
 
 - [ ] Fix, Summarize more the README.md and include the howToDocuments
@@ -393,7 +389,9 @@ posible.
 - [X] Check the detail of deploy is triggered at the end of a rollback.
   - I added 2 Gitea web api calls to disenable and enable the webhook to avoid
      triggering the deploy pipeline.
-
+- [X] Check that the badge_tests_result stills works
+  - [X] Update the backend repo with the new README with the part to remplace on install.
+  - [X] Update t51devops.tar.xz
 
 
 
