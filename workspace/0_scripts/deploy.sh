@@ -39,6 +39,7 @@ function deploy {
     echo -e "\033[38;5;27;48;5;231m[INFO] Image to deploy: $3 \033[0m"
     set -x
     docker compose -f $1/docker-compose.yml stop $4
+    docker compose -f $1/docker-compose.yml rm $4
     # we reference the image by its build tag just to be sure to get the correct one
     
     # "--force-recreate": "Recreate containers even if their configuration and

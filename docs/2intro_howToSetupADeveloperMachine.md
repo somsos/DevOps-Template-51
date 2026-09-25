@@ -59,24 +59,17 @@ Host gitea.${MY_DOMAIN}
     IdentityFile ~/.ssh/${MY_USER}.priv
 
 EOF
-```
 
-We should be able to auth to the Gitea server
+# Now, We should be able to auth to the Gitea server
 
-```shell
-MY_DOMAIN=example1-test.com
 ssh -T git@gitea.$MY_DOMAIN
-# OUTPUT: Hi there, $MY_DOMAIN You've successfully authenticated ...
+
 ```
+
 
 Now we can clone the repositories
 
 ```shell
-# The user you inserted in the install.sh script
-MY_USER=myUser
-# The domain you inserted in the install.sh script and goes to your server
-MY_DOMAIN=example1-test.com
-
 git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51devops.git ~/my-project/
 
 git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51mig-db.git ~/my-project/app/db/source
@@ -85,3 +78,5 @@ git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51back.git ~/my-project/a
 
 git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51front.git ~/my-project/app/front/source
 ```
+
+

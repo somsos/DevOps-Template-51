@@ -2,12 +2,6 @@
 
 ## Doing (The upper top is the current task)
 
-- [X] Update `t51devops.tar.xz` docker-compose-devops.yml build context path fixes applied.
-
-- [X] Upload dep_data/offlineDeps.tar.gza[a|b] I updated them.
-
-- [ ] Add instructions starting from the release download for offline a install.
-
 - [ ] Blog with title "What if we first deploy and then start to develop"
 
 - [ ] Fix, Summarize more the README.md and include the howToDocuments
@@ -392,6 +386,12 @@ posible.
 - [X] Update initial_repos/devops.tar.xz
 - [X] Send docker-compose-app.yml->[db_utils and back_utils] to docker-compose-devops.yml
 - [X] Try without internet again
+- [X] Update `t51devops.tar.xz` docker-compose-devops.yml build context path fixes applied.
+- [X] Upload dep_data/offlineDeps.tar.gza[a|b] I updated them.
+- [X] Add instructions starting from the release download for offline a install.
+- [X] Check the detail of deploy is triggered at the end of a rollback.
+  - I added 2 Gitea web api calls to disenable and enable the webhook to avoid
+     triggering the deploy pipeline.
 
 
 

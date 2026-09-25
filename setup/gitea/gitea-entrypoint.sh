@@ -321,6 +321,11 @@ addRepo "$DB_MIG_NAME"
 addRepo "$DEVOPS_NAME"
 
 
+# IMPORTANT: keep the same order, because the hook id is generated incrementally,
+# and the IDs are used in 
+#   2fr-backup-and-delete-last-commit.sh 
+#   2br-backup-and-delete-last-commit.sh
+# So if the order changes, the hook IDs will change and the scripts will fail.
 addWebHook "$BACK_NAME"
 addWebHook "$FRONT_NAME"
 addWebHook "$DB_MIG_NAME"

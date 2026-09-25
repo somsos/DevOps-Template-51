@@ -38,6 +38,8 @@ psql postgresql://$MY_USER:$MY_PASS@$MY_DOMAIN:5001/${MY_USER}1db -c "\dt"
 #  public | users_picture         | table | myUser
 #  public | users_roles           | table | myUser
 
+cd app/db/source/
+test -f ./docs/03-testTable.changelog.xml && echo "You can proceed with this steps." || echo "ERROR, file not found look for the alternative file."
 mv ./docs/03-testTable.changelog.xml  ./changelogs
 
 git add . && git status | grep renamed
@@ -69,6 +71,10 @@ schema state without affected the data.
    we should not be able to see the table bad_design
 4. If we go to `http://gitea.example1-test.com/myUser/t51mig-db` we should see
    as the last commit the message `Initial commit`.
+
+5. The table `bad_design` should not exist anymore
+  `psql postgresql://$MY_USER:$MY_PASS@$MY_DOMAIN:5001/${MY_USER}1db -c "\dt"`
+
 
 
 <!--
@@ -122,6 +128,8 @@ curl http://api.$MY_DOMAIN/test | json_pp
 # {
 #    "message" : "One is the number of this change"
 # }
+
+#Check that the test are running in http://jenkins.example1-test.com/job/Backend-Tests/1/console
 ```
 
 ### Rollback Backed

@@ -109,4 +109,5 @@ COPY --from=builder /opt/template51/adapter/target/t51Back*.jar /opt/template51/
 
 EXPOSE 8080
 
+# For utils the entrypoint must be commented, an entrypoint script is used.
 ENTRYPOINT java -Dspring.profiles.active=default,test-docker -jar t51Back.jar

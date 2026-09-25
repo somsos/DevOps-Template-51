@@ -3,13 +3,9 @@
 - [Install Project On A Remote Host](#install-project-on-a-remote-host)
   - [Introduction](#introduction)
   - [Requirements](#requirements)
-  - [Install using release assets](#install-using-release-assets)
-  - [Clone project](#clone-project)
-  - [Offline install](#offline-install)
-    - [Download heavy dependencies](#download-heavy-dependencies)
-    - [Install docker offline](#install-docker-offline)
-  - [Install docker online](#install-docker-online)
-  - [Install and start project](#install-and-start-project)
+  - [Download using only first-party assets "Offline-mode"](#download-using-only-first-party-assets-offline-mode)
+  - [Download by cloning and using dependencies in third-party servers](#download-by-cloning-and-using-dependencies-in-third-party-servers)
+  - [Install DevOps Template 51 project](#install-devops-template-51-project)
 
 ## Introduction
 
@@ -27,16 +23,43 @@ Google Cloud Platform, Contabo, etc with Ubuntu server 24.4 or similar.
 - Docker compose (Tested on version 5.1.4)
 - OpenSSH (Tested on version 10.3, OpenSSL 3.6)
 
-## Install using release assets
+
+
+
+
+
+
+
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+----
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+
+
+
+
+
+## Download using only first-party assets "Offline-mode"
 
 1, Download code and heavy dependencies
 
 ```shell
 mkdir -p ~/my-project && cd ~/my-project
 
-wget -O code.tar.gz https://github.com/somsos/DevOps-Template-51/archive/refs/tags/V0.10.tar.gz
+wget -O code.tar.gz https://github.com/somsos/DevOps-Template-51/releases/download/0.11/code.tar.gz
 
-tar xzf code.tar.gz --strip-components=1 -C . && rm ./code.tar.gz
+tar xzf code.tar.gz -C . && rm ./code.tar.gz
 
 wget -O dep_data/offlineDeps.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/offlineDeps.tar.gzaa && wget -O dep_data/offlineDeps.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/offlineDeps.tar.gzab
 
@@ -64,26 +87,14 @@ sudo dpkg -i ./containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb \
 sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
-docker run hello-world
+docker run --rm --name temp-test hello-world
 # EXPECTED OUTPUT (it fails because there is no internet, what matters here is 
 # checking we have rootless access)
 # ... failed to do request: Head "https://registry-1.docker...
 ```
 
 
-3, Start DevOps Template 51 project
 
-```shell
-cd ~/my-project
-
-bash ./install.sh <<EOF
-test
-example1-test.com
-myUser
-myPass123p
-myPass123p
-EOF
-```
 
 
 
@@ -104,105 +115,21 @@ EOF
 -->
 
 
-## Clone project
+
+
+
+
+
+
+## Download by cloning and using dependencies in third-party servers
+
+1, Clone repository
 
 ```shell
-DEV_PC> HOST_IP=192.168.1.8
-#DEV_PC> HOST_IP=10.222.58.8 # IP of my phone hotSpot
-DEV_PC> HOST_USER=mario1
-
-# If we downloaded the project,  we can avoid the cloning with...
-# DEV_PC> ssh $HOST_USER@$HOST_IP 'mkdir -p ~/my-project/dep_data/'
-# DEV_PC> scp -r -P22 ./dep_data/empty_t51.tar.gz $HOST_USER@$HOST_IP:~/my-project/code.tar.gz
-# DEV_PC> scp -r -P22 ./dep_data/offlineDeps.tar.gzaa $HOST_USER@$HOST_IP:~/my-project/dep_data/
-# DEV_PC> scp -r -P22 ./dep_data/offlineDeps.tar.gzab $HOST_USER@$HOST_IP:~/my-project/dep_data/
-# DEV_PC> ssh $HOST_USER@$HOST_IP 'cd ~/my-project/ && tar xzf code.tar.gz -C . && rm ./code.tar.gz'
-# DEV_PC> ssh $HOST_USER@$HOST_IP 'cd ~/my-project/dep_data/ && cat offlineDeps.tar.gza* | tar xzf - -C . && rm ./offlineDeps.tar.gza*'
-
-DEV_PC> ssh $HOST_USER@$HOST_IP
-HOST> git clone https://github.com/somsos/DevOps-Template-51 ~/my-project
+git clone https://github.com/somsos/DevOps-Template-51 ~/my-project
 ```
 
-
-## Offline install
-
-### Download heavy dependencies
-
-We follow the same steps as docker official in the guide 
-[install from a packages](https://docs.docker.com/engine/install/ubuntu/#install-from-a-package),
-this is a copy and paste, for as quick reference.
-
-1, Option A, Download the pre-downloaded dependencies from this link
-```shell
-HOST> cd ~/my-project
-HOST> wget -O ~/my-project/dep_data/dep_data.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzaa
-HOST> wget -O ~/my-project/dep_data/dep_data.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/dep_data.tar.gzab
-```
-
-1, Option B, Or if one already downloaded the files, we run this commands in the
-machine of the developer.
-```shell
-DEV_PC> HOST_IP=192.168.1.8
-#DEV_PC> HOST_IP=10.222.58.8 # IP of my phone hotSpot
-DEV_PC> HOST_USER=mario1
-DEV_PC> scp -r -P22 ./dep_data.tar.gzaa $HOST_USER@$HOST_IP:~/my-project/dep_data
-DEV_PC> scp -r -P22 ./dep_data.tar.gzab $HOST_USER@$HOST_IP:~/my-project/dep_data
-```
-
-2, Uncompress, executing in the remote host.
-
-```shell
-HOST> cd ~/my-project/dep_data/
-HOST> test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong path"
-HOST> cat dep_data.tar.* | tar xzf - -C .
-```
-
-### Install docker offline
-
-If you want to test without internet this is the moment to disconnect.
-
-```shell
-# Just as checking if we really want to test it without internet.
-wget -qT 3 --spider https://www.google.com && echo "There's internet" || echo "NO INTERNET, CONTINUE"
-
-cd ~/my-project/dep_data/docker_installer/
-
-# Note: The official docker install trough package (offline), it says to install
-# also this "./docker-buildx-plugin_0.34.1-1~ubuntu.24.04~noble_amd64.deb" but
-# for this we do not need buildX
-
-sudo dpkg -i ./containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb \
-    ./docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
-    ./docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
-    ./docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
-
-sudo groupadd docker
-sudo usermod -aG docker $USER
-newgrp docker
-docker run hello-world
-# EXPECTED OUTPUT (it fails because there is no internet, what matters here is 
-# checking we have rootless access)
-# ... failed to do request: Head "https://registry-1.docker...
-```
-
-
-
-<!--
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-
--->
-
-----
-
-<!--
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-
--->
-
-
-## Install docker online
+2, Install docker online
 
 The project requires a normal docker install, so as the we can follow the
 [official documentation](https://docs.docker.com/engine/install/#installation-procedures-for-supported-platforms).
@@ -238,12 +165,39 @@ docker run --rm --name temp-test hello-world
 ```
 
 
-## Install and start project
+
+
+
+
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+----
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+
+
+
+
+
+
+
+## Install DevOps Template 51 project
+
+1, Run install script
 
 ```shell
 cd ~/my-project
 
-# Option 1 (Introduce the inputs directly)
 bash ./install.sh <<EOF
 test
 example1-test.com
@@ -252,23 +206,54 @@ myPass123p
 myPass123p
 EOF
 
-# Option 2 (Making the script ask us for the input)
-bash ./install.sh
+# Services Created
+# http://gitea.example1-test.com
+# http://jenkins.example1-test.com/login
+# http://nexus.example1-test.com
+# http://api.example1-test.com/swagger-ui/index.html
+# http://example1-test.com
+# http://registry.example1-test.com
+# psql -U $MY_USER -h $HOST_IP -p 5001 -d ${MY_USER}1db "\dt"
 
-
-
-# Optional: To see the available URLs clearer we can run it again
+# Optional (We can run it again just to see the available services more easily)
 bash ./install.sh
 ```
 
-Check created services
+2, Check created services, In my case I usually in my **developing machine** add
+temporal domains my local DNS file.
 
 ```shell
-Gitea     http://gitea.example1-test.com
-Jenkins   http://jenkins.example1-test.com
-Nexus     http://nexus.example1-test.com
-Backend   http://api.example1-test.com/swagger-ui/index.html
-Registry  http://registry.example1-test.com
-Frontend  http://example1-test.com
-Database  psql postgresql://${MY_USER}:$DB_PASS@$HOST_IP:5001/${MY_USER}1db
+MY_DOMAIN=example1-test.com
+HOST_IP=192.168.1.8
+MY_USER=myUser
+
+sudo tee -a /etc/hosts <<EOF
+
+$HOST_IP $MY_DOMAIN
+$HOST_IP api.$MY_DOMAIN
+$HOST_IP gitea.$MY_DOMAIN
+$HOST_IP jenkins.$MY_DOMAIN
+$HOST_IP registry.$MY_DOMAIN
+$HOST_IP nexus.$MY_DOMAIN
+
+EOF
+
+#Check services
+
+# Gitea
+curl -s -o /dev/null -w "%{http_code}\n" http://gitea.$MY_DOMAIN
+# Jenkins
+curl -s -o /dev/null -w "%{http_code}\n" http://jenkins.$MY_DOMAIN/login
+# Nexus
+curl -s -o /dev/null -w "%{http_code}\n" http://nexus.$MY_DOMAIN
+# Backend
+curl -s -o /dev/null -w "%{http_code}\n" http://api.$MY_DOMAIN/swagger-ui/index.html
+# Frontend
+curl -s -o /dev/null -w "%{http_code}\n" http://$MY_DOMAIN
+# Registry
+curl -s -o /dev/null -w "%{http_code}\n" http://registry.$MY_DOMAIN
+# Database
+psql -U $MY_USER -h $HOST_IP -p 5001 -d ${MY_USER}1db "\dt"
+
 ```
+

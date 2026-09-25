@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+# IMPORTANT: 
+#  1. in id-PBXjj and id-qQ4MR0f we enable and disable the webhook to avoid
+#    triggering a build when we delete the last commit.
+#
+#  2. In DEPLOY_HOOK_ID might change and make the script fail. If it fails check
+#    the IDs match as they are generated in "gitea-entrypoint.sh"
+
 source "../0_scripts/get_environment.sh"
 ENV=$(get_environment)
 source "../0_scripts/check_necessary_variables.sh"
@@ -37,8 +44,31 @@ echo "[INFO] Last commit backup created."
 mv $BACK_REPO_DIR $BACK_REPO_DIR-backup
 
 
+DEPLOY_HOOK_ID=1
+DEPLOY_HOOK_URL="http://gitea:3000/api/v1/repos/$MY_USER/$BACK_NAME/hooks/$DEPLOY_HOOK_ID"
+
+echo "[INFO] Last commit backup created."
+# Disable webhook
+echo "[INFO] [id-PBXjj] Disabling webhook temporarily."
+curl -s -X PATCH "$DEPLOY_HOOK_URL" \
+  -u "$MY_USER:$MY_PASS" \
+  -H "Content-Type: application/json" \
+  -d '{"active": false}'
+sleep 3 # seems that needs a sleep to avoid the webhook to be triggered.
+
 echo "[INFO] [START-1xs3cd7] Deleting last commit in repository."
 set -x
 git -C $BACK_REPO_DIR-backup push --force-with-lease origin +main^1:main
 set +x
 echo "[INFO] [END---1xs3cd7] Deleting last commit in repository."
+
+
+# Re-enable webhook
+sleep 3 # seems that needs a sleep to avoid the webhook to be triggered.
+echo "[INFO] [id-qQ4MR0f] Re-enabling webhook."
+curl -s -X PATCH "$DEPLOY_HOOK_URL" \
+  -u "$MY_USER:$MY_PASS" \
+  -H "Content-Type: application/json" \
+  -d '{"active": true}'
+
+

@@ -633,7 +633,7 @@ function start_app_database_service_and_install_schema {
         fi
         sleep 3
     done
-    echo "[INFO] Database service available on \"psql postgresql://$DB_USER:<DB_PASS>@localhost:5001/$DB_SCHEMA\" (schema NOT installed yet)."
+    echo "[INFO] Database service available on \"psql postgresql://$DB_USER@localhost:5001/$DB_SCHEMA\" (schema NOT installed yet)."
 
     # "docker compose build  db_utils" not required because is required to be built (--build) at each running.
 
