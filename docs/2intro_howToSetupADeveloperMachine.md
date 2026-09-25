@@ -45,9 +45,9 @@ private key to the PC we want to clone from.
 # The user you use to auth to the host
 HOST_USER=mario1
 # The user you inserted in the install.sh script
-MY_USER=myUser
+MY_USER=myLocalUser
 # The domain you inserted in the install.sh script and goes to your server
-MY_DOMAIN=example1-test.com
+MY_DOMAIN=example1-local.com
 scp -r -P22 ${HOST_USER}@${MY_DOMAIN}:~/my-project/setup/secrets/ssh_key.priv ~/.ssh/${MY_USER}.priv
 
 cat >> ~/.ssh/config <<EOF
@@ -70,13 +70,15 @@ ssh -T git@gitea.$MY_DOMAIN
 Now we can clone the repositories
 
 ```shell
-git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51devops.git ~/my-project/
+P_ROOT=~/p/local-example1/
 
-git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51mig-db.git ~/my-project/app/db/source
+git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51devops.git $P_ROOT
 
-git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51back.git ~/my-project/app/back/source
+git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51mig-db.git $P_ROOT/app/db/source
 
-git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51front.git ~/my-project/app/front/source
+git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51back.git $P_ROOT/app/back/source
+
+git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51front.git $P_ROOT/app/front/source
 ```
 
 

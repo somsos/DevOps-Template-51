@@ -27,7 +27,6 @@ sudo nano /etc/hosts
 #   - ""
 docker container prune
 docker builder prune -af
-docker buildx prune -af
 docker images -f dangling=true -q | xargs docker rmi
 # CAUTION: his will make download again the images.
 docker image prune -af
@@ -39,6 +38,7 @@ docker image prune -af
 #   - Incompatible Docker version state
 
 # 
+docker buildx prune -af
 docker buildx ls
 ```
 

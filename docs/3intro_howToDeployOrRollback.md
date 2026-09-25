@@ -19,11 +19,13 @@
 In this case I have a change already prepared.
 
 ```sh
-cd ~/my-project/app/db/source
+P_ROOT=~/p/local-example1
+MY_USER=myLocalUser
+MY_PASS=myLocalUser1p
+MY_DOMAIN=example1-local.com
 
-MY_USER=myUser
-MY_PASS=myPass123p
-MY_DOMAIN=example1-test.com
+
+cd $P_ROOT/app/db/source
 psql postgresql://$MY_USER:$MY_PASS@$MY_DOMAIN:5001/${MY_USER}1db -c "\dt"
 # EXPECTED OUTPUT (NOTICE THAT THERE IS NO TABLE CALLED "bad_design")
 #                  List of tables
@@ -49,8 +51,9 @@ git add . && git status | grep renamed
 git commit -m "The first database change." && git log --oneline
 
 # Get ready to notice the pipeline being triggered by the git push
-#   http://gitea.example1-test.com/myUser/t51mig-db
-#   http://jenkins.example1-test.com/job/Database-Deploy-v1
+echo "http://gitea.$MY_DOMAIN/$MY_USER/t51mig-db" 
+echo "http://jenkins.$MY_DOMAIN/job/Database-Deploy-v1"
+
 git push origin main
 #   Click on "Yes, proceed!" in the triggered pipeline.
 
@@ -65,15 +68,12 @@ The rollback in database is a little more complex than back or front
 applications, because we need to run a sql script to get back to the original
 schema state without affected the data.
 
-1. Go to `http://jenkins.example1-test.com/job/Database-Rollback-v1/`
+1. Go to ` echo "http://jenkins.$MY_DOMAIN/job/Database-Rollback-v1"  `
 2. Push on "Build Now"
-3. If we run `psql postgresql://myUser:${MY_PASS}@example1-test.com:5001/myUserdb -c "\dt"`
+3. If we run `psql postgresql://$MY_USER:${MY_PASS}@$MY_DOMAIN:5001/${MY_USER}1db -c "\dt"`
    we should not be able to see the table bad_design
-4. If we go to `http://gitea.example1-test.com/myUser/t51mig-db` we should see
+4. If we go to `http://gitea.$MY_DOMAIN/myUser/t51mig-db` we should see
    as the last commit the message `Initial commit`.
-
-5. The table `bad_design` should not exist anymore
-  `psql postgresql://$MY_USER:$MY_PASS@$MY_DOMAIN:5001/${MY_USER}1db -c "\dt"`
 
 
 
@@ -99,7 +99,12 @@ schema state without affected the data.
 We add a change in our frontend project
 
 ```shell
-cd ~/my-project/app/back/source
+P_ROOT=~/p/local-example1
+MY_USER=myLocalUser
+MY_PASS=myLocalUser1p
+MY_DOMAIN=example1-local.com
+
+cd $P_ROOT/app/back/source
 
 nano ./adapter/src/main/java/daj/adapter/AdapterApplication.java
 # Edit this Line:
@@ -116,34 +121,38 @@ git add . && git commit -m "Change One" && git log --oneline
 # 0d88925 (origin/main, origin/HEAD) Initial commit
 
 # Get ready to notice the pipeline being triggered by the git push
-#   http://gitea.example1-test.com/myUser/t51back
-#   http://jenkins.example1-test.com/job/Backend-Deploy-v1/
+echo http://gitea.$MY_DOMAIN/$MY_USER/t51back
+echo http://jenkins.$MY_DOMAIN/job/Backend-Deploy-v1/
 git push origin main
 
 # The deploy Jenkins pipeline should have been triggered and the change deployed.
 
-MY_DOMAIN=example1-test.com
 curl http://api.$MY_DOMAIN/test | json_pp
 # EXPECTED OUTPUT
 # {
 #    "message" : "One is the number of this change"
 # }
 
-#Check that the test are running in http://jenkins.example1-test.com/job/Backend-Tests/1/console
+#Check that the test are running in
+echo http://jenkins.$MY_DOMAIN/job/Backend-Tests
+
+# if the tests were successful, we can see the green badge in Gitea
+echo http://gitea.$MY_DOMAIN/$MY_USER/t51back
+# Option B: We can see it here
+curl http://nexus.$MY_DOMAIN/repository/public-files/images/tests-result.svg | grep '>Tests: Passing<'
 ```
 
 ### Rollback Backed
 
-1. Go to http://gitea.example1-test.com/myUser/t51back and notice what is the last commit
+1. Go to `echo http://gitea.$MY_DOMAIN/$MY_USER/t51back` and notice what is the last commit
 
-2. Go to http://jenkins.example1-test.com/job/Backend-Rollback/
+2. Go to `echo http://jenkins.$MY_DOMAIN/job/Backend-Rollback/`
 
 3. Click on "Build Now"
 
 4. At the end of the pipeline execution we should see the last message that was before
 
 ```shell
-MY_DOMAIN=example1-test.com
 curl http://api.$MY_DOMAIN/test | json_pp
 # EXPECTED OUTPUT
 # {
@@ -151,8 +160,8 @@ curl http://api.$MY_DOMAIN/test | json_pp
 # }
 ```
 
-5. Return to http://gitea.example1-test.com/myUser/t51back and the last commit
-   should have been deleted, keeping a commit with a message of `Initial commit`.
+5. Return to Gitea and the last commit should have been deleted, keeping a
+   commit with a message of `Initial commit`.
 
 
 
@@ -182,7 +191,7 @@ curl http://api.$MY_DOMAIN/test | json_pp
 We add a change in our frontend project
 
 ```shell
-cd ~/my-project//app/front/source
+cd $P_ROOT/app/front/source
 
 cat > ./src/app/main/internals/view/pages/home/home.page.html <<EOF
 <div>

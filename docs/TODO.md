@@ -2,16 +2,17 @@
 
 ## Doing (The upper top is the current task)
 
+- [ ] Check that the badge_tests_result stills works
+  - [X] Update the backend repo with the new README with the part to remplace on install.
+  - [ ] Update t51devops.tar.xz
+
 - [ ] Blog with title "What if we first deploy and then start to develop"
 
 - [ ] Fix, Summarize more the README.md and include the howToDocuments
   - [ ] Finish Trigger some deploy pipeline
 
-- [ ] Check that the badge_tests_result stills works
-
 - [ ] Create an more extensive steps to check that is working the project
   - [ ] I think i'm not telling anything about registry without HTTPS.
-  - [ ] Sey that the badge_tests_result.svg exists
 
 - [ ] Mention on docs to exec again install.sh to see the available services.
 

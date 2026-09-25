@@ -21,6 +21,7 @@ services:
       - GITEA__server__ROOT_URL=http://gitea.${MY_DOMAIN}/
       - GITEA__webhook__ALLOWED_HOST_LIST=jenkins,172.30.0.0/16,external
       # Initial repositories
+      - MY_DOMAIN=${MY_DOMAIN}
       - BACK_NAME=${BACK_NAME}
       - FRONT_NAME=${FRONT_NAME}
       - DB_MIG_NAME=${DB_MIG_NAME}

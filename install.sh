@@ -59,11 +59,21 @@ start_app_frontend_service
 echo "Installation completed successfully."
 
 
-# example of running the install.sh script:
+# example of running the install.sh script in local:
+# bash ./install.sh <<EOF
+# local
+# example1-local.com
+# myLocalUser
+# myLocalUser1p
+# myLocalUser1p
+# EOF
+
+# example of running the install.sh script in test:
 # bash ./install.sh <<EOF
 # test
 # example1-test.com
-# myUser
-# myPass123p
-# myPass123p
+# myTestUser
+# myTestUser1p
+# myTestUser1p
 # EOF
+

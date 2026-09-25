@@ -57,6 +57,11 @@ if [ -z "$SHARED_TOKEN" ]; then
   exit 1
 fi
 
+if [ -z "$MY_DOMAIN" ]; then
+  echo "[ERROR] global environment variable MY_DOMAIN required"
+  exit 1
+fi
+
 ####################-ENDS-CHECK-REQUIRED-GLOBAL-VARIABLES-#######################
 ################################################################################
 
@@ -211,6 +216,15 @@ function addRepo {
           && echo "[INFO] Repo populated: $1 using $TAR_FILE" \
           || echo "[ERROR] $1 something went wrong uncompressed $TAR_FILE"
         
+        if [[ "$1" = "$BACK_NAME"  ]]; then 
+          BACK_TESTS_SVG="http://nexus.${MY_DOMAIN}/repository/public-files/images/tests-result.svg"
+          BACK_README_FILE="$NEW_REPO_DIR/README.md"
+          if [ ! -f $README_FILE ]; then
+            echo "[ERROR] The README.md file in back repository does not exists"
+          fi
+          sed -i "s|src=\"■■■\"|src=\"$BACK_TESTS_SVG\"|g" $BACK_README_FILE
+        fi
+
         # Create first commit
         git -C $NEW_REPO_DIR init -q && echo "[INFO] Repo init in $NEW_REPO_DIR" || echo "[ERROR] git init $NEW_REPO_DIR"
         git -C $NEW_REPO_DIR branch -M main # rename current branch to main, to be sure when pushing
