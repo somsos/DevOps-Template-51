@@ -7,6 +7,7 @@
         "BUILDKIT",
         "buildx",
         "configurator",
+        "distros",
         "healthcheck",
         "htpasswd",
         "isready",

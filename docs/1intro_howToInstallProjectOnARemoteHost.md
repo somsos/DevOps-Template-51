@@ -55,34 +55,87 @@ Google Cloud Platform, Contabo, etc with Ubuntu server 24.4 or similar.
 1, Download code and heavy dependencies
 
 ```shell
-mkdir -p ~/my-project && cd ~/my-project
+# Check we have 16GB storage available "look for: mounted on: '/' "
+df -h
 
-wget -O code.tar.gz https://github.com/somsos/DevOps-Template-51/releases/download/0.11/code.tar.gz
+HOST_P_ROOT=/home/$USER/my-project
+rm -rfv $HOST_P_ROOT && mkdir -vp $HOST_P_ROOT && cd $HOST_P_ROOT
 
-tar xzf code.tar.gz -C . && rm ./code.tar.gz
+curl -L -o $HOST_P_ROOT/code.tar.xz https://github.com/somsos/DevOps-Template-51/releases/download/0.11/code.tar.xz
 
-wget -O dep_data/offlineDeps.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/offlineDeps.tar.gzaa && wget -O dep_data/offlineDeps.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/V0.10/offlineDeps.tar.gzab
+tar xJf $HOST_P_ROOT/code.tar.xz -C . && rm -v $HOST_P_ROOT/code.tar.xz
 
-cd dep_data/ && cat offlineDeps.tar.gza* | tar xzf - -C . && rm ./offlineDeps.tar.gza*
-cd ~/my-project
+# Optional: If we downloaded the files in our developer machine.
+# HOST_USER=mario1
+# HOST_P_ROOT=/home/$HOST_USER/my-project
+# DEV_P_ROOT=/home/mario/mine/p/t51
+# HOST_IP=192.168.1.8
+# scp -r $DEV_P_ROOT/dep_data/offlineDeps.tar.xz.a* $HOST_USER@$HOST_IP:$HOST_P_ROOT/dep_data/
+curl -L -o dep_data/offlineDeps.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/0.11/offlineDeps.tar.gzaa && curl -L -o dep_data/offlineDeps.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/0.11/offlineDeps.tar.gzab
+
+cd $HOST_P_ROOT/dep_data/ && cat offlineDeps.tar.xz.a* | tar xJf - -C . && rm -v $HOST_P_ROOT/dep_data/offlineDeps.tar.xz.a*
 ```
 
 2, Install docker
 
 ```shell
 # Just as checking if we really want to test it without internet.
-wget -qT 3 --spider https://www.google.com && echo "There's internet" || echo "NO INTERNET, CONTINUE"
+# Temp: 10.222.58.8
+# We can cut off access to internet by setting a wrong gateway with...
+# (in my case the right one is ...254 )
+#   nmcli con show
+#   sudo nmcli con mod cable ipv4.gateway 192.168.1.1 
+#   sudo nmcli con up cable
+curl -sSf -m 3 -I https://www.google.com >/dev/null 2>&1 && echo "There's internet" || echo "NO INTERNET, CONTINUE"
 
-cd ~/my-project/dep_data/docker_installer/
+cd $HOST_P_ROOT/dep_data/
+cd docker_installer_{DISTRO}/
 
 # Note: The official docker install trough package (offline), it says to install
 # also this "./docker-buildx-plugin_0.34.1-1~ubuntu.24.04~noble_amd64.deb" but
 # for this we do not need buildX
 
+# Ubuntu
 sudo dpkg -i ./containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
+
+# Debian
+dpkg -i ./containerd.io_2.3.6-1~debian.13~trixie_amd64.deb \
+  ./docker-ce_29.8.2-1~debian.13~trixie_amd64.deb \
+  ./docker-ce-cli_29.8.2-1~debian.13~trixie_amd64.deb \
+  ./docker-compose-plugin_5.6.0-1~debian.13~trixie_amd64.deb
+
+
+# Alma10
+sudo dnf install ./containerd.io-2.3.6-1.el10.x86_64.rpm \
+  ./docker-ce-29.8.2-1.el10.x86_64.rpm \
+  ./docker-ce-cli-29.8.2-1.el10.x86_64.rpm \
+  ./docker-compose-plugin-5.6.0-1.el10.x86_64.rpm
+
+
+# Fedora
+sudo sudo dnf install ./containerd.io-2.3.6-1.fc44.x86_64.rpm \
+    ./docker-ce-29.8.2-1.fc44.x86_64.rpm \
+    ./docker-ce-cli-29.8.2-1.fc44.x86_64.rpm \
+    ./docker-compose-plugin-5.6.0-1.fc44.x86_64.rpm
+
+# SUSE
+sudo transactional-update pkg install \
+  ./containerd.io-1.7.24-3.1.s390x.rpm \
+  ./docker-ce-27.4.1-1.s390x.rpm \
+  ./docker-ce-cli-27.4.1-1.s390x.rpm \
+  ./docker-compose-plugin-2.6.0-3.s390x.rpm
+
+# Start Decker
+sudo systemctl enable --now docker
+
+sudo systemctl start docker
+
+sudo systemctl status docker
+
+docker --version
 
 sudo groupadd docker
 sudo usermod -aG docker $USER
@@ -126,7 +179,7 @@ docker run --rm --name temp-test hello-world
 1, Clone repository
 
 ```shell
-git clone https://github.com/somsos/DevOps-Template-51 ~/my-project
+git clone https://github.com/somsos/DevOps-Template-51 $P_ROOT
 ```
 
 2, Install docker online
@@ -137,6 +190,8 @@ I put this guide just as a quick reference.
 
 Also do not forget the [post-installation](https://docs.docker.com/engine/install/linux-postinstall/) steps,
 so we can use docker without root.
+
+In Ubuntu server
 
 ```shell
 # COPY AND PASTE OF DOCKER OFFICIAL DOCUMENTATION 2026-07-06
@@ -196,24 +251,19 @@ docker run --rm --name temp-test hello-world
 1, Run install script
 
 ```shell
-cd ~/my-project
+cd $HOST_P_ROOT
+MY_ENV=test
+MY_DOMAIN=example1-$MY_ENV.com
+MY_USER=myTestUser
+MY_PASS=myTestUser1p
 
 bash ./install.sh <<EOF
-test
-example1-test.com
-myUser
-myPass123p
-myPass123p
+$MY_ENV
+$MY_DOMAIN
+$MY_USER
+$MY_PASS
+$MY_PASS
 EOF
-
-# Services Created
-# http://gitea.example1-test.com
-# http://jenkins.example1-test.com/login
-# http://nexus.example1-test.com
-# http://api.example1-test.com/swagger-ui/index.html
-# http://example1-test.com
-# http://registry.example1-test.com
-# psql -U $MY_USER -h $HOST_IP -p 5001 -d ${MY_USER}1db "\dt"
 
 # Optional (We can run it again just to see the available services more easily)
 bash ./install.sh
@@ -223,10 +273,6 @@ bash ./install.sh
 temporal domains my local DNS file.
 
 ```shell
-MY_DOMAIN=example1-test.com
-HOST_IP=192.168.1.8
-MY_USER=myUser
-
 sudo tee -a /etc/hosts <<EOF
 
 $HOST_IP $MY_DOMAIN
@@ -253,7 +299,19 @@ curl -s -o /dev/null -w "%{http_code}\n" http://$MY_DOMAIN
 # Registry
 curl -s -o /dev/null -w "%{http_code}\n" http://registry.$MY_DOMAIN
 # Database
-psql -U $MY_USER -h $HOST_IP -p 5001 -d ${MY_USER}1db "\dt"
+psql -U $MY_USER -h $HOST_IP -p 5001 -d ${MY_USER}1db -c "\dt"
 
 ```
+
+Optional, If we have few disk space we can delete de dep_data/IMAGES_* files,
+because it happened me, that jenkins pipelines stop working, because there was
+less than 1GB available.
+
+```bash
+rm -rfv $HOST_P_ROOT/dep_data/
+
+df -h
+```
+
+
 

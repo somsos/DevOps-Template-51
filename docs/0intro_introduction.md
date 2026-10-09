@@ -121,7 +121,7 @@ need a rollback, we apply a git revert or we start a pipeline to delete the last
 pushed commit.
 
 A pipeline follows the next execution path, to explain it I will use the Backend
-deploy.
+deploy, because for the other ones follows a pretty similar path.
 
 **1. Jenkins UI:** Using the JCasC it's declared a pipeline, which just binds a
 webhook with the necessary scripts, in the workspace directory.

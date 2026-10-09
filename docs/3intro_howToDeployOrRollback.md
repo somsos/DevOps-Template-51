@@ -6,7 +6,7 @@
     - [Rollback Database](#rollback-database)
   - [Backend pipelines](#backend-pipelines)
     - [Deploy Backend](#deploy-backend)
-    - [Rollback Backed](#rollback-backed)
+    - [Rollback Backend](#rollback-backend)
   - [Frontend pipelines](#frontend-pipelines)
     - [Deploy Frontend](#deploy-frontend)
     - [Rollback Frontend](#rollback-frontend)
@@ -19,13 +19,13 @@
 In this case I have a change already prepared.
 
 ```sh
-P_ROOT=~/p/local-example1
-MY_USER=myLocalUser
-MY_PASS=myLocalUser1p
-MY_DOMAIN=example1-local.com
+DEV_P_ROOT=/home/mario/mine/p/example1-test
+MY_USER=myTestUser
+MY_PASS=myTestUser1p
+MY_DOMAIN=example1-test.com
 
 
-cd $P_ROOT/app/db/source
+cd $DEV_P_ROOT/app/db/source
 psql postgresql://$MY_USER:$MY_PASS@$MY_DOMAIN:5001/${MY_USER}1db -c "\dt"
 # EXPECTED OUTPUT (NOTICE THAT THERE IS NO TABLE CALLED "bad_design")
 #                  List of tables
@@ -40,8 +40,7 @@ psql postgresql://$MY_USER:$MY_PASS@$MY_DOMAIN:5001/${MY_USER}1db -c "\dt"
 #  public | users_picture         | table | myUser
 #  public | users_roles           | table | myUser
 
-cd app/db/source/
-test -f ./docs/03-testTable.changelog.xml && echo "You can proceed with this steps." || echo "ERROR, file not found look for the alternative file."
+test -f ./docs/03-testTable.changelog.xml && echo "OK" || echo "ERROR, file not found look for the alternative file."
 mv ./docs/03-testTable.changelog.xml  ./changelogs
 
 git add . && git status | grep renamed
@@ -51,8 +50,8 @@ git add . && git status | grep renamed
 git commit -m "The first database change." && git log --oneline
 
 # Get ready to notice the pipeline being triggered by the git push
-echo "http://gitea.$MY_DOMAIN/$MY_USER/t51mig-db" 
-echo "http://jenkins.$MY_DOMAIN/job/Database-Deploy-v1"
+firefox -new-tab "http://gitea.$MY_DOMAIN/$MY_USER/t51mig-db"
+firefox -new-tab "http://jenkins.$MY_DOMAIN/job/Database-Deploy-v1"
 
 git push origin main
 #   Click on "Yes, proceed!" in the triggered pipeline.
@@ -68,11 +67,11 @@ The rollback in database is a little more complex than back or front
 applications, because we need to run a sql script to get back to the original
 schema state without affected the data.
 
-1. Go to ` echo "http://jenkins.$MY_DOMAIN/job/Database-Rollback-v1"  `
+1. Go to ` firefox -new-tab "http://jenkins.$MY_DOMAIN/job/Database-Rollback-v1"  `
 2. Push on "Build Now"
 3. If we run `psql postgresql://$MY_USER:${MY_PASS}@$MY_DOMAIN:5001/${MY_USER}1db -c "\dt"`
    we should not be able to see the table bad_design
-4. If we go to `http://gitea.$MY_DOMAIN/myUser/t51mig-db` we should see
+4. If we go to `firefox -new-tab http://gitea.$MY_DOMAIN/$MY_USER/t51mig-db` we should see
    as the last commit the message `Initial commit`.
 
 
@@ -99,12 +98,7 @@ schema state without affected the data.
 We add a change in our frontend project
 
 ```shell
-P_ROOT=~/p/local-example1
-MY_USER=myLocalUser
-MY_PASS=myLocalUser1p
-MY_DOMAIN=example1-local.com
-
-cd $P_ROOT/app/back/source
+cd $DEV_P_ROOT/app/back/source
 
 nano ./adapter/src/main/java/daj/adapter/AdapterApplication.java
 # Edit this Line:
@@ -121,8 +115,8 @@ git add . && git commit -m "Change One" && git log --oneline
 # 0d88925 (origin/main, origin/HEAD) Initial commit
 
 # Get ready to notice the pipeline being triggered by the git push
-echo http://gitea.$MY_DOMAIN/$MY_USER/t51back
-echo http://jenkins.$MY_DOMAIN/job/Backend-Deploy-v1/
+firefox -new-tab http://gitea.$MY_DOMAIN/$MY_USER/t51back
+firefox -new-tab http://jenkins.$MY_DOMAIN/job/Backend-Deploy-v1/
 git push origin main
 
 # The deploy Jenkins pipeline should have been triggered and the change deployed.
@@ -134,19 +128,19 @@ curl http://api.$MY_DOMAIN/test | json_pp
 # }
 
 #Check that the test are running in
-echo http://jenkins.$MY_DOMAIN/job/Backend-Tests
+firefox -new-tab http://jenkins.$MY_DOMAIN/job/Backend-Tests
 
 # if the tests were successful, we can see the green badge in Gitea
-echo http://gitea.$MY_DOMAIN/$MY_USER/t51back
+firefox -new-tab http://gitea.$MY_DOMAIN/$MY_USER/t51back
 # Option B: We can see it here
 curl http://nexus.$MY_DOMAIN/repository/public-files/images/tests-result.svg | grep '>Tests: Passing<'
 ```
 
-### Rollback Backed
+### Rollback Backend
 
-1. Go to `echo http://gitea.$MY_DOMAIN/$MY_USER/t51back` and notice what is the last commit
+1. Go to `firefox -new-tab http://gitea.$MY_DOMAIN/$MY_USER/t51back` and notice what is the last commit
 
-2. Go to `echo http://jenkins.$MY_DOMAIN/job/Backend-Rollback/`
+2. Go to `firefox -new-tab http://jenkins.$MY_DOMAIN/job/Backend-Rollback/`
 
 3. Click on "Build Now"
 
@@ -191,7 +185,7 @@ curl http://api.$MY_DOMAIN/test | json_pp
 We add a change in our frontend project
 
 ```shell
-cd $P_ROOT/app/front/source
+cd $DEV_P_ROOT/app/front/source
 
 cat > ./src/app/main/internals/view/pages/home/home.page.html <<EOF
 <div>
@@ -205,30 +199,50 @@ git status | grep modified && git add . && git commit -m "My change number 1" &&
 >        modified:   src/app/main/internals/view/pages/home/home.page.html
 
 
+# Notice the last look before the change  
+firefox -new-tab http://$MY_DOMAIN
 
-# Open Gitea and Jenkins in the browser, and prepare to notice the pipeline 
-# to be triggered on push
-#   Notice the last look before the change  http://example1-test.com/
-#   Notice the last commit message:         http://gitea.example1-test.com/myUser/t51front
-#   http://jenkins.example1-test.com/job/Frontend-Deploy-v1/
+# Notice the last commit message: 
+firefox -new-tab http://gitea.$MY_DOMAIN/$MY_USER/t51front
+
+# Get ready to see how the pipeline is triggered
+firefox -new-tab http://jenkins.$MY_DOMAIN/job/Frontend-Deploy-v1/
 git push origin main
+
 #   The deploy Jenkins pipeline should have been triggered and the change deployed.
-#   Notice deployed change                  http://example1-test.com/
+
+#   Notice deployed change
+firefox -new-tab http://$MY_DOMAIN/
 ```
 
 ### Rollback Frontend
 
-1. Notice the last commit message http://gitea.example1-test.com/myUser/t51front
+1. Notice the last commit message
+```sh
+firefox -new-tab http://gitea.$MY_DOMAIN/$MY_USER/t51front
+```
 
-2. Notice the last look before the rollback  http://example1-test.com/
+2. Notice the last look before the rollback
+```sh
+firefox -new-tab http://$MY_DOMAIN
+```
 
-3. Go to http://jenkins.example1-test.com/job/Frontend-Rollback/
+1. Go to the pipeline and click on "Build Now" to start the rollback
 
-4. Click on "Build Now"
+```sh
+firefox -new-tab http://jenkins.$MY_DOMAIN/job/Frontend-Rollback/
+```
 
-5. Notice how the the last commit message changed to the one was before http://gitea.example1-test.com/myUser/t51front
+1. Notice how the the last commit message changed to the one was before
 
-6. Notice that the look changed to the one was before on http://example1-test.com/
+```sh
+firefox -new-tab http://gitea.$MY_DOMAIN/$MY_USER/t51front
+```
+
+1. Notice that the look changed to the one was before on
+```sh
+firefox -new-tab http://$MY_DOMAIN
+```sh
 
 
 

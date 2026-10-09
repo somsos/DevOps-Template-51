@@ -26,11 +26,44 @@ docker save --output ./IMAGE_DB_MIG.tar liquibase:4.33-alpine
 # Avoid the file docker-buildx-plugin_<version>_<arch>.deb, because it's not
 # required.
 # In my case that I downloaded to install it in Ubuntu24.
-cd ./dep_data/docker_installer
+cd ./dep_data/docker_installer_ubuntu
 wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb
 wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb
 wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb
 wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
+
+cd ./dep_data/docker_installer_debian
+wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/containerd.io_2.3.6-1~debian.13~trixie_amd64.deb
+wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-ce_29.8.2-1~debian.13~trixie_amd64.deb
+wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-ce-cli_29.8.2-1~debian.13~trixie_amd64.deb
+wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-compose-plugin_5.6.0-1~debian.13~trixie_amd64.deb
+
+
+cd ./dep_data/docker_installer_alma10
+wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/containerd.io-2.3.6-1.el10.x86_64.rpm
+wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-ce-29.8.2-1.el10.x86_64.rpm
+wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-ce-cli-29.8.2-1.el10.x86_64.rpm
+wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-compose-plugin-5.6.0-1.el10.x86_64.rpm
+
+
+
+
+cd ./dep_data/docker_installer_fedora
+wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-compose-plugin-5.6.0-1.fc44.x86_64.rpm
+wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-ce-cli-29.8.2-1.fc44.x86_64.rpm
+wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/containerd.io-2.3.6-1.fc44.x86_64.rpm
+wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-compose-plugin-5.6.0-1.fc44.x86_64.rpm
+
+
+
+
+cd ./dep_data/docker_installer_suse
+wget https://download.docker.com/linux/sles/15/s390x/stable/Packages/containerd.io-1.7.24-3.1.s390x.rpm
+wget https://download.docker.com/linux/sles/15/s390x/stable/Packages/docker-ce-27.4.1-1.s390x.rpm
+wget https://download.docker.com/linux/sles/15/s390x/stable/Packages/docker-ce-cli-27.4.1-1.s390x.rpm
+wget https://download.docker.com/linux/sles/15/s390x/stable/Packages/docker-compose-plugin-2.6.0-3.s390x.rpm
+
+
 
 # And to create the pre_initialized_nexus_mvn_npm.tar.xz file, just compress
 # the  nexus volume in a desired state.
@@ -43,36 +76,53 @@ tar czf ../../../dep_data/pre_initialized_nexus_mvn_npm-2.tar.gz .
 # way the files will be in the root.
 cd ./dep_data
 test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong path"
-tar czf - ./* | split -b 1900M - ./dep_data.tar.gz
 
+# Compress
+tar cJf - ./* | split -b 1900M - ./offlineDeps.tar.xz.
+```
+
+### For extracting 
+
+```sh
 cat /path/to/output/prefix.tar.gz.* | tar xzf /p1/dep_data/dep_data.tar.xz -C /p1
 ```
+
+
 
 ## Todos los archivos y carpetas
 
 ```yml
-./docker_installer/
-  containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb
-  docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb
-  docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb
-  docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
-pre_initialized_nexus_mvn_npm.tar.xz
-IMAGE_DB.tar
-IMAGE_DB_MIG.tar
-IMAGE_ACME_COMPANION.tar
-IMAGE_CURL.tar
-IMAGE_GITEA.tar
-IMAGE_HTTPD.tar
-IMAGE_JAVA.tar
-IMAGE_JENKINS.tar
-IMAGE_MVN.tar
-IMAGE_NEXUS.tar
-IMAGE_NGINX.tar
-IMAGE_NODE.tar
-IMAGE_REGISTRY.tar
-IMAGE_REVERSE_PROXY.tar
-IMAGE_T51DB_UTILS.tar
-IMAGE_T51JENKINS.tar
+./docker_installer_ubuntu/
+    containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb
+    docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb
+    docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb
+    docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
+./docker_installer_fedora/
+    containerd.io-2.3.6-1.fc44.x86_64.rpm
+    docker-ce-29.8.2-1.fc44.x86_64.rpm
+    docker-ce-cli-29.8.2-1.fc44.x86_64.rpm
+    docker-compose-plugin-5.6.0-1.fc44.x86_64.rpm
+./docker_installer_debian/
+    ...
+./docker_installer_alma/
+    ...
+./pre_initialized_nexus_mvn_npm.tar.xz
+./IMAGE_DB.tar
+./IMAGE_DB_MIG.tar
+./IMAGE_ACME_COMPANION.tar
+./IMAGE_CURL.tar
+./IMAGE_GITEA.tar
+./IMAGE_HTTPD.tar
+./IMAGE_JAVA.tar
+./IMAGE_JENKINS.tar
+./IMAGE_MVN.tar
+./IMAGE_NEXUS.tar
+./IMAGE_NGINX.tar
+./IMAGE_NODE.tar
+./IMAGE_REGISTRY.tar
+./IMAGE_REVERSE_PROXY.tar
+./IMAGE_T51DB_UTILS.tar
+./IMAGE_T51JENKINS.tar
 ```
 
 
@@ -80,36 +130,9 @@ IMAGE_T51JENKINS.tar
 
 Tal y como las entrega el comando `docker save --output <path/file.tar> <IMAGE_NAME>`
 
-Em mi caso la ultima vez tuve esta lista de imagenes.
-
-```yml
-IMAGE_DB.tar
-IMAGE_DB_MIG.tar
-IMAGE_ACME_COMPANION.tar
-IMAGE_CURL.tar
-IMAGE_GITEA.tar
-IMAGE_HTTPD.tar
-IMAGE_JAVA.tar
-IMAGE_JENKINS.tar
-IMAGE_NEXUS.tar
-IMAGE_NGINX.tar
-IMAGE_NODE.tar
-IMAGE_REGISTRY.tar
-IMAGE_REVERSE_PROXY.tar
-```
-
 ## docker installer
 
-Se siguio la documentacion oficial para instalacion de ubuntu, en mi caso termine
-con estos archivos
-
-```yml
-./docker_installer/
-  containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb
-  docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb
-  docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb
-  docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
-```
+Se siguio la documentacion oficial para instalacion.
 
 ## mvn and npm dependencies
 

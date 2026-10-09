@@ -11,8 +11,18 @@ In case of not having a public DNS, for example, we are making tests in a LAN
 network or in localhost, we need to add our domain name to our `/etc/hosts`
 file. for example.
 
-```yml
+```bash
+# the root path folder project in the developer machine
+DEV_P_ROOT=/home/mario/mine/p/example1-test
+# the root path folder project in the host
+HOST_P_ROOT=/home/mario1/my-project
+# The user you use to auth to the host
+HOST_USER=mario1
+# The user you inserted in the install.sh script
+MY_USER=myTestUser
+# The domain you inserted in the install.sh script and goes to your server
 MY_DOMAIN=example1-test.com
+# Temp: 10.222.58.8, 192.168.1.8
 HOST_IP=192.168.50.8
 
 sudo tee -a /etc/hosts <<EOF
@@ -32,8 +42,7 @@ EOF
 By default the Jenkins pipelines are not approved, we need to do it manually.
 
 ```shell
-MY_DOMAIN=example1-test.com
-echo http://jenkins.$MY_DOMAIN/manage/scriptApproval/
+firefox -new-tab http://jenkins.$MY_DOMAIN/manage/scriptApproval/
 ```
 
 ## Clone repositories
@@ -42,13 +51,7 @@ I'm using ssh public-private keys as auth process, so we need to copy the
 private key to the PC we want to clone from.
 
 ```shell
-# The user you use to auth to the host
-HOST_USER=mario1
-# The user you inserted in the install.sh script
-MY_USER=myLocalUser
-# The domain you inserted in the install.sh script and goes to your server
-MY_DOMAIN=example1-local.com
-scp -r -P22 ${HOST_USER}@${MY_DOMAIN}:~/my-project/setup/secrets/ssh_key.priv ~/.ssh/${MY_USER}.priv
+scp -r -P22 ${HOST_USER}@${MY_DOMAIN}:$HOST_P_ROOT/setup/secrets/ssh_key.priv ~/.ssh/${MY_USER}.priv
 
 cat >> ~/.ssh/config <<EOF
 
@@ -70,15 +73,29 @@ ssh -T git@gitea.$MY_DOMAIN
 Now we can clone the repositories
 
 ```shell
-P_ROOT=~/p/local-example1/
+git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51devops.git $DEV_P_ROOT
 
-git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51devops.git $P_ROOT
+git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51mig-db.git $DEV_P_ROOT/app/db/source
 
-git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51mig-db.git $P_ROOT/app/db/source
+git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51back.git $DEV_P_ROOT/app/back/source
 
-git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51back.git $P_ROOT/app/back/source
+git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51front.git $DEV_P_ROOT/app/front/source
 
-git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51front.git $P_ROOT/app/front/source
+cd $DEV_P_ROOT
+
+scp -r -P22 ${HOST_USER}@${MY_DOMAIN}:$HOST_P_ROOT/.env $DEV_P_ROOT/.env
+
+# Checks
+
+test -f $DEV_P_ROOT/.env && echo "OK" || echo "ERROR, file not found."
+
+test -f $DEV_P_ROOT/app/back/source/pom.xml && echo "OK" || echo "ERROR, file not found."
+
+test -f $DEV_P_ROOT/app/db/source/liquibase.properties && echo "OK" || echo "ERROR, file not found."
+
+test -f $DEV_P_ROOT/app/front/source/package.json && echo "OK" || echo "ERROR, file not found."
+
+
 ```
 
 

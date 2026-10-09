@@ -3,12 +3,12 @@
 - [Useful Commands](#useful-commands)
   - [TL;DR](#tldr)
   - [Create a file to create a repo in gitea](#create-a-file-to-create-a-repo-in-gitea)
+- [How to uninstall](#how-to-uninstall)
 
 
 ## TL;DR
 
 ```shell
-
 # each time the machine starts
 sudo systemctl start containerd.service docker.socket docker.service docker
 sudo systemctl stop docker containerd.service docker.socket docker.service
@@ -80,6 +80,9 @@ mkdir ../temp/
 #Compress
 tar --exclude='.git' --exclude='*/target' -cJf ../temp/$F_N .
 
+# To Upload to release
+tar -cJf ../code.tar.xz .
+
 
 # Check Uncompress
 # Note: the files must not be inside a root folder, the root folder have the files
@@ -89,3 +92,63 @@ tar -xJf $F_N -C .
 ls
 # adapter  common  pom-spring-boot.xml  pom.xml  product  README.md  t51back.tar.xz  user
 ```
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+----
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+# How to uninstall
+
+```shell
+docker compose --profile all down
+
+docker volume rm t51_t51DB_vol1
+
+rm -fv ./.env
+
+rm -rfv setup/secrets/registry.password setup/secrets/ssh_key.priv setup/secrets/ssh_key.pub setup/gitea/vol-config-dir/app.ini
+
+sudo rm -rfv setup/jenkins/vol-jenkins_home/ && git restore setup/jenkins/vol-jenkins_home
+rm -rfv setup/gitea/vol-data && git restore setup/gitea/vol-data
+rm -rfv setup/nexus/vol-data && git restore setup/nexus/vol-data/0vol-data.md
+
+# delete the added host
+sudo nano ~/.ssh/config
+sudo nano ~/.ssh/known_hosts
+sudo nano /etc/hosts
+
+
+
+
+
+# In case of having these errors:
+#   - "Error response from daemon: RWLayer of container ... is unexpectedly nill"
+#   - ""
+docker container prune
+docker builder prune -af
+docker images -f dangling=true -q | xargs docker rmi
+# CAUTION: his will make download again the images.
+docker image prune -af
+# Description: Running "docker compose up ..." gives this error.
+# Most probable causes
+#   - docker metadata corruption
+#   - interrupted container creation
+#   - a container references an invalid image layer
+#   - Incompatible Docker version state
+
+# 
+docker buildx prune -af
+docker buildx ls
+```
+
+

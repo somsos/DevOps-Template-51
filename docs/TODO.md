@@ -2,26 +2,53 @@
 
 ## Doing (The upper top is the current task)
 
+- [X] Download and check alma again.
+
+- [ ] Test install in different distros
+  - [X] Debian13
+  - [X] Ubuntu24
+  - [X] AlmaLinux10 (Community created to replace CentOS, CentOS is in EOL already)
+  - [X] Fedora44 (is more for development).
+  - [ ] AlpineExt3 (Most closed to just linux kernel)
+
+  - [ ] OpenSUSE_MicroOS_2026
+
 - [ ] Blog with title "What if we first deploy and then start to develop"
+  - [ ] Add section what did I learned here.
 
-- [ ] Fix, Summarize more the README.md and include the howToDocuments
-  - [ ] Finish Trigger some deploy pipeline
+- [ ] Create a version of nexus pre-downloaded maven dependencies, **after exec test**.
 
-- [ ] Create an more extensive steps to check that is working the project
-  - [ ] I think i'm not telling anything about registry without HTTPS.
+- [ ] Deploy in a cloud server.
+- [ ] Create a pipeline/script/documentation to setup https.
 
-- [ ] Mention on docs to exec again install.sh to see the available services.
+- [ ] Create script/pipeline to create files to create a release in Github or similar.
 
-- [ ] Create script/pipeline to create dep_data folder
+- [ ] MAYBE Remove confirm to continue in database
 
-- [ ] Documentation Add an interaction example in gif/webm format
+- [ ] Create serie of steps to update an image.
+- [ ] Update images
+  - [ ] IMAGE_MVN (from *maven:3.9.9-eclipse-temurin-21-alpine*z to `XXX`) 
+  - [ ] IMAGE_JAVA (from *eclipse-temurin:21-alpine* to `XXX`) 
+  - [ ] IMAGE_JENKINS (from *jenkins/jenkins:2.555.1-lts-jdk25* to `XXX`) 
+  - [ ] IMAGE_T51JENKINS (from *t51-jenkins:latest* to `XXX`) 
+  - [ ] IMAGE_GITEA (from *docker.gitea.com/gitea:1.26.1-rootless* to `XXX`) 
+  - [ ] IMAGE_NODE (from *node:25.7-alpine3.23* to `XXX`) 
+  - [ ] IMAGE_NGINX (from *nginx:stable-alpine3.23* to `XXX`) 
+  - [ ] IMAGE_REVERSE_PROXY (from *nginxproxy/nginx-proxy:1.10-alpine* to `XXX`) 
+  - [ ] IMAGE_ACME_COMPANION (from *nginxproxy/acme-companion:2.6* to `XXX`) 
+  - [ ] IMAGE_NEXUS (from *sonatype/nexus3:3.93.0-alpine* to `XXX`) 
+  - [ ] IMAGE_CURL (from *curlimages/curl:8.20.0* to `XXX`) 
+  - [ ] IMAGE_DB (from *postgres:17.6-alpine3.22* to `XXX`) 
+  - [ ] IMAGE_DB_MIG_BASE (from *liquibase:4.33-alpine* to `XXX`) 
+
 
 - [ ] Create a package to publish to the public.
   - [ ] Documentation
     - [X] Look for examples
     - [X] Explain by components
     - [ ] Create an external user perspective
-    
+      - [ ] Documentation Add an interaction example in gif/webm format
+
     - [ ] Finish documents
       - [X] howTo1_InstallProjectOnARemoteHost.md
         - [X] Mention to approve manually the jenkins pipelines on the first run.
@@ -342,6 +369,7 @@ posible.
       - [X] Clone, change and push
       - [X] deploy
       - [X] rollback
+  - [X] Mention on docs to exec again install.sh to see the available services.
 - [X] Combine the download_{back|db|devops|front}_repo.sh in just one function
       - **Omitted** To much abstraction, i prefer repeat a little of code than
         make a complex one.
@@ -392,6 +420,7 @@ posible.
 - [X] Check that the badge_tests_result stills works
   - [X] Update the backend repo with the new README with the part to remplace on install.
   - [X] Update t51devops.tar.xz
-
+- [X] Create an more extensive steps to check that is working the project
+- [X] Update install script to be compatible with non-systemd distros.
 
 

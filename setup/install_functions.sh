@@ -27,11 +27,20 @@ function check_dependencies {
         exit 1
     fi
 
-    if ! systemctl is-active --quiet docker; then
-        echo "[ERROR] Docker service is not active. Please start the Docker service and try again."
-        echo "        You can run: sudo systemctl start containerd.service docker.socket docker.service docker"
-        exit 1
-    fi
+
+    if command -v systemctl &> /dev/null; then # systemd-based system
+        if ! systemctl is-active --quiet docker; then
+            echo "[ERROR] Docker service is not active. Please start the Docker service and try again."
+            echo "        You can run: sudo systemctl start docker"
+            exit 1
+        fi
+    else # non-systemd
+        if ! service docker status >/dev/null 2>&1; then
+            echo "[ERROR] Docker service is not active. Please start the Docker service and try again."
+            echo "        You can run: sudo service docker start"
+            exit 1
+        fi
+    fi    
 
     if ! docker compose version &> /dev/null; then
         echo "[ERROR] Docker Compose is not installed. Please install Docker Compose and try again."
