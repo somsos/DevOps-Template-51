@@ -23,7 +23,7 @@ function add_gitea_to_known_hosts {
 
 function docker_login_to_registry {
     DOCKER_CONFIG_PATH="/root/.docker/config.json"
-    REGISTRY="registry.$MY_DOMAIN:5000"
+    REGISTRY="registry.$MY_DOMAIN:$NEXUS_REGISTRY_PORT"
 
     if grep -q "$REGISTRY" "$DOCKER_CONFIG_PATH" 2>/dev/null; then
         echo "[INFO] Docker credentials for $REGISTRY already exist. Skipping login."

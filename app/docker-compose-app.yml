@@ -41,6 +41,8 @@ services:
         # Nexus conn
         MY_USER: ${MY_USER}
         MY_PASS: ${MY_PASS}
+        NEXUS_IP: ${NEXUS_IP}
+        NEXUS_HTTP_PORT: ${NEXUS_HTTP_PORT}
     expose:
       - "8080"
     environment:
@@ -79,6 +81,8 @@ services:
         IMAGE_NGINX: ${IMAGE_NGINX}
         MY_USER: ${MY_USER}
         MY_PASS: ${MY_PASS}
+        NEXUS_IP: ${NEXUS_IP}
+        NEXUS_HTTP_PORT: ${NEXUS_HTTP_PORT}
       dockerfile: front.dockerfile
     image: ${FRONT_IMAGE}
     expose:

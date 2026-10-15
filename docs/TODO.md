@@ -2,16 +2,17 @@
 
 ## Doing (The upper top is the current task)
 
-- [X] Download and check alma again.
+- [ ] Fix the backend test pipeline 
+  - [X] Change in back_utils to "build.network: build" and in "mvn-settings.xml"
+    change to IP instead of nexus name, using ${env.NEXUS_IP}:${env.NEXUS_HTTP_PORT}.
+  - I already switched from using "nexus:5000" to Docker DNS to solve it, to
+    the static IP to avoid problems with this Docker-DNS-resolution
+  - [ ] Remove the "DOCKER_BUILDKIT=0 COMPOSE_DOCKER_CLI_BUILD=0" parts because
+    this is to keep as legacy, and add the "docker buildx create --use ...",
+    to use the new approach.
 
-- [ ] Test install in different distros
-  - [X] Debian13
-  - [X] Ubuntu24
-  - [X] AlmaLinux10 (Community created to replace CentOS, CentOS is in EOL already)
-  - [X] Fedora44 (is more for development).
-  - [ ] AlpineExt3 (Most closed to just linux kernel)
 
-  - [ ] OpenSUSE_MicroOS_2026
+- [ ] I overwrite pre_initialized_nexus_mvn_npm.tar.xz compare with the uploaded one.
 
 - [ ] Blog with title "What if we first deploy and then start to develop"
   - [ ] Add section what did I learned here.
@@ -422,5 +423,14 @@ posible.
   - [X] Update t51devops.tar.xz
 - [X] Create an more extensive steps to check that is working the project
 - [X] Update install script to be compatible with non-systemd distros.
+- [X] Test install in different distros
+  - [X] Debian13
+  - [X] Ubuntu24
+  - [X] AlmaLinux10 (Community created to replace CentOS, CentOS is in EOL already)
+  - [X] Fedora44 (is more for development).
+  - [X] AlpineExt3 (Most closed to just linux kernel)
+    - [X] Check the problem with Docker DNS nexus resolution and backend-test-pipeline-fail
+  - [X] OpenSUSE_MicroOS_2026
+- [X] Download and check alma again.
 
 

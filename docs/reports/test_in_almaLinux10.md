@@ -33,9 +33,9 @@ Install docker, [source](https://reintech.io/blog/installing-docker-on-almalinux
 Prepare to install a docker
 
 ```sh
-sudo dnf install -y kernel-modules-extra dnf-plugins-core
-
 sudo dnf update -y
+
+sudo dnf install -y kernel-modules-extra dnf-plugins-core tar
 
 reboot
 ```

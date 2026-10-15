@@ -10,6 +10,35 @@ KEY_DIR="./setup/secrets"
 DEP_DATA_DIR="./dep_data"
 ENV_EXAMPLE_FILE=".env.example"
 
+function require_supported_platform {
+    local ok=0
+
+    # --- glibc check ---
+    if ! ldd --version 2>&1 | grep -qi 'gnu libc\|glibc'; then
+        echo "[ERROR] Unsupported C library. This script requires glibc." >&2
+        echo "        musl-based distributions like Alpine are not supported." >&2
+        ok=1
+    fi
+
+    # --- systemd check ---
+    if ! command -v systemctl &>/dev/null; then
+        echo "[ERROR] systemctl not found. This script requires systemd." >&2
+        ok=1
+    elif [ ! -d /run/systemd/system ]; then
+        echo "[ERROR] systemd is not running as PID 1." >&2
+        echo "        This script requires a systemd-based Linux distribution." >&2
+        ok=1
+    fi
+
+    if [ "$ok" -ne 0 ]; then
+        echo "" >&2
+        echo "Supported platforms: Linux with glibc and systemd" >&2
+        echo "  (Debian, Ubuntu, RHEL, Fedora, Rocky, Alma, openSUSE, ...)" >&2
+        exit 1
+    fi
+}
+
+
 function check_dependencies {
     # check if sudo is available
     if ! command -v bash &> /dev/null; then
@@ -27,20 +56,7 @@ function check_dependencies {
         exit 1
     fi
 
-
-    if command -v systemctl &> /dev/null; then # systemd-based system
-        if ! systemctl is-active --quiet docker; then
-            echo "[ERROR] Docker service is not active. Please start the Docker service and try again."
-            echo "        You can run: sudo systemctl start docker"
-            exit 1
-        fi
-    else # non-systemd
-        if ! service docker status >/dev/null 2>&1; then
-            echo "[ERROR] Docker service is not active. Please start the Docker service and try again."
-            echo "        You can run: sudo service docker start"
-            exit 1
-        fi
-    fi    
+    require_supported_platform
 
     if ! docker compose version &> /dev/null; then
         echo "[ERROR] Docker Compose is not installed. Please install Docker Compose and try again."

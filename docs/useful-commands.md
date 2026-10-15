@@ -2,6 +2,7 @@
 
 - [Useful Commands](#useful-commands)
   - [TL;DR](#tldr)
+  - [HOw to create the code.tar.xz file to upload to the repository](#how-to-create-the-codetarxz-file-to-upload-to-the-repository)
   - [Create a file to create a repo in gitea](#create-a-file-to-create-a-repo-in-gitea)
 - [How to uninstall](#how-to-uninstall)
 
@@ -60,6 +61,44 @@ docker save --output ./IMAGE_BASE_DB_UTILS.tar base_db_utils:latest
 -->
 
 
+## HOw to create the code.tar.xz file to upload to the repository
+
+```bash
+T51_SOURCE_FILES="/home/mario/mine/p/empty_t51"
+T51_TAR="code.tar.xz"
+
+cd $T51_SOURCE_FILES
+git pull origin main
+
+mkdir ../temp/
+rm -v ../temp/$T51_TAR
+test -f .env.example && echo "OK" || echo "SOMETHING IS WRONG"
+tar -cJf ../temp/$T51_TAR .
+
+
+# To check the uncompressed file, the files must not be inside a root folder,
+# the root folder have the files, for example.
+cd ../temp/
+tar -xJf $T51_TAR -C .
+test -d ./.git/ && echo "OK" || echo "SOMETHING IS WRONG"
+
+```
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+----
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+
 ## Create a file to create a repo in gitea
 
 ```bash
@@ -79,9 +118,6 @@ cd $R_D/$S_D
 mkdir ../temp/
 #Compress
 tar --exclude='.git' --exclude='*/target' -cJf ../temp/$F_N .
-
-# To Upload to release
-tar -cJf ../code.tar.xz .
 
 
 # Check Uncompress
@@ -113,6 +149,10 @@ ls
 docker compose --profile all down
 
 docker volume rm t51_t51DB_vol1
+
+T51_ROOT="/home/mario/mine/p/t51/"
+
+cd $T51_ROOT
 
 rm -fv ./.env
 

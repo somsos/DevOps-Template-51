@@ -6,6 +6,17 @@
 #       mvn test -Dspring.profiles.active=something     # @ActiveProfiles("something") 
 
 echo "ARG-1: \"$1\""
+
+if [ -z "$NEXUS_IP" ]; then
+    echo "[ERROR] shell env NEXUS_IP required"
+    exit 1
+fi
+
+if [ -z "$NEXUS_HTTP_PORT" ]; then
+    echo "[ERROR] shell env NEXUS_HTTP_PORT required"
+    exit 1
+fi
+
 if [[ "$1" != "unitary_tests" && "$1" != "integration_tests" && "$1" != "e2e_tests" ]]; then
     echo "[ERROR]* set first parameter to either \"unitary_tests\", \"integration_tests\", \"e2e_tests\""
     exit 1

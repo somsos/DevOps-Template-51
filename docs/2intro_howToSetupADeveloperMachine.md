@@ -81,8 +81,6 @@ git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51back.git $DEV_P_ROOT/ap
 
 git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51front.git $DEV_P_ROOT/app/front/source
 
-cd $DEV_P_ROOT
-
 scp -r -P22 ${HOST_USER}@${MY_DOMAIN}:$HOST_P_ROOT/.env $DEV_P_ROOT/.env
 
 # Checks
@@ -94,7 +92,6 @@ test -f $DEV_P_ROOT/app/back/source/pom.xml && echo "OK" || echo "ERROR, file no
 test -f $DEV_P_ROOT/app/db/source/liquibase.properties && echo "OK" || echo "ERROR, file not found."
 
 test -f $DEV_P_ROOT/app/front/source/package.json && echo "OK" || echo "ERROR, file not found."
-
 
 ```
 

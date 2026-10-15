@@ -22,6 +22,7 @@ Google Cloud Platform, Contabo, etc with Ubuntu server 24.4 or similar.
   - Tested in Ubuntu Server 24.04 and Arch Linux.
 - Docker compose (Tested on version 5.1.4)
 - OpenSSH (Tested on version 10.3, OpenSSL 3.6)
+- glibc (There is a small problem with musl and its DNS resolution)
 
 
 
@@ -59,18 +60,21 @@ Google Cloud Platform, Contabo, etc with Ubuntu server 24.4 or similar.
 df -h
 
 HOST_P_ROOT=/home/$USER/my-project
+# Optional: If we downloaded the files in our developer machine.
+# DEV-LAP> HOST_USER=mario1
+# DEV-LAP> HOST_P_ROOT=/home/$HOST_USER/my-project
+# DEV-LAP> DEV_P_ROOT=/home/mario/mine/p/t51
+# DEV-LAP> HOST_IP=192.168.1.8
+# DEV-LAP> ssh $HOST_USER@$HOST_IP "mkdir -vp $HOST_P_ROOT/dep_data/"
+# DEV-LAP> scp $DEV_P_ROOT/dep_data/code.tar.xz $HOST_USER@$HOST_IP:$HOST_P_ROOT/
+# DEV-LAP> scp -r $DEV_P_ROOT/dep_data/offlineDeps.tar.xz.a* $HOST_USER@$HOST_IP:$HOST_P_ROOT/dep_data/
+
 rm -rfv $HOST_P_ROOT && mkdir -vp $HOST_P_ROOT && cd $HOST_P_ROOT
 
 curl -L -o $HOST_P_ROOT/code.tar.xz https://github.com/somsos/DevOps-Template-51/releases/download/0.11/code.tar.xz
 
 tar xJf $HOST_P_ROOT/code.tar.xz -C . && rm -v $HOST_P_ROOT/code.tar.xz
 
-# Optional: If we downloaded the files in our developer machine.
-# HOST_USER=mario1
-# HOST_P_ROOT=/home/$HOST_USER/my-project
-# DEV_P_ROOT=/home/mario/mine/p/t51
-# HOST_IP=192.168.1.8
-# scp -r $DEV_P_ROOT/dep_data/offlineDeps.tar.xz.a* $HOST_USER@$HOST_IP:$HOST_P_ROOT/dep_data/
 curl -L -o dep_data/offlineDeps.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/0.11/offlineDeps.tar.gzaa && curl -L -o dep_data/offlineDeps.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/0.11/offlineDeps.tar.gzab
 
 cd $HOST_P_ROOT/dep_data/ && cat offlineDeps.tar.xz.a* | tar xJf - -C . && rm -v $HOST_P_ROOT/dep_data/offlineDeps.tar.xz.a*
@@ -88,20 +92,21 @@ cd $HOST_P_ROOT/dep_data/ && cat offlineDeps.tar.xz.a* | tar xJf - -C . && rm -v
 #   sudo nmcli con up cable
 curl -sSf -m 3 -I https://www.google.com >/dev/null 2>&1 && echo "There's internet" || echo "NO INTERNET, CONTINUE"
 
-cd $HOST_P_ROOT/dep_data/
-cd docker_installer_{DISTRO}/
+
 
 # Note: The official docker install trough package (offline), it says to install
 # also this "./docker-buildx-plugin_0.34.1-1~ubuntu.24.04~noble_amd64.deb" but
 # for this we do not need buildX
 
 # Ubuntu
+cd $HOST_P_ROOT/dep_data/docker_installer_ubuntu24
 sudo dpkg -i ./containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
 
 # Debian
+cd $HOST_P_ROOT/dep_data/docker_installer_debian13
 dpkg -i ./containerd.io_2.3.6-1~debian.13~trixie_amd64.deb \
   ./docker-ce_29.8.2-1~debian.13~trixie_amd64.deb \
   ./docker-ce-cli_29.8.2-1~debian.13~trixie_amd64.deb \
@@ -109,6 +114,7 @@ dpkg -i ./containerd.io_2.3.6-1~debian.13~trixie_amd64.deb \
 
 
 # Alma10
+cd $HOST_P_ROOT/dep_data/docker_installer_alma10
 sudo dnf install ./containerd.io-2.3.6-1.el10.x86_64.rpm \
   ./docker-ce-29.8.2-1.el10.x86_64.rpm \
   ./docker-ce-cli-29.8.2-1.el10.x86_64.rpm \
@@ -116,12 +122,14 @@ sudo dnf install ./containerd.io-2.3.6-1.el10.x86_64.rpm \
 
 
 # Fedora
+cd $HOST_P_ROOT/dep_data/docker_installer_fedora44
 sudo sudo dnf install ./containerd.io-2.3.6-1.fc44.x86_64.rpm \
     ./docker-ce-29.8.2-1.fc44.x86_64.rpm \
     ./docker-ce-cli-29.8.2-1.fc44.x86_64.rpm \
     ./docker-compose-plugin-5.6.0-1.fc44.x86_64.rpm
 
 # SUSE
+cd $HOST_P_ROOT/dep_data/docker_installer_suse2026
 sudo transactional-update pkg install \
   ./containerd.io-1.7.24-3.1.s390x.rpm \
   ./docker-ce-27.4.1-1.s390x.rpm \

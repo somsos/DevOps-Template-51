@@ -43,7 +43,7 @@ fi
 echo "IMAGE_ID: '$IMAGE_ID'"
 echo "NEW_TAG: '$NEW_TAG'"
 
-REG_HOST="registry.$MY_DOMAIN:5000"
+REG_HOST="registry.$MY_DOMAIN:$NEXUS_REGISTRY_PORT"
 if [ "$LAYER" == "back" ]; then
     IMG_NAME="$BACK_NAME"
 fi
@@ -69,9 +69,3 @@ fi
 
 echo "[INFO] Image pushed successfully: $PUBLIC_TAG"
 
-# ToDo
-# curl -u user:password http://registry.mariomv-local.org:5000/v2/_catalog
-# curl -u user:password http://localhost:5000/v2/_catalog
-
-# curl -u user:password -X GET http://registry.mariomv-local.org:5000/v2/back/tags/list
-# curl -u user:password -X GET http://localhost:5000/v2/back/tags/list

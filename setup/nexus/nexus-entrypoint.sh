@@ -2,8 +2,23 @@
 set -e
 #set -x
 
+if [[ -z "$NEXUS_IP" ]]; then
+    echo "[ERROR] Variable NEXUS_IP is not defined in nexus_configurator container env."
+    exit 1
+fi
 
-NEXUS_URL="http://nexus:8081"
+if [[ -z "$NEXUS_HTTP_PORT" ]]; then
+    echo "[ERROR] Variable NEXUS_HTTP_PORT is not defined in nexus_configurator container env."
+    exit 1
+fi
+
+if [[ -z "$NEXUS_REGISTRY_PORT" ]]; then
+    echo "[ERROR] Variable NEXUS_REGISTRY_PORT is not defined in nexus_configurator container env."
+    exit 1
+fi
+
+
+NEXUS_URL="http://${NEXUS_IP}:${NEXUS_HTTP_PORT}"
 NEXUS_API="$NEXUS_URL/service/rest/v1/security/users"
 NEXUS_REPO_API="$NEXUS_URL/service/rest/v1/repositories"
 
@@ -224,24 +239,30 @@ function if_does_not_exist_docker_hosted_registry_create_it {
   fi
 
   echo "Creating docker hosted registry..."
+  CREATE_DOCKER_HOSTED_REQUEST_BODY=$(cat <<EOF
+{
+  "name": "docker-hosted",
+  "online": true,
+  "storage": {
+    "blobStoreName": "default",
+    "strictContentTypeValidation": true,
+    "writePolicy": "ALLOW"
+  },
+  "docker": {
+    "v1Enabled": false,
+    "forceBasicAuth": true,
+    "httpPort": ${NEXUS_REGISTRY_PORT}
+  }
+}
+EOF
+)
+
   CREATE_DOCKER_HOSTED_RESPONSE=$(curl -s -o /tmp/docker_hosted_creation.log -w "%{http_code}" \
     -X POST "$NEXUS_REPO_API/docker/hosted" \
     -u "$NEW_NEXUS_USER:$NEW_NEXUS_PASS" \
     -H "Content-Type: application/json" \
-    -d '{
-      "name": "docker-hosted",
-      "online": true,
-      "storage": {
-        "blobStoreName": "default",
-        "strictContentTypeValidation": true,
-        "writePolicy": "ALLOW"
-      },
-      "docker": {
-        "v1Enabled": false,
-        "forceBasicAuth": true,
-        "httpPort": 5000
-      }
-    }')
+    -d "$CREATE_DOCKER_HOSTED_REQUEST_BODY"
+  )
   
   if [ "$CREATE_DOCKER_HOSTED_RESPONSE" != "201" ]; then
     echo "Unexpected response $CREATE_DOCKER_HOSTED_RESPONSE for docker-hosted creation. Please check Nexus logs for more details."

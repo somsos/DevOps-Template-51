@@ -2,6 +2,8 @@
 
 ## TL:DR
 
+- Current State of Buildx is: it's the Standard
+
 - The image `nginxproxy/nginx-proxy:1.10-alpine` wa pretty useful while I was
   creating the setup, because in automatic maps the **sub-domains and ports**,
   I just needed to add 2 environment variables to the container I wanted to expose.
@@ -48,6 +50,19 @@
   because I could reach it on run-time but not in build-time, so I had to
   add in my docker-compose.yml this property: `services.back.build.network: myNet`
   so I could have access to this network on buildtime.
+  - But this approach requires of **buildX** and that makes thing more 
+    complicated in other places, so ...
+  - Docker do not use `/etc/hosts` for internal DNS, for example, when we add
+    `build.network: host`, instead uses `/etc/resolv.conf`
+  - **extra_hosts** applies to the runtime container, not the build container.
+> So "back_utils.build.network: t51Net" does not fails we have 2 options to fix
+> and deal with the update of the docker new builder: 
+>   1. configure a Buildx builder with "docker buildx create --use --name t51-builder ... ", 
+>      which is the migration up.
+> or 
+>   2. Stay legacy with "DOCKER_BUILDKIT=0 COMPOSE_DOCKER_CLI_BUILD=0" so this
+>      way accepts this part: "back_utils.build.network: t51Net"
+>
 
 - To diagnose a nginx problem we can use `nginx -T | grep -A 30 "xxxx"`
 
@@ -67,12 +82,6 @@
   nexus, it has several uses, as a npm, mvn, docker-hosted and static-file-storage,
   so in this nexus service we can have several in just one.
 
-- `DOCKER_BUILDKIT=1` when we have buildx installed, this is the default value,
-  so if we do not want to have problems as 
-
-- `If buildX is added`, please add at the start "DOCKER_BUILDKIT=0" so
-  BuildKit's registry metadata does not try to reach metadata, so the
-  installation can work offline
 
 
 ## Error profiles and no such service
@@ -91,11 +100,22 @@ no such service: nexus
 
 ```yml
   nexus:
-    profiles: ["devops", "all"] ...
+    profiles: ["all"] ...
 
-  nexus_configurator:   # docker compose run --rm nexus_configurator
+  nexus_configurator:
     profiles: ["utils"] ...
 ```
+
+I **fixed it** by making both share a profile
+
+```yml
+  nexus:
+    profiles: ["all", "utils"] ...
+
+  nexus_configurator:
+    profiles: ["utils"] ...
+```
+
 
 ## Error docker registry and connection reset by peer
 

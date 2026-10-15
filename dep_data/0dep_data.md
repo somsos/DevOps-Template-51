@@ -1,5 +1,16 @@
+# 0dep_data/ folder
 
-## How to create the compressed ile
+
+- [0dep\_data/ folder](#0dep_data-folder)
+  - [How to create the offlineDeps.tar.xz... file](#how-to-create-the-offlinedepstarxz-file)
+    - [For extracting](#for-extracting)
+    - [Todos los archivos y carpetas](#todos-los-archivos-y-carpetas)
+    - [How to create a file IMAGE\_...tar](#how-to-create-a-file-image_tar)
+  - [How is pre\_initialized\_nexus\_mvn\_npm.tar.xz created](#how-is-pre_initialized_nexus_mvn_npmtarxz-created)
+
+
+
+## How to create the offlineDeps.tar.xz... file 
 
 ```shell
 cd ./dep_data
@@ -89,7 +100,7 @@ cat /path/to/output/prefix.tar.gz.* | tar xzf /p1/dep_data/dep_data.tar.xz -C /p
 
 
 
-## Todos los archivos y carpetas
+### Todos los archivos y carpetas
 
 ```yml
 ./docker_installer_ubuntu/
@@ -126,19 +137,34 @@ cat /path/to/output/prefix.tar.gz.* | tar xzf /p1/dep_data/dep_data.tar.xz -C /p
 ```
 
 
-## Imagenes
+### How to create a file IMAGE_...tar
 
-Tal y como las entrega el comando `docker save --output <path/file.tar> <IMAGE_NAME>`
+Just use this command  
 
-## docker installer
 
-Se siguio la documentacion oficial para instalacion.
+```sh
+docker save --output <path/file.tar> <IMAGE_NAME>`
+```
 
-## mvn and npm dependencies
 
-Se crea un comprimido con el contenido de `setup/nexus/vol-data/*`, (CUIDADO: NO
-debe de incluir la carpeta `vol-data` solo su contenido.)
+<!-- 
 
-```yml
-pre_initialized_nexus_mvn_npm.tar.xz
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+-->
+
+## How is pre_initialized_nexus_mvn_npm.tar.xz created
+
+
+```sh
+T51_ROOT="/home/mario/mine/p/t51"
+
+cd $T51_ROOT/setup/nexus/vol-data/
+
+tar -cJf $T51_ROOT/dep_data/pre_initialized_nexus_mvn_npm.tar.xz .
+
 ```
