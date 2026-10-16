@@ -158,9 +158,9 @@ rm -fv ./.env
 
 rm -rfv setup/secrets/registry.password setup/secrets/ssh_key.priv setup/secrets/ssh_key.pub setup/gitea/vol-config-dir/app.ini
 
-sudo rm -rfv setup/jenkins/vol-jenkins_home/ && git restore setup/jenkins/vol-jenkins_home
-rm -rfv setup/gitea/vol-data && git restore setup/gitea/vol-data
-rm -rfv setup/nexus/vol-data && git restore setup/nexus/vol-data/0vol-data.md
+sudo rm -rf setup/jenkins/vol-jenkins_home/ && git restore setup/jenkins/vol-jenkins_home
+rm -rf setup/gitea/vol-data && git restore setup/gitea/vol-data
+rm -rf setup/nexus/vol-data && git restore setup/nexus/vol-data/0vol-data.md
 
 # delete the added host
 sudo nano ~/.ssh/config
@@ -188,7 +188,7 @@ docker image prune -af
 
 # 
 docker buildx prune -af
-docker buildx ls
+# docker buildx ls
 ```
 
 

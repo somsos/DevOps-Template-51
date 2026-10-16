@@ -50,6 +50,8 @@ clone_repository $BACK_REPO ./app/back/source
 clone_repository $DB_MIG_REPO ./app/db/source
 clone_repository $FRONT_REPO ./app/front/source
 
+add_buildx_builder
+
 start_app_database_service_and_install_schema
 
 start_app_backend_service

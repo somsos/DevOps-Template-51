@@ -236,10 +236,11 @@ services:
 # CAUTION-2: 
 #  Keep in sync with docker-compose-app.yml->db service
 # OPTIONS: 
-#   docker compose run --rm --build db_utils deploy
-#   docker compose run --rm --build db_utils rollback
-#   docker compose run --rm --build db_utils backup
-#   docker compose run --rm --build db_utils restore
+#   docker compose build db_utils
+#   docker compose run --rm db_utils deploy
+#   docker compose run --rm db_utils rollback
+#   docker compose run --rm db_utils backup
+#   docker compose run --rm db_utils restore
   db_utils:
     profiles: ["utils"]
     container_name: temp_db_migrate
@@ -274,12 +275,11 @@ services:
 
 
 # OPTIONS: 
-#   DOCKER_BUILDKIT=0 COMPOSE_DOCKER_CLI_BUILD=0 ...
-#   docker compose run --rm --build back_utils unitary_tests
-#   docker compose run --rm --build back_utils integration_tests
-#   docker compose run --rm --build back_utils e2e_tests
+#   docker compose build db_utils
+#   docker compose run --rm back_utils unitary_tests
+#   docker compose run --rm back_utils integration_tests
+#   docker compose run --rm back_utils e2e_tests
 # CAUTION: 
-#  Add DOCKER_BUILDKIT and COMPOSE_DOCKER_CLI_BUILD  at the start of the command.
 #  Keep in sync with docker-compose-app.yml->back service
   back_utils:
     profiles: ["utils"]
@@ -289,7 +289,7 @@ services:
     build:
       context: ./../app/back
       dockerfile: back_utils.dockerfile
-      network: host
+      network: t51Net
       args:
         IMAGE_MVN: ${IMAGE_MVN}
         IMAGE_JAVA: ${IMAGE_JAVA}

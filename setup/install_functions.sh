@@ -563,7 +563,8 @@ function install_nexus {
 
 
 function configure_nexus {
-    docker compose run --rm --build nexus_configurator
+    docker compose build nexus_configurator
+    docker compose run --rm nexus_configurator
 }
 
 
@@ -660,8 +661,6 @@ function start_app_database_service_and_install_schema {
     done
     echo "[INFO] Database service available on \"psql postgresql://$DB_USER@localhost:5001/$DB_SCHEMA\" (schema NOT installed yet)."
 
-    # "docker compose build  db_utils" not required because is required to be built (--build) at each running.
-
     LOGS_FILE="./app/db/schema_installation.log"
     echo "[INFO] Installing database schema started. Logs in $LOGS_FILE."
     docker compose run -q --rm --name temp db_utils deploy &> $LOGS_FILE
@@ -685,7 +684,7 @@ function start_app_backend_service {
     # Caution: Do not remove "DOCKER_BUILDKIT=0" because I'm using "back.build.network: t51Net"
     # which is a custom network, and BuildKit does not support custom networks.
     echo "[INFO] Building and starting backend service. Logs in $LOGS_FILE."
-    DOCKER_BUILDKIT=0 docker compose --progress plain up -d --wait --wait-timeout 240 --pull never back &> $LOGS_FILE
+    docker compose --progress plain up -d --wait --wait-timeout 240 --pull never back &> $LOGS_FILE
     
     until curl -I --retry 5 --retry-max-time 30 $BACK_URL > /dev/null 2>&1; do
         echo "[INFO] Waiting for App Backend to be up..."
@@ -707,7 +706,7 @@ function start_app_frontend_service {
     # Caution: Do not remove "DOCKER_BUILDKIT=0" because I'm using "back.build.network: t51Net"
     # which is a custom network, and BuildKit does not support custom networks.
     echo "[INFO] Building and starting frontend service. Logs in $LOGS_FILE."
-    DOCKER_BUILDKIT=0 docker compose --progress plain up -d --wait --wait-timeout 240 --pull never front &> $LOGS_FILE
+    docker compose --progress plain up -d --wait --wait-timeout 240 --pull never front &> $LOGS_FILE
 
     until curl -I --retry 5 --retry-max-time 30 $FRONT_URL > /dev/null 2>&1; do
         echo "[INFO] Waiting for App Frontend to be up..."
@@ -715,4 +714,25 @@ function start_app_frontend_service {
     done
     echo "[INFO] URL available: $FRONT_URL"
 }
+
+
+function add_buildx_builder {
+    local BUILDER_NAME="t51-builder"
+    local NETWORK_NAME="t51Net"
+
+    # Check if builder already exists
+    if ! docker buildx inspect "$BUILDER_NAME" >/dev/null 2>&1; then
+        echo "[INFO] Creating Buildx builder: $BUILDER_NAME"
+        docker buildx create --use \
+            --name "$BUILDER_NAME" \
+            --driver docker-container \
+            --driver-opt "network=$NETWORK_NAME"
+        docker buildx inspect --bootstrap "$BUILDER_NAME"
+    else
+        echo "[INFO] Buildx builder $BUILDER_NAME already exists"
+        docker buildx use "$BUILDER_NAME"
+    fi   
+}
+
+
 

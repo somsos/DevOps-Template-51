@@ -35,7 +35,7 @@ function deploy {
         docker compose -f $1/docker-compose.yml up -d --wait --wait-timeout $2 db
     fi
 
-    # --build
+
     echo -e "\033[38;5;27;48;5;231m[INFO] Image to deploy: $3 \033[0m"
     set -x
     docker compose -f $1/docker-compose.yml stop $4

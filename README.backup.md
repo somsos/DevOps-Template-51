@@ -77,14 +77,18 @@ docker compose up db
 2, Once we have the DB service running, we can install/update the schema, which
 we can apply using the next commands.
 
-- Note1: In this case I do not use the command `build`, because I prefer adding
-  the flag `--build`, so this way if I copy and peste the command I can make two
-  steps in one, making less likely to forget one.
+- Note1: I do not use the flag `--build` because I'm using the buildx, that has
+  no scope in this flag-
 - Note2: We use `run` instead of `up` as usually because it's one time action, and
   doing it like this makes more sense, for example, we can auto remove it.
 
 ```shell
+# Avoid using 
 docker compose run --rm --build --name temp db_utils { deploy / rollback / backup / restore }
+
+# Make the 2 stepsm build and up
+docker compose build db_utils
+docker compose run --rm -name temp db_utils { deploy / rollback / backup / restore }
 ```
 
 ## How to deploy the backend
