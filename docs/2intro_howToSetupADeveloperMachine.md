@@ -12,16 +12,17 @@ network or in localhost, we need to add our domain name to our `/etc/hosts`
 file. for example.
 
 ```bash
+MY_ENV=local
 # the root path folder project in the developer machine
-DEV_P_ROOT=/home/mario/mine/p/example1-test
+DEV_P_ROOT=/home/mario/mine/p/example1-$MY_ENV
 # the root path folder project in the host
 HOST_P_ROOT=/home/mario1/my-project
 # The user you use to auth to the host
 HOST_USER=mario1
 # The user you inserted in the install.sh script
-MY_USER=myTestUser
+MY_USER=${MY_ENV}User
 # The domain you inserted in the install.sh script and goes to your server
-MY_DOMAIN=example1-test.com
+MY_DOMAIN=example1-${MY_ENV}.com
 # Temp: 10.222.58.8, 192.168.1.8
 HOST_IP=192.168.50.8
 

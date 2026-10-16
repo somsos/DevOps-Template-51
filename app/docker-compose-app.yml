@@ -34,7 +34,6 @@ services:
     build:
       context: ./back
       dockerfile: back.dockerfile
-      network: t51Net
       args:
         IMAGE_MVN: ${IMAGE_MVN}
         IMAGE_JAVA: ${IMAGE_JAVA}
@@ -74,7 +73,6 @@ services:
     pull_policy: never
     build:
       context: ./front
-      network: t51Net
       args:
         BACK_URL: ${BACK_URL}
         IMAGE_NODE: ${IMAGE_NODE}

@@ -2,15 +2,60 @@
 
 
 - [0dep\_data/ folder](#0dep_data-folder)
-  - [How to create the offlineDeps.tar.xz... file](#how-to-create-the-offlinedepstarxz-file)
-    - [For extracting](#for-extracting)
+  - [How is --code.tar.xz-- and --t51devops.tar.xz-- created](#how-is---codetarxz---and---t51devopstarxz---created)
+  - [How is --offlineDeps.tar.xz...-- file created](#how-is---offlinedepstarxz---file-created)
+    - [Extraction](#extraction)
     - [Todos los archivos y carpetas](#todos-los-archivos-y-carpetas)
     - [How to create a file IMAGE\_...tar](#how-to-create-a-file-image_tar)
   - [How is pre\_initialized\_nexus\_mvn\_npm.tar.xz created](#how-is-pre_initialized_nexus_mvn_npmtarxz-created)
 
 
 
-## How to create the offlineDeps.tar.xz... file 
+## How is --code.tar.xz-- and --t51devops.tar.xz-- created
+
+Both are created the same way, the only difference is that one has the .git
+folder and the other one doesn't.
+
+```bash
+T51_SOURCE_FILES="/home/mario/mine/p/empty_t51"
+T51_TAR_1="code.tar.xz"
+T51_TAR_2="t51devops.tar.xz"
+
+cd $T51_SOURCE_FILES
+git pull origin main
+
+rm -fvr ../temp/ && mkdir -v ../temp/
+test -f .env.example && echo "OK" || echo "SOMETHING IS WRONG"
+
+tar -cJf ../temp/$T51_TAR_1 .
+#     OR
+tar --exclude='.git' --exclude='t51devops.tar.xz' -cJf ../temp/$T51_TAR_2 .
+
+
+# To check the uncompressed file, the files must not be inside a root folder,
+# the root folder have the files, for example.
+cd ../temp/
+tar -xJf $T51_TAR -C .
+test -d ./.git/ && echo "OK" || echo "SOMETHING IS WRONG"
+
+```
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+----
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+
+## How is --offlineDeps.tar.xz...-- file created
 
 ```shell
 cd ./dep_data
@@ -92,10 +137,10 @@ test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong pa
 tar cJf - ./* | split -b 1900M - ./offlineDeps.tar.xz.
 ```
 
-### For extracting 
+### Extraction
 
 ```sh
-cat /path/to/output/prefix.tar.gz.* | tar xzf /p1/dep_data/dep_data.tar.xz -C /p1
+cat offlineDeps.tar.xz.a* | tar xJf - -C .
 ```
 
 
@@ -158,6 +203,15 @@ docker save --output <path/file.tar> <IMAGE_NAME>`
 -->
 
 ## How is pre_initialized_nexus_mvn_npm.tar.xz created
+
+First we need to go to nexus services and make sure or change that admin user
+has the default values. So the install.sh script can change the credentials, for
+the ones defined by the user.
+
+```sh
+DEFAULT_USER="admin"
+DEFAULT_PASS="admin123"
+```
 
 
 ```sh

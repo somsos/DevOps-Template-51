@@ -261,9 +261,9 @@ docker run --rm --name temp-test hello-world
 ```shell
 cd $HOST_P_ROOT
 MY_ENV=test
-MY_DOMAIN=example1-$MY_ENV.com
-MY_USER=myTestUser
-MY_PASS=myTestUser1p
+MY_DOMAIN="example1-$MY_ENV.com"
+MY_USER="${MY_ENV}User"
+MY_PASS="${MY_ENV}Pass"
 
 bash ./install.sh <<EOF
 $MY_ENV

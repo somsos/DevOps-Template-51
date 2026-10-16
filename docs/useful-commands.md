@@ -2,7 +2,6 @@
 
 - [Useful Commands](#useful-commands)
   - [TL;DR](#tldr)
-  - [HOw to create the code.tar.xz file to upload to the repository](#how-to-create-the-codetarxz-file-to-upload-to-the-repository)
   - [Create a file to create a repo in gitea](#create-a-file-to-create-a-repo-in-gitea)
 - [How to uninstall](#how-to-uninstall)
 
@@ -61,43 +60,6 @@ docker save --output ./IMAGE_BASE_DB_UTILS.tar base_db_utils:latest
 -->
 
 
-## HOw to create the code.tar.xz file to upload to the repository
-
-```bash
-T51_SOURCE_FILES="/home/mario/mine/p/empty_t51"
-T51_TAR="code.tar.xz"
-
-cd $T51_SOURCE_FILES
-git pull origin main
-
-mkdir ../temp/
-rm -v ../temp/$T51_TAR
-test -f .env.example && echo "OK" || echo "SOMETHING IS WRONG"
-tar -cJf ../temp/$T51_TAR .
-
-
-# To check the uncompressed file, the files must not be inside a root folder,
-# the root folder have the files, for example.
-cd ../temp/
-tar -xJf $T51_TAR -C .
-test -d ./.git/ && echo "OK" || echo "SOMETHING IS WRONG"
-
-```
-
-<!--
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-
--->
-
-----
-
-<!--
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-
--->
-
 
 ## Create a file to create a repo in gitea
 
@@ -150,17 +112,15 @@ docker compose --profile all down
 
 docker volume rm t51_t51DB_vol1
 
-T51_ROOT="/home/mario/mine/p/t51/"
-
-cd $T51_ROOT
+cd /home/mario/mine/p/t51/
 
 rm -fv ./.env
 
 rm -rfv setup/secrets/registry.password setup/secrets/ssh_key.priv setup/secrets/ssh_key.pub setup/gitea/vol-config-dir/app.ini
 
-sudo rm -rf setup/jenkins/vol-jenkins_home/ && git restore setup/jenkins/vol-jenkins_home
-rm -rf setup/gitea/vol-data && git restore setup/gitea/vol-data
-rm -rf setup/nexus/vol-data && git restore setup/nexus/vol-data/0vol-data.md
+sudo rm -rfv setup/jenkins/vol-jenkins_home/ | tail -n5 && git restore setup/jenkins/vol-jenkins_home
+rm -rfv setup/gitea/vol-data | tail -n5 && git restore setup/gitea/vol-data
+rm -rfv setup/nexus/vol-data | tail -n5 && git restore setup/nexus/vol-data/0vol-data.md
 
 # delete the added host
 sudo nano ~/.ssh/config

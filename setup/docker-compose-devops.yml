@@ -289,7 +289,6 @@ services:
     build:
       context: ./../app/back
       dockerfile: back_utils.dockerfile
-      network: t51Net
       args:
         IMAGE_MVN: ${IMAGE_MVN}
         IMAGE_JAVA: ${IMAGE_JAVA}

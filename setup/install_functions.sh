@@ -594,9 +594,6 @@ function start_and_check_health_devops_service {
         return
     fi
 
-    # If buildx is added, please add at the start "DOCKER_BUILDKIT=0" so
-    # BuildKit's registry metadata does not try to reach metadata, so the
-    # installation can work offline
     docker compose up -d $SERVICE_NAME
 
     until curl -I --retry 5 --retry-max-time 30 $SERVICE_URL > /dev/null 2>&1; do
@@ -681,9 +678,8 @@ function start_app_backend_service {
         return
     fi
 
-    # Caution: Do not remove "DOCKER_BUILDKIT=0" because I'm using "back.build.network: t51Net"
-    # which is a custom network, and BuildKit does not support custom networks.
     echo "[INFO] Building and starting backend service. Logs in $LOGS_FILE."
+    docker compose --progress plain build back &> $LOGS_FILE
     docker compose --progress plain up -d --wait --wait-timeout 240 --pull never back &> $LOGS_FILE
     
     until curl -I --retry 5 --retry-max-time 30 $BACK_URL > /dev/null 2>&1; do
@@ -703,8 +699,6 @@ function start_app_frontend_service {
         return
     fi
 
-    # Caution: Do not remove "DOCKER_BUILDKIT=0" because I'm using "back.build.network: t51Net"
-    # which is a custom network, and BuildKit does not support custom networks.
     echo "[INFO] Building and starting frontend service. Logs in $LOGS_FILE."
     docker compose --progress plain up -d --wait --wait-timeout 240 --pull never front &> $LOGS_FILE
 

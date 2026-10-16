@@ -65,17 +65,17 @@ echo "Installation completed successfully."
 # bash ./install.sh <<EOF
 # local
 # example1-local.com
-# myLocalUser
-# myLocalUser1p
-# myLocalUser1p
+# localUser
+# localPass
+# localPass
 # EOF
 
 # example of running the install.sh script in test:
 # bash ./install.sh <<EOF
 # test
 # example1-test.com
-# myTestUser
-# myTestUser1p
-# myTestUser1p
+# testUser
+# testUser
+# testUser
 # EOF
 
