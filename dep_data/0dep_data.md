@@ -17,11 +17,12 @@ Both are created the same way, the only difference is that one has the .git
 folder and the other one doesn't.
 
 ```bash
-T51_SOURCE_FILES="/home/mario/mine/p/empty_t51"
+8
 T51_TAR_1="code.tar.xz"
 T51_TAR_2="t51devops.tar.xz"
 
 cd $T51_SOURCE_FILES
+
 git pull origin main
 
 rm -fvr ../temp/ && mkdir -v ../temp/
