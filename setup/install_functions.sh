@@ -710,22 +710,30 @@ function start_app_frontend_service {
 }
 
 
+# CAUTION: Duplicated code (same name function) in setup/install_functions.sh
 function add_buildx_builder {
-    local BUILDER_NAME="t51-builder"
-    local NETWORK_NAME="t51Net"
+    if [ -z "$NETWORK_NAME" ]; then
+        echo "[ERROR] install.sh->add_buildx_builder required variable NETWORK_NAME not found."
+        exit 1
+    fi
+
+    if [ -z "$BUILDX_BUILDER" ]; then
+        echo "[ERROR] install.sh->add_buildx_builder required variable BUILDX_BUILDER not found."
+        exit 1
+    fi
 
     # Check if builder already exists
-    if ! docker buildx inspect "$BUILDER_NAME" >/dev/null 2>&1; then
-        echo "[INFO] Creating Buildx builder: $BUILDER_NAME"
+    if ! docker buildx inspect "$BUILDX_BUILDER" >/dev/null 2>&1; then
+        echo "[INFO] Creating Buildx builder: $BUILDX_BUILDER"
         docker buildx create --use \
-            --name "$BUILDER_NAME" \
+            --name "$BUILDX_BUILDER" \
             --driver docker-container \
             --driver-opt "network=$NETWORK_NAME"
-        docker buildx inspect --bootstrap "$BUILDER_NAME"
+        docker buildx inspect --bootstrap "$BUILDX_BUILDER"
     else
-        echo "[INFO] Buildx builder $BUILDER_NAME already exists"
-        docker buildx use "$BUILDER_NAME"
-    fi   
+        echo "[INFO] Buildx builder $BUILDX_BUILDER already exists"
+        docker buildx use "$BUILDX_BUILDER"
+    fi
 }
 
 

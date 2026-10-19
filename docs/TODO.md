@@ -7,9 +7,12 @@
     change to IP instead of nexus name, using ${env.NEXUS_IP}:${env.NEXUS_HTTP_PORT}.
   - I already switched from using "nexus:5000" to Docker DNS to solve it, to
     the static IP to avoid problems with this Docker-DNS-resolution
-  - [ ] Remove the "DOCKER_BUILDKIT=0 COMPOSE_DOCKER_CLI_BUILD=0" parts because
+  - [X] Remove the "DOCKER_BUILDKIT=0 COMPOSE_DOCKER_CLI_BUILD=0" parts because
     this is to keep as legacy, and add the "docker buildx create --use ...",
     to use the new approach.
+  - [ ] Create the buildX inside the jenkins DinD container using the
+    jenkins-entrypoint.sh, because it does not access to the host's buildx.
+
 
 
 - [ ] I overwrite pre_initialized_nexus_mvn_npm.tar.xz compare with the uploaded one.

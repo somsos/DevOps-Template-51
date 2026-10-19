@@ -101,6 +101,8 @@ services:
       - DEVOPS_REPO=${DEVOPS_REPO}
       - SHARED_TOKEN=${SHARED_TOKEN}
       - NEXUS_REGISTRY_PORT=${NEXUS_REGISTRY_PORT}
+      - BUILDX_BUILDER=${BUILDX_BUILDER}
+      - NETWORK_NAME=${NETWORK_NAME}
     expose:
       - "8080"
     volumes:
