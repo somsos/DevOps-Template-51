@@ -2,17 +2,34 @@
 
 ## Doing (The upper top is the current task)
 
-- [ ] Fix the backend test pipeline 
-  - [X] Change in back_utils to "build.network: build" and in "mvn-settings.xml"
-    change to IP instead of nexus name, using ${env.NEXUS_IP}:${env.NEXUS_HTTP_PORT}.
-  - I already switched from using "nexus:5000" to Docker DNS to solve it, to
-    the static IP to avoid problems with this Docker-DNS-resolution
-  - [X] Remove the "DOCKER_BUILDKIT=0 COMPOSE_DOCKER_CLI_BUILD=0" parts because
-    this is to keep as legacy, and add the "docker buildx create --use ...",
-    to use the new approach.
-  - [ ] Create the buildX inside the jenkins DinD container using the
-    jenkins-entrypoint.sh, because it does not access to the host's buildx.
+- [ ] Fix backend compilation
+  - 
 
+- [ ] Update pom.xml because i migrated from java21 to 25
+  - https://chatgpt.com/g/g-p-6acea983880881918fad76778f085349-software-development/c/6acea99e-2310-83e8-8cde-a8e5fd8792cc
+
+- I removed the new buildx and i'm using the default one.
+- [ ] Know why by changing BUILDX_BUILDER to default in install_functions.sh
+      start_app_database_service_and_install_schema worked.
+    
+
+
+- [ ] Update images
+  - [ ] Check again the internet installation, something failed with IMAGE_DB_MIG_BASE
+  - [ ] IMAGE_MVN (from *maven:3.9.9-eclipse-temurin-21-alpine*z to `XXX`) 
+  - [ ] IMAGE_JAVA (from *eclipse-temurin:21-alpine* to `XXX`) 
+  - [ ] IMAGE_JENKINS (from *jenkins/jenkins:2.555.1-lts-jdk25* to `XXX`) 
+  - [ ] IMAGE_T51JENKINS (from *t51-jenkins:latest* to `XXX`) 
+  - [ ] IMAGE_GITEA (from *docker.gitea.com/gitea:1.26.1-rootless* to `XXX`) 
+  - [ ] IMAGE_NODE (from *node:25.7-alpine3.23* to `XXX`) 
+  - [ ] IMAGE_NGINX (from *nginx:stable-alpine3.23* to `XXX`) 
+  - [ ] IMAGE_REVERSE_PROXY (from *nginxproxy/nginx-proxy:1.10-alpine* to `XXX`) 
+  - [ ] IMAGE_ACME_COMPANION (from *nginxproxy/acme-companion:2.6* to `XXX`) 
+  - [ ] IMAGE_NEXUS (from *sonatype/nexus3:3.93.0-alpine* to `XXX`) 
+  - [ ] IMAGE_CURL (from *curlimages/curl:8.20.0* to `XXX`) 
+  - [ ] IMAGE_DB (from *postgres:17.6-alpine3.22* to `XXX`) 
+  - [ ] IMAGE_DB_MIG_BASE (from *liquibase:4.33-alpine* to `XXX`) 
+- [ ] Create sets of steps to update an images.
 
 
 - [ ] I overwrite pre_initialized_nexus_mvn_npm.tar.xz compare with the uploaded one.
@@ -28,22 +45,6 @@
 - [ ] Create script/pipeline to create files to create a release in Github or similar.
 
 - [ ] MAYBE Remove confirm to continue in database
-
-- [ ] Create serie of steps to update an image.
-- [ ] Update images
-  - [ ] IMAGE_MVN (from *maven:3.9.9-eclipse-temurin-21-alpine*z to `XXX`) 
-  - [ ] IMAGE_JAVA (from *eclipse-temurin:21-alpine* to `XXX`) 
-  - [ ] IMAGE_JENKINS (from *jenkins/jenkins:2.555.1-lts-jdk25* to `XXX`) 
-  - [ ] IMAGE_T51JENKINS (from *t51-jenkins:latest* to `XXX`) 
-  - [ ] IMAGE_GITEA (from *docker.gitea.com/gitea:1.26.1-rootless* to `XXX`) 
-  - [ ] IMAGE_NODE (from *node:25.7-alpine3.23* to `XXX`) 
-  - [ ] IMAGE_NGINX (from *nginx:stable-alpine3.23* to `XXX`) 
-  - [ ] IMAGE_REVERSE_PROXY (from *nginxproxy/nginx-proxy:1.10-alpine* to `XXX`) 
-  - [ ] IMAGE_ACME_COMPANION (from *nginxproxy/acme-companion:2.6* to `XXX`) 
-  - [ ] IMAGE_NEXUS (from *sonatype/nexus3:3.93.0-alpine* to `XXX`) 
-  - [ ] IMAGE_CURL (from *curlimages/curl:8.20.0* to `XXX`) 
-  - [ ] IMAGE_DB (from *postgres:17.6-alpine3.22* to `XXX`) 
-  - [ ] IMAGE_DB_MIG_BASE (from *liquibase:4.33-alpine* to `XXX`) 
 
 
 - [ ] Create a package to publish to the public.
@@ -435,5 +436,17 @@ posible.
     - [X] Check the problem with Docker DNS nexus resolution and backend-test-pipeline-fail
   - [X] OpenSUSE_MicroOS_2026
 - [X] Download and check alma again.
+- [X] Fix the backend test pipeline 
+  - [X] Change in back_utils to "build.network: build" and in "mvn-settings.xml"
+    change to IP instead of nexus name, using ${env.NEXUS_IP}:${env.NEXUS_HTTP_PORT}.
+  - I already switched from using "nexus:5000" to Docker DNS to solve it, to
+    the static IP to avoid problems with this Docker-DNS-resolution
+  - [X] Remove the "DOCKER_BUILDKIT=0 COMPOSE_DOCKER_CLI_BUILD=0" parts because
+    this is to keep as legacy, and add the "docker buildx create --use ...",
+    to use the new approach.
+  - [X] Create the buildX inside the jenkins DinD container using the
+    jenkins-entrypoint.sh, because it does not access to the host's buildx.
+
+
 
 

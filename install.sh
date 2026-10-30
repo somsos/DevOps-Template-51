@@ -18,9 +18,9 @@ download_save_and_load_image $IMAGE_NODE "IMAGE_NODE"
 download_save_and_load_image $IMAGE_NGINX "IMAGE_NGINX"
 download_save_and_load_image $IMAGE_HTTPD "IMAGE_HTTPD"
 download_save_and_load_image $IMAGE_DB "IMAGE_DB"
-download_save_and_load_image $IMAGE_T51DB_UTILS "IMAGE_T51DB_UTILS"
 download_save_and_load_image $IMAGE_DB_MIG_BASE "IMAGE_DB_MIG_BASE"
 download_save_and_load_image $IMAGE_DB_MIG "IMAGE_DB_MIG"
+download_save_and_load_image $IMAGE_T51DB_UTILS "IMAGE_T51DB_UTILS"
 download_save_and_load_image $IMAGE_REVERSE_PROXY "IMAGE_REVERSE_PROXY"
 download_save_and_load_image $IMAGE_ACME_COMPANION "IMAGE_ACME_COMPANION"
 download_save_and_load_image $IMAGE_MVN "IMAGE_MVN"
@@ -50,9 +50,9 @@ clone_repository $BACK_REPO ./app/back/source
 clone_repository $DB_MIG_REPO ./app/db/source
 clone_repository $FRONT_REPO ./app/front/source
 
-add_buildx_builder
-
 start_app_database_service_and_install_schema
+
+add_buildx_builder
 
 start_app_backend_service
 

@@ -278,7 +278,7 @@ services:
 
 
 # OPTIONS: 
-#   docker compose build db_utils
+#   docker compose build back_utils
 #   docker compose run --rm back_utils unitary_tests
 #   docker compose run --rm back_utils integration_tests
 #   docker compose run --rm back_utils e2e_tests

@@ -412,6 +412,7 @@ function download_save_and_load_image {
 
     # The image $IMAGE_DB_MIG is built from a Dockerfile, so we need to build it instead of pulling it from Docker Hub.
     if [ "$IMAGE_NAME" == "$IMAGE_DB_MIG" ]; then
+        echo "[INFO] Building local image $IMAGE_DB_MIG."
         if [ -z "$IMAGE_DB_MIG_BASE" ]; then
             echo "[ERROR] IMAGE_DB_MIG_BASE variable not set. Please set it in the environment file."
             exit 1
@@ -594,6 +595,14 @@ function start_and_check_health_devops_service {
         return
     fi
 
+    if [ "$SERVICE_NAME" == "jenkins" ]; then 
+        LOGS_FILE="./setup/${SERVICE_NAME}_installation.log"
+        echo "[INFO] Installing ${SERVICE_NAME}, logs in $LOGS_FILE."
+        docker compose --progress plain build $SERVICE_NAME &> $LOGS_FILE
+    else
+        docker compose --progress plain build $SERVICE_NAME
+    fi
+
     docker compose up -d $SERVICE_NAME
 
     until curl -I --retry 5 --retry-max-time 30 $SERVICE_URL > /dev/null 2>&1; do
@@ -659,8 +668,13 @@ function start_app_database_service_and_install_schema {
     echo "[INFO] Database service available on \"psql postgresql://$DB_USER@localhost:5001/$DB_SCHEMA\" (schema NOT installed yet)."
 
     LOGS_FILE="./app/db/schema_installation.log"
+    
+    echo "[INFO] Building db_utils. Logs in $LOGS_FILE."
+    BUILDX_BUILDER=default docker buildx build -f ./app/db/base_db_utils.dockerfile --build-arg IMAGE_DB_MIG_BASE=$IMAGE_DB_MIG_BASE --load -t base_db_utils:latest ./app/db
+    BUILDX_BUILDER=default docker compose --progress plain build db_utils &> $LOGS_FILE
+
     echo "[INFO] Installing database schema started. Logs in $LOGS_FILE."
-    docker compose run -q --rm --name temp db_utils deploy &> $LOGS_FILE
+    BUILDX_BUILDER=default docker compose run -q --rm --name temp db_utils deploy
     if [ "$?" != 0 ]; then
         echo "[ERROR] Failed to install database schema. Please check the logs in $LOGS_FILE."
         exit 1

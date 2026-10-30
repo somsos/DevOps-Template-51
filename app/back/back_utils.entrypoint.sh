@@ -34,6 +34,13 @@ if [[ "$TEST_TYPE" == "unitary_tests" ]]; then
     TEST_RESULT=$?
 fi
 
+# if TEST_TYPE starts with "mvn" then means the user is given a mvn commnad so we execute it directly
+if [[ "$TEST_TYPE" == mvn* ]]; then
+    echo "[MAIN] Running mvn command: $TEST_TYPE"
+    $TEST_TYPE
+    TEST_RESULT=$?
+fi
+
 echo "[MAIN] Finished running unitary tests with result: $TEST_RESULT."
 
 
