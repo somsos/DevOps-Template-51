@@ -220,7 +220,7 @@ function if_npm_repos_exist_skip {
     -u "$NEW_NEXUS_USER:$NEW_NEXUS_PASS")
   if [ "$RESPONSE" == "200" ]; then
     echo "npm repositories already configured. Skipping."
-    return 1
+    return 0
   fi
   return 0
 }
@@ -235,7 +235,7 @@ function if_does_not_exist_docker_hosted_registry_create_it {
     -u "$NEW_NEXUS_USER:$NEW_NEXUS_PASS")
   if [ "$RESPONSE" == "200" ]; then
     echo "docker-hosted registry already exists. Skipping creation."
-    return 1
+    return 0
   fi
 
   echo "Creating docker hosted registry..."

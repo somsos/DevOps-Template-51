@@ -19,10 +19,11 @@
 In this case I have a change already prepared.
 
 ```sh
-DEV_P_ROOT=/home/mario/mine/p/example1-test
-MY_USER=myTestUser
-MY_PASS=myTestUser1p
-MY_DOMAIN=example1-test.com
+MY_ENV=test
+DEV_P_ROOT=/home/mario/mine/p/example1-$MY_ENV
+MY_USER=${MY_ENV}User
+MY_PASS=${MY_ENV}Pass
+MY_DOMAIN=example1-$MY_ENV.com
 
 
 cd $DEV_P_ROOT/app/db/source

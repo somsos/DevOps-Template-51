@@ -597,8 +597,11 @@ function start_and_check_health_devops_service {
 
     if [ "$SERVICE_NAME" == "jenkins" ]; then 
         LOGS_FILE="./setup/${SERVICE_NAME}_installation.log"
-        echo "[INFO] Installing ${SERVICE_NAME}, logs in $LOGS_FILE."
-        docker compose --progress plain build $SERVICE_NAME &> $LOGS_FILE
+        echo "[INFO] Installing jenkins, logs in $LOGS_FILE."
+        TAR_FILE_PATH="$DEP_DATA_DIR/IMAGE_T51JENKINS.tar"
+        if [ ! -f $TAR_FILE_PATH ]; then
+            docker compose --progress plain build jenkins &> $LOGS_FILE
+        fi
     else
         docker compose --progress plain build $SERVICE_NAME
     fi
@@ -670,6 +673,7 @@ function start_app_database_service_and_install_schema {
     LOGS_FILE="./app/db/schema_installation.log"
     
     echo "[INFO] Building db_utils. Logs in $LOGS_FILE."
+    set -x
     BUILDX_BUILDER=default docker buildx build -f ./app/db/base_db_utils.dockerfile --build-arg IMAGE_DB_MIG_BASE=$IMAGE_DB_MIG_BASE --load -t base_db_utils:latest ./app/db
     BUILDX_BUILDER=default docker compose --progress plain build db_utils &> $LOGS_FILE
 

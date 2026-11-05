@@ -2,12 +2,6 @@
 
 ## Doing (The upper top is the current task)
 
-- [ ] Fix backend compilation
-  - 
-
-- [ ] Update pom.xml because i migrated from java21 to 25
-  - https://chatgpt.com/g/g-p-6acea983880881918fad76778f085349-software-development/c/6acea99e-2310-83e8-8cde-a8e5fd8792cc
-
 - I removed the new buildx and i'm using the default one.
 - [ ] Know why by changing BUILDX_BUILDER to default in install_functions.sh
       start_app_database_service_and_install_schema worked.
@@ -446,6 +440,8 @@ posible.
     to use the new approach.
   - [X] Create the buildX inside the jenkins DinD container using the
     jenkins-entrypoint.sh, because it does not access to the host's buildx.
+- [X] Update pom.xml because i migrated from java21 to 25
+
 
 
 

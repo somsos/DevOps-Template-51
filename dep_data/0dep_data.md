@@ -17,20 +17,39 @@ Both are created the same way, the only difference is that one has the .git
 folder and the other one doesn't.
 
 ```bash
-8
-T51_TAR_1="code.tar.xz"
-T51_TAR_2="t51devops.tar.xz"
 
-cd $T51_SOURCE_FILES
+function create_top_tar {
+    set -x
+    T51_SOURCE_FILES="/home/mario/mine/p/empty_t51"
+    if [[ "$1" != "code.tar.xz" && "$1" != "t51devops.tar.xz" ]]; then
+         echo "[ERROR] first arg must be code.tar.xz or  t51devops.tar.xz"
+        exit 1
+    fi
+    test -f $T51_SOURCE_FILES/.env || (echo "error: .env.example file not found" &&  exit 1)
 
-git pull origin main
+    cd $T51_SOURCE_FILES
 
-rm -fvr ../temp/ && mkdir -v ../temp/
-test -f .env.example && echo "OK" || echo "SOMETHING IS WRONG"
+    git pull origin main
 
-tar -cJf ../temp/$T51_TAR_1 .
-#     OR
-tar --exclude='.git' --exclude='t51devops.tar.xz' -cJf ../temp/$T51_TAR_2 .
+    rm -fvr ../temp/ && mkdir -v ../temp/
+    test -f .env.example && echo "OK" || echo "SOMETHING IS WRONG"
+
+    if [ "$1" == "t51devops.tar.xz" ]; then
+        tar --exclude='.git' --exclude='t51devops.tar.xz' -cJf ../temp/$1 .
+    fi
+
+    if [ "$1" == "code.tar.xz" ]; then
+        tar -cJf ../temp/$1 .
+    fi
+    set +x
+}
+
+create_top_tar "t51devops.tar.xz"
+
+create_top_tar "code.tar.xz"
+
+
+
 
 
 # To check the uncompressed file, the files must not be inside a root folder,
@@ -64,7 +83,6 @@ test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong pa
 # IMPORTANT: compare it with the ".env.example" file, it must be all the "IMAGE_***" variables
 docker save --output ./IMAGE_MVN.tar maven:3.9.9-eclipse-temurin-21-alpine
 docker save --output ./IMAGE_JENKINS.tar jenkins/jenkins:2.555.1-lts-jdk25
-docker save --output ./IMAGE_T51JENKINS.tar t51-jenkins:latest
 docker save --output ./IMAGE_GITEA.tar docker.gitea.com/gitea:1.26.1-rootless
 docker save --output ./IMAGE_JAVA.tar eclipse-temurin:21-alpine
 docker save --output ./IMAGE_NODE.tar node:25.7-alpine3.23
@@ -74,9 +92,11 @@ docker save --output ./IMAGE_ACME_COMPANION.tar nginxproxy/acme-companion:2.6
 docker save --output ./IMAGE_HTTPD.tar httpd:2
 docker save --output ./IMAGE_NEXUS.tar sonatype/nexus3:3.93.0-alpine
 docker save --output ./IMAGE_CURL.tar curlimages/curl:8.20.0
-docker save --output ./IMAGE_T51DB_UTILS.tar db_utils:latest
 docker save --output ./IMAGE_DB.tar postgres:17.6-alpine3.22
 docker save --output ./IMAGE_DB_MIG.tar liquibase:4.33-alpine
+
+docker save --output ./IMAGE_T51DB_UTILS.tar db_utils:latest
+docker save --output ./IMAGE_T51JENKINS.tar t51-jenkins:latest
 
 # Download the files following the guide https://docs.docker.com/engine/install/ubuntu/#install-from-a-package
 # and save them in docker_installer.
@@ -101,6 +121,7 @@ wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/containerd
 wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-ce-29.8.2-1.el10.x86_64.rpm
 wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-ce-cli-29.8.2-1.el10.x86_64.rpm
 wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-compose-plugin-5.6.0-1.el10.x86_64.rpm
+wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-buildx-plugin-0.38.1-1.el10.x86_64.rpm
 
 
 

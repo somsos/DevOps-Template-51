@@ -66,8 +66,8 @@ HOST_P_ROOT=/home/$USER/my-project
 # DEV-LAP> DEV_P_ROOT=/home/mario/mine/p/t51
 # DEV-LAP> HOST_IP=192.168.1.8
 # DEV-LAP> ssh $HOST_USER@$HOST_IP "mkdir -vp $HOST_P_ROOT/dep_data/"
-# DEV-LAP> scp $DEV_P_ROOT/dep_data/code.tar.xz $HOST_USER@$HOST_IP:$HOST_P_ROOT/
-# DEV-LAP> scp -r $DEV_P_ROOT/dep_data/offlineDeps.tar.xz.a* $HOST_USER@$HOST_IP:$HOST_P_ROOT/dep_data/
+# DEV-LAP> scp $DEV_P_ROOT/dep_data/toUpload/code.tar.xz $HOST_USER@$HOST_IP:$HOST_P_ROOT/
+# DEV-LAP> scp -r $DEV_P_ROOT/dep_data/toUpload/offlineDeps.tar.xz.a* $HOST_USER@$HOST_IP:$HOST_P_ROOT/dep_data/
 
 rm -rfv $HOST_P_ROOT && mkdir -vp $HOST_P_ROOT && cd $HOST_P_ROOT
 
@@ -118,6 +118,7 @@ cd $HOST_P_ROOT/dep_data/docker_installer_alma10
 sudo dnf install ./containerd.io-2.3.6-1.el10.x86_64.rpm \
   ./docker-ce-29.8.2-1.el10.x86_64.rpm \
   ./docker-ce-cli-29.8.2-1.el10.x86_64.rpm \
+  ./docker-buildx-plugin-0.38.1-1.el10.x86_64.rpm \
   ./docker-compose-plugin-5.6.0-1.el10.x86_64.rpm
 
 
