@@ -81,65 +81,69 @@ test -d ./.git/ && echo "OK" || echo "SOMETHING IS WRONG"
 cd ./dep_data
 test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong path"
 # IMPORTANT: compare it with the ".env.example" file, it must be all the "IMAGE_***" variables
-docker save --output ./IMAGE_MVN.tar maven:3.9.9-eclipse-temurin-21-alpine
-docker save --output ./IMAGE_JENKINS.tar jenkins/jenkins:2.555.1-lts-jdk25
-docker save --output ./IMAGE_GITEA.tar docker.gitea.com/gitea:1.26.1-rootless
-docker save --output ./IMAGE_JAVA.tar eclipse-temurin:21-alpine
-docker save --output ./IMAGE_NODE.tar node:25.7-alpine3.23
-docker save --output ./IMAGE_NGINX.tar nginx:stable-alpine3.23
-docker save --output ./IMAGE_REVERSE_PROXY.tar nginxproxy/nginx-proxy:1.10-alpine
-docker save --output ./IMAGE_ACME_COMPANION.tar nginxproxy/acme-companion:2.6
+docker save --output ./IMAGE_MVN.tar maven:3.10.0-eclipse-temurin-25-alpine
+docker save --output ./IMAGE_JENKINS.tar jenkins/jenkins:2.586-jdk25
+docker save --output ./IMAGE_GITEA.tar gitea/gitea:28.2-rootless
+docker save --output ./IMAGE_JAVA.tar eclipse-temurin:25-jre-alpine-3.24
+docker save --output ./IMAGE_NODE.tar node:24.22.0-trixie-slim
+docker save --output ./IMAGE_NGINX.tar nginx:1.30.6-alpine3.24-slim
+docker save --output ./IMAGE_REVERSE_PROXY.tar nginxproxy/nginx-proxy:1.11.6-alpine
+docker save --output ./IMAGE_ACME_COMPANION.tar nginxproxy/acme-companion:2.8
 docker save --output ./IMAGE_HTTPD.tar httpd:2
-docker save --output ./IMAGE_NEXUS.tar sonatype/nexus3:3.93.0-alpine
-docker save --output ./IMAGE_CURL.tar curlimages/curl:8.20.0
-docker save --output ./IMAGE_DB.tar postgres:17.6-alpine3.22
-docker save --output ./IMAGE_DB_MIG.tar liquibase:4.33-alpine
-
-docker save --output ./IMAGE_T51DB_UTILS.tar db_utils:latest
+docker save --output ./IMAGE_NEXUS.tar sonatype/nexus3:3.96.4-alpine
+docker save --output ./IMAGE_CURL.tar curlimages/curl:8.23.0
+docker save --output ./IMAGE_DB.tar postgres:18.6-trixie
+docker save --output ./IMAGE_DB_MIG_BASE.tar liquibase:5.0.1-alpine
+docker save --output ./IMAGE_DB_MIG.tar base_db_utils:latest
 docker save --output ./IMAGE_T51JENKINS.tar t51-jenkins:latest
+#docker save --output ./IMAGE_T51DB_UTILS.tar db_utils:latest # a new one is generated every deploy, just change the liquibase scripts
 
 # Download the files following the guide https://docs.docker.com/engine/install/ubuntu/#install-from-a-package
 # and save them in docker_installer.
 # Avoid the file docker-buildx-plugin_<version>_<arch>.deb, because it's not
 # required.
 # In my case that I downloaded to install it in Ubuntu24.
-cd ./dep_data/docker_installer_ubuntu
-wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb
-wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb
-wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb
-wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
+cd ./dep_data/docker_installer_ubuntu24
+wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/containerd.io_2.4.2-3~ubuntu.24.04~noble_amd64.deb
+wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-ce_29.9.3-1~ubuntu.24.04~noble_amd64.deb
+wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-ce-cli_29.9.3-1~ubuntu.24.04~noble_amd64.deb
+wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-compose-plugin_5.7.0-1~ubuntu.24.04~noble_amd64.deb
+wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-buildx-plugin_0.38.1-1~ubuntu.24.04~noble_amd64.deb
 
-cd ./dep_data/docker_installer_debian
-wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/containerd.io_2.3.6-1~debian.13~trixie_amd64.deb
-wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-ce_29.8.2-1~debian.13~trixie_amd64.deb
-wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-ce-cli_29.8.2-1~debian.13~trixie_amd64.deb
-wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-compose-plugin_5.6.0-1~debian.13~trixie_amd64.deb
+
+cd ./dep_data/docker_installer_debian13
+wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/containerd.io_2.4.2-3~debian.13~trixie_amd64.deb
+wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-ce_29.9.3-1~debian.13~trixie_amd64.deb
+wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-ce-cli_29.9.3-1~debian.13~trixie_amd64.deb
+wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-compose-plugin_5.7.0-1~debian.13~trixie_amd64.deb
+wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-buildx-plugin_0.38.1-1~debian.13~trixie_amd64.deb
+
 
 
 cd ./dep_data/docker_installer_alma10
-wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/containerd.io-2.3.6-1.el10.x86_64.rpm
-wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-ce-29.8.2-1.el10.x86_64.rpm
-wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-ce-cli-29.8.2-1.el10.x86_64.rpm
-wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-compose-plugin-5.6.0-1.el10.x86_64.rpm
+wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/containerd.io-2.4.2-3.el10.x86_64.rpm
+wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-ce-29.9.3-1.el10.x86_64.rpm
+wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-ce-cli-29.9.3-1.el10.x86_64.rpm
+wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-compose-plugin-5.7.0-1.el10.x86_64.rpm
 wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-buildx-plugin-0.38.1-1.el10.x86_64.rpm
 
 
 
 
-cd ./dep_data/docker_installer_fedora
-wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-compose-plugin-5.6.0-1.fc44.x86_64.rpm
-wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-ce-cli-29.8.2-1.fc44.x86_64.rpm
-wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/containerd.io-2.3.6-1.fc44.x86_64.rpm
-wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-compose-plugin-5.6.0-1.fc44.x86_64.rpm
+cd ./dep_data/docker_installer_fedora44
+wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/containerd.io-2.4.2-3.fc44.x86_64.rpm
+wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-ce-29.9.3-1.fc44.x86_64.rpm
+wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-ce-cli-29.9.3-1.fc44.x86_64.rpm
+wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-compose-plugin-5.7.0-1.fc44.x86_64.rpm
+wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-buildx-plugin-0.38.1-1.fc44.x86_64.rpm
 
 
 
-
-cd ./dep_data/docker_installer_suse
-wget https://download.docker.com/linux/sles/15/s390x/stable/Packages/containerd.io-1.7.24-3.1.s390x.rpm
-wget https://download.docker.com/linux/sles/15/s390x/stable/Packages/docker-ce-27.4.1-1.s390x.rpm
-wget https://download.docker.com/linux/sles/15/s390x/stable/Packages/docker-ce-cli-27.4.1-1.s390x.rpm
-wget https://download.docker.com/linux/sles/15/s390x/stable/Packages/docker-compose-plugin-2.6.0-3.s390x.rpm
+# cd ./dep_data/docker_installer_suse
+# wget https://download.docker.com/linux/sles/15/s390x/stable/Packages/containerd.io-1.7.24-3.1.s390x.rpm
+# wget https://download.docker.com/linux/sles/15/s390x/stable/Packages/docker-ce-27.4.1-1.s390x.rpm
+# wget https://download.docker.com/linux/sles/15/s390x/stable/Packages/docker-ce-cli-27.4.1-1.s390x.rpm
+# wget https://download.docker.com/linux/sles/15/s390x/stable/Packages/docker-compose-plugin-2.6.0-3.s390x.rpm
 
 
 
@@ -156,7 +160,7 @@ cd ./dep_data
 test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong path"
 
 # Compress
-tar cJf - ./* | split -b 1900M - ./offlineDeps.tar.xz.
+tar cJf - ./* | split -b 1900M - ../toUpload/offlineDeps.tar.xz.
 ```
 
 ### Extraction

@@ -2,6 +2,9 @@
 
 ## Doing (The upper top is the current task)
 
+- [ ] Update the file IMAGE_DB_MIG.tar = base_db_utils:latest. Because it does
+      not have the postgres driver so it fails.
+
 - I removed the new buildx and i'm using the default one.
 - [ ] Know why by changing BUILDX_BUILDER to default in install_functions.sh
       start_app_database_service_and_install_schema worked.

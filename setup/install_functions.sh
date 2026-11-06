@@ -673,8 +673,15 @@ function start_app_database_service_and_install_schema {
     LOGS_FILE="./app/db/schema_installation.log"
     
     echo "[INFO] Building db_utils. Logs in $LOGS_FILE."
-    set -x
-    BUILDX_BUILDER=default docker buildx build -f ./app/db/base_db_utils.dockerfile --build-arg IMAGE_DB_MIG_BASE=$IMAGE_DB_MIG_BASE --load -t base_db_utils:latest ./app/db
+    if docker image inspect base_db_utils:latest > /dev/null 2>&1; then
+        echo "[INFO] base_db_utils:latest already present, skipping build."
+    else
+        echo "[INFO] Building base_db_utils:latest."
+        docker buildx build -f ./app/db/base_db_utils.dockerfile \
+          --build-arg IMAGE_DB_MIG_BASE=$IMAGE_DB_MIG_BASE \
+          --load -t base_db_utils:latest ./app/db
+    fi
+
     BUILDX_BUILDER=default docker compose --progress plain build db_utils &> $LOGS_FILE
 
     echo "[INFO] Installing database schema started. Logs in $LOGS_FILE."

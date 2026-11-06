@@ -64,12 +64,12 @@ HOST_P_ROOT=/home/$USER/my-project
 # DEV-LAP> HOST_USER=mario1
 # DEV-LAP> HOST_P_ROOT=/home/$HOST_USER/my-project
 # DEV-LAP> DEV_P_ROOT=/home/mario/mine/p/t51
-# DEV-LAP> HOST_IP=192.168.1.8
+# DEV-LAP> HOST_IP=10.234.186.8
 # DEV-LAP> ssh $HOST_USER@$HOST_IP "mkdir -vp $HOST_P_ROOT/dep_data/"
 # DEV-LAP> scp $DEV_P_ROOT/dep_data/toUpload/code.tar.xz $HOST_USER@$HOST_IP:$HOST_P_ROOT/
 # DEV-LAP> scp -r $DEV_P_ROOT/dep_data/toUpload/offlineDeps.tar.xz.a* $HOST_USER@$HOST_IP:$HOST_P_ROOT/dep_data/
 
-rm -rfv $HOST_P_ROOT && mkdir -vp $HOST_P_ROOT && cd $HOST_P_ROOT
+cd $HOST_P_ROOT
 
 curl -L -o $HOST_P_ROOT/code.tar.xz https://github.com/somsos/DevOps-Template-51/releases/download/0.11/code.tar.xz
 
@@ -103,6 +103,7 @@ cd $HOST_P_ROOT/dep_data/docker_installer_ubuntu24
 sudo dpkg -i ./containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
+    ./docker-buildx-plugin-... \
     ./docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
 
 # Debian
@@ -110,32 +111,34 @@ cd $HOST_P_ROOT/dep_data/docker_installer_debian13
 dpkg -i ./containerd.io_2.3.6-1~debian.13~trixie_amd64.deb \
   ./docker-ce_29.8.2-1~debian.13~trixie_amd64.deb \
   ./docker-ce-cli_29.8.2-1~debian.13~trixie_amd64.deb \
+  ./docker-buildx-plugin-... \
   ./docker-compose-plugin_5.6.0-1~debian.13~trixie_amd64.deb
 
 
 # Alma10
 cd $HOST_P_ROOT/dep_data/docker_installer_alma10
-sudo dnf install ./containerd.io-2.3.6-1.el10.x86_64.rpm \
-  ./docker-ce-29.8.2-1.el10.x86_64.rpm \
-  ./docker-ce-cli-29.8.2-1.el10.x86_64.rpm \
+sudo dnf install ./containerd.io-2.4.2-3.el10.x86_64.rpm \
+  ./docker-ce-29.9.3-1.el10.x86_64.rpm \
+  ./docker-ce-cli-29.9.3-1.el10.x86_64.rpm \
   ./docker-buildx-plugin-0.38.1-1.el10.x86_64.rpm \
-  ./docker-compose-plugin-5.6.0-1.el10.x86_64.rpm
+  ./docker-compose-plugin-5.7.0-1.el10.x86_64.rpm
 
 
 # Fedora
 cd $HOST_P_ROOT/dep_data/docker_installer_fedora44
-sudo sudo dnf install ./containerd.io-2.3.6-1.fc44.x86_64.rpm \
+sudo sudo dnf install -y ./containerd.io-2.3.6-1.fc44.x86_64.rpm \
     ./docker-ce-29.8.2-1.fc44.x86_64.rpm \
     ./docker-ce-cli-29.8.2-1.fc44.x86_64.rpm \
+    ./docker-buildx-plugin-... \
     ./docker-compose-plugin-5.6.0-1.fc44.x86_64.rpm
 
 # SUSE
-cd $HOST_P_ROOT/dep_data/docker_installer_suse2026
-sudo transactional-update pkg install \
-  ./containerd.io-1.7.24-3.1.s390x.rpm \
-  ./docker-ce-27.4.1-1.s390x.rpm \
-  ./docker-ce-cli-27.4.1-1.s390x.rpm \
-  ./docker-compose-plugin-2.6.0-3.s390x.rpm
+# cd $HOST_P_ROOT/dep_data/docker_installer_suse2026
+# sudo transactional-update pkg install \
+#   ./containerd.io-1.7.24-3.1.s390x.rpm \
+#   ./docker-ce-27.4.1-1.s390x.rpm \
+#   ./docker-ce-cli-27.4.1-1.s390x.rpm \
+#   ./docker-compose-plugin-2.6.0-3.s390x.rpm
 
 # Start Decker
 sudo systemctl enable --now docker

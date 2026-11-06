@@ -22,6 +22,12 @@ sudo nmcli con mod enp0s3 ipv4.addresses 192.168.1.8/24
 sudo nmcli con mod enp0s3 ipv4.gateway 192.168.1.254
 sudo nmcli con mod enp0s3 ipv4.dns "8.8.8.8,8.8.4.4"
 sudo nmcli con mod enp0s3 ipv4.method manual
+
+#
+sudo nmcli con mod enp0s3 ipv4.addresses 10.234.186.8/24
+sudo nmcli con mod enp0s3 ipv4.gateway 10.234.186.254
+sudo nmcli con mod enp0s3 ipv4.method manual
+
 # apply changes
 sudo nmcli con up enp0s3
 
