@@ -37,7 +37,7 @@ function docker_login_to_registry {
 }
 
 
-# CAUTION: Duplicated code (same name function) in setup/install_functions.sh
+# CAUTION: Duplicated function in install_functions.sh and jenkins-entrypoint.sh
 function add_buildx_builder {
     if [ -z "$NETWORK_NAME" ]; then
         echo "[ERROR] install.sh->add_buildx_builder required variable NETWORK_NAME not found."

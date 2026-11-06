@@ -10,6 +10,7 @@ check_repository_state
 
 create_env_file_and_load_it
 
+download_save_and_load_image "moby/buildkit:buildx-stable-1" "IMAGE_BUILDKIT"
 download_save_and_load_image $IMAGE_T51JENKINS "IMAGE_T51JENKINS"
 download_save_and_load_image $IMAGE_JENKINS "IMAGE_JENKINS"
 download_save_and_load_image $IMAGE_GITEA "IMAGE_GITEA"
@@ -20,7 +21,6 @@ download_save_and_load_image $IMAGE_HTTPD "IMAGE_HTTPD"
 download_save_and_load_image $IMAGE_DB "IMAGE_DB"
 download_save_and_load_image $IMAGE_DB_MIG_BASE "IMAGE_DB_MIG_BASE"
 download_save_and_load_image $IMAGE_DB_MIG "IMAGE_DB_MIG"
-download_save_and_load_image $IMAGE_T51DB_UTILS "IMAGE_T51DB_UTILS"
 download_save_and_load_image $IMAGE_REVERSE_PROXY "IMAGE_REVERSE_PROXY"
 download_save_and_load_image $IMAGE_ACME_COMPANION "IMAGE_ACME_COMPANION"
 download_save_and_load_image $IMAGE_MVN "IMAGE_MVN"

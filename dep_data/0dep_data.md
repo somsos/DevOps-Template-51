@@ -121,6 +121,7 @@ wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/doc
 
 
 cd ./dep_data/docker_installer_alma10
+sudo dnf download --resolve --alldeps --destdir ./rpms container-selinux
 wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/containerd.io-2.4.2-3.el10.x86_64.rpm
 wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-ce-29.9.3-1.el10.x86_64.rpm
 wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-ce-cli-29.9.3-1.el10.x86_64.rpm

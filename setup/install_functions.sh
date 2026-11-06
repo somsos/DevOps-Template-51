@@ -677,9 +677,9 @@ function start_app_database_service_and_install_schema {
         echo "[INFO] base_db_utils:latest already present, skipping build."
     else
         echo "[INFO] Building base_db_utils:latest."
-        docker buildx build -f ./app/db/base_db_utils.dockerfile \
-          --build-arg IMAGE_DB_MIG_BASE=$IMAGE_DB_MIG_BASE \
-          --load -t base_db_utils:latest ./app/db
+      docker buildx build -f ./app/db/base_db_utils.dockerfile \
+        --build-arg IMAGE_DB_MIG_BASE=$IMAGE_DB_MIG_BASE \
+        --load -t base_db_utils:latest ./app/db
     fi
 
     BUILDX_BUILDER=default docker compose --progress plain build db_utils &> $LOGS_FILE
@@ -735,7 +735,7 @@ function start_app_frontend_service {
 }
 
 
-# CAUTION: Duplicated code (same name function) in setup/install_functions.sh
+# CAUTION: Duplicated function in install_functions.sh and jenkins-entrypoint.sh
 function add_buildx_builder {
     if [ -z "$NETWORK_NAME" ]; then
         echo "[ERROR] install.sh->add_buildx_builder required variable NETWORK_NAME not found."
