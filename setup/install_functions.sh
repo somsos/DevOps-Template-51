@@ -672,7 +672,7 @@ function start_app_database_service_and_install_schema {
 
     LOGS_FILE="./app/db/schema_installation.log"
     
-    echo "[INFO] Building db_utils. Logs in $LOGS_FILE."
+    echo "[INFO] Building db_utils, logs in $LOGS_FILE"
     if docker image inspect base_db_utils:latest > /dev/null 2>&1; then
         echo "[INFO] base_db_utils:latest already present, skipping build."
     else
@@ -684,10 +684,10 @@ function start_app_database_service_and_install_schema {
 
     BUILDX_BUILDER=default docker compose --progress plain build db_utils &> $LOGS_FILE
 
-    echo "[INFO] Installing database schema started. Logs in $LOGS_FILE."
+    echo "[INFO] Installing database schema started, logs in $LOGS_FILE"
     BUILDX_BUILDER=default docker compose run -q --rm --name temp db_utils deploy
     if [ "$?" != 0 ]; then
-        echo "[ERROR] Failed to install database schema. Please check the logs in $LOGS_FILE."
+        echo "[ERROR] Failed to install database schema. Please check the logs in $LOGS_FILE"
         exit 1
     fi
 
@@ -703,7 +703,7 @@ function start_app_backend_service {
         return
     fi
 
-    echo "[INFO] Building and starting backend service. Logs in $LOGS_FILE."
+    echo "[INFO] Building and starting backend service, logs in $LOGS_FILE."
     docker compose --progress plain build back &> $LOGS_FILE
     docker compose --progress plain up -d --wait --wait-timeout 240 --pull never back &> $LOGS_FILE
     
@@ -724,7 +724,7 @@ function start_app_frontend_service {
         return
     fi
 
-    echo "[INFO] Building and starting frontend service. Logs in $LOGS_FILE."
+    echo "[INFO] Building and starting frontend service, logs in $LOGS_FILE"
     docker compose --progress plain up -d --wait --wait-timeout 240 --pull never front &> $LOGS_FILE
 
     until curl -I --retry 5 --retry-max-time 30 $FRONT_URL > /dev/null 2>&1; do

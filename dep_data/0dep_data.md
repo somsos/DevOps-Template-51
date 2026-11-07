@@ -21,25 +21,31 @@ folder and the other one doesn't.
 function create_top_tar {
     set -x
     T51_SOURCE_FILES="/home/mario/mine/p/empty_t51"
+    TARGET_1="/home/mario/mine/p/t51/dep_data/toUpload"
+    TARGET_2="/home/mario/mine/p/t51/setup/gitea/initial_repos"
     if [[ "$1" != "code.tar.xz" && "$1" != "t51devops.tar.xz" ]]; then
          echo "[ERROR] first arg must be code.tar.xz or  t51devops.tar.xz"
-        exit 1
+        return 1
     fi
-    test -f $T51_SOURCE_FILES/.env || (echo "error: .env.example file not found" &&  exit 1)
+    if [ ! -f $T51_SOURCE_FILES/.env.example ]; then
+        echo "error: .env.example file not found"
+        return 1
+    fi
 
     cd $T51_SOURCE_FILES
 
     git pull origin main
 
-    rm -fvr ../temp/ && mkdir -v ../temp/
-    test -f .env.example && echo "OK" || echo "SOMETHING IS WRONG"
-
     if [ "$1" == "t51devops.tar.xz" ]; then
-        tar --exclude='.git' --exclude='t51devops.tar.xz' -cJf ../temp/$1 .
+        test -d $TARGET_2 || (echo "error: $TARGET_2 folder not found" &&  exit 1)
+        rm -fv $TARGET_2/$1
+        tar --exclude='.git' --exclude='t51devops.tar.xz' -cJf $TARGET_2/$1 .
     fi
 
     if [ "$1" == "code.tar.xz" ]; then
-        tar -cJf ../temp/$1 .
+        test -d $TARGET_1 || (echo "error: $TARGET_1 folder not found" &&  exit 1)
+        rm -fv $TARGET_1/$1
+        tar -cJf $TARGET_1/$1 .
     fi
     set +x
 }
@@ -81,6 +87,7 @@ test -d ./.git/ && echo "OK" || echo "SOMETHING IS WRONG"
 cd ./dep_data
 test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong path"
 # IMPORTANT: compare it with the ".env.example" file, it must be all the "IMAGE_***" variables
+docker save --output ./IMAGE_BUILDKIT.tar moby/buildkit:buildx-stable-1
 docker save --output ./IMAGE_MVN.tar maven:3.10.0-eclipse-temurin-25-alpine
 docker save --output ./IMAGE_JENKINS.tar jenkins/jenkins:2.586-jdk25
 docker save --output ./IMAGE_GITEA.tar gitea/gitea:28.2-rootless
@@ -161,7 +168,9 @@ cd ./dep_data
 test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong path"
 
 # Compress
-tar cJf - ./* | split -b 1900M - ../toUpload/offlineDeps.tar.xz.
+mkdir ../temp/
+tar cJf - ./* | split -b 1900M - ../temp/offlineDeps.tar.xz.
+mv ../temp/* ./toUpload
 ```
 
 ### Extraction

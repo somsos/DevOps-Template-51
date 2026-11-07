@@ -2,8 +2,16 @@
 
 ## Doing (The upper top is the current task)
 
-- [ ] Update the file IMAGE_DB_MIG.tar = base_db_utils:latest. Because it does
-      not have the postgres driver so it fails.
+- [ ] Make again the offlineDeps.tar.xz.* files something went wrong
+- [ ] Check why when in install.sh->start_app_backend_service when "build back"
+      fails by maven image not found, it is because the buildx
+        - https://claude.ai/chat/45e89609-a11d-4bcf-945e-0c810feb868a
+          - What does imply to use nexus in instead of IMAGE_X.tar files?
+        - remove the t51-builder but this affects the nexus-jenkins http visibility in the pre-stages
+          - Try to use the default in back build
+        - Option use nexus ro load images in install.sh
+        
+
 
 - I removed the new buildx and i'm using the default one.
 - [ ] Know why by changing BUILDX_BUILDER to default in install_functions.sh
@@ -444,6 +452,7 @@ posible.
   - [X] Create the buildX inside the jenkins DinD container using the
     jenkins-entrypoint.sh, because it does not access to the host's buildx.
 - [X] Update pom.xml because i migrated from java21 to 25
+- [X] Updated the file IMAGE_*.tar files
 
 
 

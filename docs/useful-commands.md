@@ -144,13 +144,13 @@ function t51uninstall {
   docker buildx prune -af
   docker buildx rm t51-builder
 
-  result=$(docker images -aq 2>/dev/null)
+  result=$(docker images -qa 2>/dev/null)
 
   if [ -z "$result" ]; then
       echo "No images found"
   else
       echo "Images found"
-      docker images -f dangling=true -q | xargs docker rmi
+      docker images -qa | xargs docker rmi
   fi
 
   # delete the added host

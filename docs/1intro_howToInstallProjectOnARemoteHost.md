@@ -118,7 +118,7 @@ dpkg -i ./containerd.io_2.3.6-1~debian.13~trixie_amd64.deb \
 # Alma10
 cd $HOST_P_ROOT/dep_data/docker_installer_alma10
 sudo dnf install -y --disablerepo='*' ./rpms/*.rpm
-sudo dnf install -y ./containerd.io-2.4.2-3.el10.x86_64.rpm \
+sudo dnf install -y --disablerepo='*' ./containerd.io-2.4.2-3.el10.x86_64.rpm \
   ./docker-ce-29.9.3-1.el10.x86_64.rpm \
   ./docker-ce-cli-29.9.3-1.el10.x86_64.rpm \
   ./docker-buildx-plugin-0.38.1-1.el10.x86_64.rpm \
@@ -148,9 +148,7 @@ sudo systemctl start docker
 
 sudo systemctl status docker
 
-docker version
-docker compose version
-docker buildx version
+docker version && docker compose version &&  docker buildx version
 
 sudo groupadd docker
 sudo usermod -aG docker $USER
