@@ -34,6 +34,7 @@ services:
     build:
       context: ./back
       dockerfile: back.dockerfile
+      network: host
       args:
         IMAGE_MVN: ${IMAGE_MVN}
         IMAGE_JAVA: ${IMAGE_JAVA}
@@ -73,6 +74,8 @@ services:
     pull_policy: never
     build:
       context: ./front
+      dockerfile: front.dockerfile
+      network: host
       args:
         BACK_URL: ${BACK_URL}
         IMAGE_NODE: ${IMAGE_NODE}
@@ -81,7 +84,6 @@ services:
         MY_PASS: ${MY_PASS}
         NEXUS_IP: ${NEXUS_IP}
         NEXUS_HTTP_PORT: ${NEXUS_HTTP_PORT}
-      dockerfile: front.dockerfile
     image: ${FRONT_IMAGE}
     expose:
       - "80"

@@ -704,7 +704,9 @@ function start_app_backend_service {
     fi
 
     echo "[INFO] Building and starting backend service, logs in $LOGS_FILE"
-    docker compose --progress plain build back &> $LOGS_FILE
+    docker compose --progress plain build --builder default back &> $LOGS_FILE
+
+    echo "[INFO] Starting backend service"
     docker compose --progress plain up -d --wait --wait-timeout 240 --pull never back &> $LOGS_FILE
     
     until curl -I --retry 5 --retry-max-time 30 $BACK_URL > /dev/null 2>&1; do
@@ -716,7 +718,7 @@ function start_app_backend_service {
 
 function start_app_frontend_service {
     is_env_file_loaded_or_exit_with_error
-    LOGS_FILE="./app/front/frontend_installation.log"
+    LOGS_FILE="./app/front/frontend_build.log"
     FRONT_URL="http://$MY_DOMAIN"
 
     if docker compose ps --services --filter "status=running" | grep -q "^front$"; then
@@ -724,7 +726,10 @@ function start_app_frontend_service {
         return
     fi
 
-    echo "[INFO] Building and starting frontend service, logs in $LOGS_FILE"
+    echo "[INFO] Building frontend service, logs in $LOGS_FILE"
+    docker compose --progress plain build --builder default front &> $LOGS_FILE
+
+    echo "[INFO] Starting frontend service"
     docker compose --progress plain up -d --wait --wait-timeout 240 --pull never front &> $LOGS_FILE
 
     until curl -I --retry 5 --retry-max-time 30 $FRONT_URL > /dev/null 2>&1; do
