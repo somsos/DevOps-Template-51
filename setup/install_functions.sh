@@ -597,7 +597,7 @@ function start_and_check_health_devops_service {
 
     if [ "$SERVICE_NAME" == "jenkins" ]; then 
         LOGS_FILE="./setup/${SERVICE_NAME}_installation.log"
-        echo "[INFO] Installing jenkins, logs in $LOGS_FILE."
+        echo "[INFO] Installing jenkins, logs in $LOGS_FILE"
         TAR_FILE_PATH="$DEP_DATA_DIR/IMAGE_T51JENKINS.tar"
         if [ ! -f $TAR_FILE_PATH ]; then
             docker compose --progress plain build jenkins &> $LOGS_FILE
@@ -703,7 +703,7 @@ function start_app_backend_service {
         return
     fi
 
-    echo "[INFO] Building and starting backend service, logs in $LOGS_FILE."
+    echo "[INFO] Building and starting backend service, logs in $LOGS_FILE"
     docker compose --progress plain build back &> $LOGS_FILE
     docker compose --progress plain up -d --wait --wait-timeout 240 --pull never back &> $LOGS_FILE
     
@@ -754,7 +754,7 @@ function add_buildx_builder {
             --name "$BUILDX_BUILDER" \
             --driver docker-container \
             --driver-opt "network=$NETWORK_NAME"
-        docker buildx inspect --bootstrap "$BUILDX_BUILDER"
+        echo "[INFO] $BUILDX_BUILDER Created"
     else
         echo "[INFO] Buildx builder $BUILDX_BUILDER already exists"
         docker buildx use "$BUILDX_BUILDER"

@@ -62,20 +62,24 @@ echo "Installation completed successfully."
 
 
 # example of running the install.sh script in local:
-# bash ./install.sh <<EOF
-# local
-# example1-local.com
-# localUser
-# localPass
-# localPass
-# EOF
+
+# LOCAL
+#        bash ./install.sh <<EOF
+#        local
+#        example1-local.com
+#        localUser
+#        localPass
+#        localPass
+#        EOF
 
 # example of running the install.sh script in test:
-# bash ./install.sh <<EOF
-# test
-# example1-test.com
-# testUser
-# testUser
-# testUser
-# EOF
+
+# TEST
+#      bash ./install.sh <<EOF
+#      test
+#      example1-test.com
+#      testUser
+#      testUser
+#      testUser
+#      EOF
 
