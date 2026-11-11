@@ -4,7 +4,6 @@
 
 - [How to develop as a DevOps](#how-to-develop-as-a-devops)
   - [build base-db-utils:latest image](#build-base-db-utilslatest-image)
-  - [Create a file to create a repo in gitea](#create-a-file-to-create-a-repo-in-gitea)
   - [How to uninstall setup](#how-to-uninstall-setup)
   - [How is --code.tar.xz-- and --t51devops.tar.xz-- created](#how-is---codetarxz---and---t51devopstarxz---created)
   - [How is --offlineDeps.tar.xz...-- file created](#how-is---offlinedepstarxz---file-created)
@@ -12,6 +11,7 @@
     - [Todos los archivos y carpetas](#todos-los-archivos-y-carpetas)
     - [How to create a file IMAGE\_...tar](#how-to-create-a-file-image_tar)
   - [How is pre\_initialized\_nexus\_mvn\_npm.tar.xz created](#how-is-pre_initialized_nexus_mvn_npmtarxz-created)
+  - [Create compressed file for create a repo in gitea](#create-compressed-file-for-create-a-repo-in-gitea)
 
 
 
@@ -33,57 +33,6 @@ docker run --rm --entrypoint sh db_utils:latest -c 'find / -iname "*postgresql*.
 # /liquibase/lib/postgresql.jar
 
 ```
-
-
-
-<!--
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-
--->
-
-----
-
-<!--
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-
--->
-
-
-
-
-
-
-
-
-## Create a file to create a repo in gitea
-
-```bash
-R_D="/home/mario/mine/p/t51"
-
-S_D="app/back/source/" F_N="t51back.tar.xz"
-S_D="app/front/source/" F_N="t51front.tar.xz"
-S_D="app/db/source/" F_N="t51mig-db.tar.xz"
-F_N="t51devops.tar.xz"
-
-
-
-cd $R_D/$S_D
-mkdir ../temp/
-#Compress
-tar --exclude='.git' --exclude='*/target' --exclude='.vscode' -cJf ../temp/$F_N .
-
-
-# Check Uncompress
-# Note: the files must not be inside a root folder, the root folder have the files
-# for example
-cd ../temp/
-tar -xJf $F_N -C .
-ls
-# adapter  common  pom-spring-boot.xml  pom.xml  product  README.md  t51back.tar.xz  user
-```
-
 
 
 
@@ -429,3 +378,61 @@ cd $T51_ROOT/setup/nexus/vol-data/
 tar -cJf $T51_ROOT/dep_data/pre_initialized_nexus_mvn_npm.tar.xz .
 
 ```
+
+
+
+
+
+
+
+
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+----
+
+<!--
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+-->
+
+
+
+
+
+
+
+
+## Create compressed file for create a repo in gitea
+
+```bash
+  R_D="/home/mario/mine/p/empty_t51"
+# R_D="/home/mario/mine/p/t51"
+
+S_D="app/back/source/" F_N="t51back.tar.xz"
+S_D="app/front/source/" F_N="t51front.tar.xz"
+S_D="app/db/source/" F_N="t51mig-db.tar.xz"
+F_N="t51devops.tar.xz"
+
+
+
+cd $R_D/$S_D
+mkdir ../temp/
+#Compress
+tar --exclude='.git' --exclude='*/target' --exclude='.vscode' --exclude='t51devops.tar.xz' --exclude='README.backup.md' -cJf ../temp/$F_N .
+
+
+# Check Uncompress
+# Note: the files must not be inside a root folder, the root folder have the files
+# for example
+cd ../temp/
+tar -tzf $F_N | grep ".env.example"
+# adapter  common  pom-spring-boot.xml  pom.xml  product  README.md  t51back.tar.xz  user
+```
+
+

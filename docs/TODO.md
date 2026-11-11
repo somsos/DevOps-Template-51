@@ -2,41 +2,11 @@
 
 ## Doing (The upper top is the current task)
 
-- [ ] try to use the host network to reach nexus in the back jar build
-  - https://claude.ai/chat/45e89609-a11d-4bcf-945e-0c810feb868a
-- [ ] Check why when in install.sh->start_app_backend_service when "build back"
-      fails by maven image not found, it is because the buildx
-          - What does imply to use nexus in instead of IMAGE_X.tar files?
-        - remove the t51-builder but this affects the nexus-jenkins http visibility in the pre-stages
-          - Try to use the default in back build
-        - Option use nexus ro load images in install.sh
+- [ ] setup/gitea/initial_repos/t51devops.tar.xz
+  - The Backend-Deploy pipeline is failing because "... build --builder default back/front ..." is not in this file.
 
 
-- I removed the new buildx and i'm using the default one.
-- [ ] Know why by changing BUILDX_BUILDER to default in install_functions.sh
-      start_app_database_service_and_install_schema worked.
-    
-
-
-- [ ] Update images
-  - [ ] Check again the internet installation, something failed with IMAGE_DB_MIG_BASE
-  - [ ] IMAGE_MVN (from *maven:3.9.9-eclipse-temurin-21-alpine*z to `XXX`) 
-  - [ ] IMAGE_JAVA (from *eclipse-temurin:21-alpine* to `XXX`) 
-  - [ ] IMAGE_JENKINS (from *jenkins/jenkins:2.555.1-lts-jdk25* to `XXX`) 
-  - [ ] IMAGE_T51JENKINS (from *t51-jenkins:latest* to `XXX`) 
-  - [ ] IMAGE_GITEA (from *docker.gitea.com/gitea:1.26.1-rootless* to `XXX`) 
-  - [ ] IMAGE_NODE (from *node:25.7-alpine3.23* to `XXX`) 
-  - [ ] IMAGE_NGINX (from *nginx:stable-alpine3.23* to `XXX`) 
-  - [ ] IMAGE_REVERSE_PROXY (from *nginxproxy/nginx-proxy:1.10-alpine* to `XXX`) 
-  - [ ] IMAGE_ACME_COMPANION (from *nginxproxy/acme-companion:2.6* to `XXX`) 
-  - [ ] IMAGE_NEXUS (from *sonatype/nexus3:3.93.0-alpine* to `XXX`) 
-  - [ ] IMAGE_CURL (from *curlimages/curl:8.20.0* to `XXX`) 
-  - [ ] IMAGE_DB (from *postgres:17.6-alpine3.22* to `XXX`) 
-  - [ ] IMAGE_DB_MIG_BASE (from *liquibase:4.33-alpine* to `XXX`) 
 - [ ] Create sets of steps to update an images.
-
-
-- [ ] I overwrite pre_initialized_nexus_mvn_npm.tar.xz compare with the uploaded one.
 
 - [ ] Blog with title "What if we first deploy and then start to develop"
   - [ ] Add section what did I learned here.
@@ -452,6 +422,23 @@ posible.
     jenkins-entrypoint.sh, because it does not access to the host's buildx.
 - [X] Update pom.xml because i migrated from java21 to 25
 - [X] Updated the file IMAGE_*.tar files
+- [X] try to use the host network to reach nexus in the back jar build
+- [X] Update images
+  - [X] Check again the internet installation, something failed with IMAGE_DB_MIG_BASE
+  - [X] IMAGE_MVN (from *maven:3.9.9-eclipse-temurin-21-alpine*z to `XXX`) 
+  - [X] IMAGE_JAVA (from *eclipse-temurin:21-alpine* to `XXX`) 
+  - [X] IMAGE_JENKINS (from *jenkins/jenkins:2.555.1-lts-jdk25* to `XXX`) 
+  - [X] IMAGE_T51JENKINS (from *t51-jenkins:latest* to `XXX`) 
+  - [X] IMAGE_GITEA (from *docker.gitea.com/gitea:1.26.1-rootless* to `XXX`) 
+  - [X] IMAGE_NODE (from *node:25.7-alpine3.23* to `XXX`) 
+  - [X] IMAGE_NGINX (from *nginx:stable-alpine3.23* to `XXX`) 
+  - [X] IMAGE_REVERSE_PROXY (from *nginxproxy/nginx-proxy:1.10-alpine* to `XXX`) 
+  - [X] IMAGE_ACME_COMPANION (from *nginxproxy/acme-companion:2.6* to `XXX`) 
+  - [X] IMAGE_NEXUS (from *sonatype/nexus3:3.93.0-alpine* to `XXX`) 
+  - [X] IMAGE_CURL (from *curlimages/curl:8.20.0* to `XXX`) 
+  - [X] IMAGE_DB (from *postgres:17.6-alpine3.22* to `XXX`) 
+  - [X] IMAGE_DB_MIG_BASE (from *liquibase:4.33-alpine* to `XXX`) 
+- [X] I overwrite pre_initialized_nexus_mvn_npm.tar.xz compare with the uploaded one.
 
 
 

@@ -24,7 +24,7 @@ MY_USER=${MY_ENV}User
 # The domain you inserted in the install.sh script and goes to your server
 MY_DOMAIN=example1-${MY_ENV}.com
 # Temp: 10.222.58.8, 192.168.1.8
-HOST_IP=192.168.1.8
+HOST_IP=192.168.43.8
 
 sudo tee -a /etc/hosts <<EOF
 
@@ -86,12 +86,9 @@ scp -r -P22 ${HOST_USER}@${MY_DOMAIN}:$HOST_P_ROOT/.env $DEV_P_ROOT/.env
 
 # Checks
 
-test -f $DEV_P_ROOT/.env && echo "OK" || echo "ERROR, file not found."
-
-test -f $DEV_P_ROOT/app/back/source/pom.xml && echo "OK" || echo "ERROR, file not found."
-
-test -f $DEV_P_ROOT/app/db/source/liquibase.properties && echo "OK" || echo "ERROR, file not found."
-
+test -f $DEV_P_ROOT/.env && echo "OK" || echo "ERROR, file not found." && \
+test -f $DEV_P_ROOT/app/back/source/pom.xml && echo "OK" || echo "ERROR, file not found." && \
+test -f $DEV_P_ROOT/app/db/source/liquibase.properties && echo "OK" || echo "ERROR, file not found." && \
 test -f $DEV_P_ROOT/app/front/source/package.json && echo "OK" || echo "ERROR, file not found."
 
 ```

@@ -685,7 +685,7 @@ function start_app_database_service_and_install_schema {
     BUILDX_BUILDER=default docker compose --progress plain build db_utils &> $LOGS_FILE
 
     echo "[INFO] Installing database schema started, logs in $LOGS_FILE"
-    BUILDX_BUILDER=default docker compose run -q --rm --name temp db_utils deploy
+    BUILDX_BUILDER=default docker compose run -q --rm --name temp db_utils deploy &> $LOGS_FILE
     if [ "$?" != 0 ]; then
         echo "[ERROR] Failed to install database schema. Please check the logs in $LOGS_FILE"
         exit 1
