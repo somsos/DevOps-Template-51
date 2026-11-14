@@ -57,7 +57,7 @@
   - **extra_hosts** applies to the runtime container, not the build container.
 > So "back_utils.build.network: t51Net" does not fails we have 2 options to fix
 > and deal with the update of the docker new builder: 
->   1. configure a Buildx builder with "docker buildx create --use --name t51-builder ... ", 
+>   1. configure a Buildx builder with "docker buildx create --use --name t51builder ... ", 
 >      which is the migration up.
 > or 
 >   2. Stay legacy with "DOCKER_BUILDKIT=0 COMPOSE_DOCKER_CLI_BUILD=0" so this

@@ -328,7 +328,6 @@ capture of all the project files, to give a more visual explication.
 ├── dep_data # it has heavy dependencies just required if ones want to perform an offline installation, so they are not included in the repository. 
 │   ├── docker_installer # necessary docker installers.
 │   │   ├── containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb
-│   │   ├── docker-buildx-plugin_0.34.1-1~ubuntu.24.04~noble_amd64.deb
 │   │   ├── docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb
 │   │   ├── docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb
 │   │   └── docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb

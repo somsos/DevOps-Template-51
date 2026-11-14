@@ -564,8 +564,11 @@ function install_nexus {
 
 
 function configure_nexus {
-    docker compose build nexus_configurator
-    docker compose run --rm nexus_configurator
+    local NEXUS_LOGS_FILE="./setup/nexus/nexus_config.log"
+    echo "[INFO] Configuring nexus logs in $NEXUS_LOGS_FILE"
+    docker compose --progress plain build front &> $NEXUS_LOGS_FILE
+    docker compose --progress plain build nexus_configurator &> $NEXUS_LOGS_FILE
+    docker compose run --rm nexus_configurator &> $NEXUS_LOGS_FILE
 }
 
 
@@ -671,21 +674,11 @@ function start_app_database_service_and_install_schema {
     echo "[INFO] Database service available on \"psql postgresql://$DB_USER@localhost:5001/$DB_SCHEMA\" (schema NOT installed yet)."
 
     LOGS_FILE="./app/db/schema_installation.log"
-    
-    echo "[INFO] Building db_utils, logs in $LOGS_FILE"
-    if docker image inspect base_db_utils:latest > /dev/null 2>&1; then
-        echo "[INFO] base_db_utils:latest already present, skipping build."
-    else
-        echo "[INFO] Building base_db_utils:latest."
-      docker buildx build -f ./app/db/base_db_utils.dockerfile \
-        --build-arg IMAGE_DB_MIG_BASE=$IMAGE_DB_MIG_BASE \
-        --load -t base_db_utils:latest ./app/db
-    fi
 
-    BUILDX_BUILDER=default docker compose --progress plain build db_utils &> $LOGS_FILE
+    docker compose --progress plain build db_utils &> $LOGS_FILE
 
     echo "[INFO] Installing database schema started, logs in $LOGS_FILE"
-    BUILDX_BUILDER=default docker compose run -q --rm --name temp db_utils deploy &> $LOGS_FILE
+    docker compose run -q --rm --name temp db_utils deploy &> $LOGS_FILE
     if [ "$?" != 0 ]; then
         echo "[ERROR] Failed to install database schema. Please check the logs in $LOGS_FILE"
         exit 1
@@ -703,8 +696,9 @@ function start_app_backend_service {
         return
     fi
 
+    # CAREFUL: duplicated code in workspace/0_scripts/build_image.sh and setup/install_functions.sh
     echo "[INFO] Building and starting backend service, logs in $LOGS_FILE"
-    docker compose --progress plain build --builder default back &> $LOGS_FILE
+    docker compose --progress plain build back &> $LOGS_FILE
 
     echo "[INFO] Starting backend service"
     docker compose --progress plain up -d --wait --wait-timeout 240 --pull never back &> $LOGS_FILE
@@ -727,7 +721,7 @@ function start_app_frontend_service {
     fi
 
     echo "[INFO] Building frontend service, logs in $LOGS_FILE"
-    docker compose --progress plain build --builder default front &> $LOGS_FILE
+    docker compose --progress plain build front &> $LOGS_FILE
 
     echo "[INFO] Starting frontend service"
     docker compose --progress plain up -d --wait --wait-timeout 240 --pull never front &> $LOGS_FILE
@@ -739,32 +733,6 @@ function start_app_frontend_service {
     echo "[INFO] URL available: $FRONT_URL"
 }
 
-
-# CAUTION: Duplicated function in install_functions.sh and jenkins-entrypoint.sh
-function add_buildx_builder {
-    if [ -z "$NETWORK_NAME" ]; then
-        echo "[ERROR] install.sh->add_buildx_builder required variable NETWORK_NAME not found."
-        exit 1
-    fi
-
-    if [ -z "$BUILDX_BUILDER" ]; then
-        echo "[ERROR] install.sh->add_buildx_builder required variable BUILDX_BUILDER not found."
-        exit 1
-    fi
-
-    # Check if builder already exists
-    if ! docker buildx inspect "$BUILDX_BUILDER" >/dev/null 2>&1; then
-        echo "[INFO] Creating Buildx builder: $BUILDX_BUILDER"
-        docker buildx create --use \
-            --name "$BUILDX_BUILDER" \
-            --driver docker-container \
-            --driver-opt "network=$NETWORK_NAME"
-        echo "[INFO] $BUILDX_BUILDER Created"
-    else
-        echo "[INFO] Buildx builder $BUILDX_BUILDER already exists"
-        docker buildx use "$BUILDX_BUILDER"
-    fi
-}
 
 
 

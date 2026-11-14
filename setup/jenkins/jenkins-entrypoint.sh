@@ -37,45 +37,14 @@ function docker_login_to_registry {
 }
 
 
-# CAUTION: Duplicated function in install_functions.sh and jenkins-entrypoint.sh
-function add_buildx_builder {
-    if [ -z "$NETWORK_NAME" ]; then
-        echo "[ERROR] install.sh->add_buildx_builder required variable NETWORK_NAME not found."
-        exit 1
-    fi
-
-    if [ -z "$BUILDX_BUILDER" ]; then
-        echo "[ERROR] install.sh->add_buildx_builder required variable BUILDX_BUILDER not found."
-        exit 1
-    fi
-
-    # Check if builder already exists
-    if ! docker buildx inspect "$BUILDX_BUILDER" >/dev/null 2>&1; then
-        echo "[INFO] Creating Buildx builder: $BUILDX_BUILDER"
-        docker buildx create --use \
-            --name "$BUILDX_BUILDER" \
-            --driver docker-container \
-            --driver-opt "network=$NETWORK_NAME"
-        docker buildx inspect --bootstrap "$BUILDX_BUILDER"
-    else
-        echo "[INFO] Buildx builder $BUILDX_BUILDER already exists"
-        docker buildx use "$BUILDX_BUILDER"
-    fi
-}
-
-
 
 ####### END OF FUNCTION DEFINITIONS #######
-
-
-
 
 
 docker_login_to_registry
 
 add_gitea_to_known_hosts
 
-add_buildx_builder
 
 exec /usr/bin/tini -- /usr/local/bin/jenkins.sh
 

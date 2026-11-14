@@ -103,7 +103,6 @@ cd $HOST_P_ROOT/dep_data/docker_installer_ubuntu24
 sudo dpkg -i ./containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
     ./docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
-    ./docker-buildx-plugin-... \
     ./docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
 
 # Debian
@@ -111,7 +110,6 @@ cd $HOST_P_ROOT/dep_data/docker_installer_debian13
 dpkg -i ./containerd.io_2.3.6-1~debian.13~trixie_amd64.deb \
   ./docker-ce_29.8.2-1~debian.13~trixie_amd64.deb \
   ./docker-ce-cli_29.8.2-1~debian.13~trixie_amd64.deb \
-  ./docker-buildx-plugin-... \
   ./docker-compose-plugin_5.6.0-1~debian.13~trixie_amd64.deb
 
 
@@ -121,7 +119,6 @@ sudo dnf install -y --disablerepo='*' ./rpms/*.rpm
 sudo dnf install -y --disablerepo='*' ./containerd.io-2.4.2-3.el10.x86_64.rpm \
   ./docker-ce-29.9.3-1.el10.x86_64.rpm \
   ./docker-ce-cli-29.9.3-1.el10.x86_64.rpm \
-  ./docker-buildx-plugin-0.38.1-1.el10.x86_64.rpm \
   ./docker-compose-plugin-5.7.0-1.el10.x86_64.rpm
 
 
@@ -130,7 +127,6 @@ cd $HOST_P_ROOT/dep_data/docker_installer_fedora44
 sudo sudo dnf install -y ./containerd.io-2.3.6-1.fc44.x86_64.rpm \
     ./docker-ce-29.8.2-1.fc44.x86_64.rpm \
     ./docker-ce-cli-29.8.2-1.fc44.x86_64.rpm \
-    ./docker-buildx-plugin-... \
     ./docker-compose-plugin-5.6.0-1.fc44.x86_64.rpm
 
 # SUSE
@@ -148,7 +144,8 @@ sudo systemctl start docker
 
 sudo systemctl status docker
 
-docker version && docker compose version &&  docker buildx version
+docker version | grep "Version:" && docker compose version && echo "OK"
+docker buildx version &> /dev/null && echo "ERROR: avoid using buildx" || echo "OK: buildx avoided"
 
 sudo groupadd docker
 sudo usermod -aG docker $USER

@@ -2,8 +2,15 @@
 
 ## Doing (The upper top is the current task)
 
-- [ ] setup/gitea/initial_repos/t51devops.tar.xz
-  - The Backend-Deploy pipeline is failing because "... build --builder default back/front ..." is not in this file.
+- [ ] Remove buildX
+
+- [X] Test install in different distros
+  - [X] AlmaLinux10 (Community created to replace CentOS, CentOS is in EOL already)
+  - [ ] Debian13
+  - [ ] Ubuntu24
+  - [ ] Fedora44 (is more for development).
+  - [ ] AlpineExt3 (closer to linux kernel only)
+  - [ ] OpenSUSE_MicroOS_2026
 
 
 - [ ] Create sets of steps to update an images.
@@ -439,6 +446,7 @@ posible.
   - [X] IMAGE_DB (from *postgres:17.6-alpine3.22* to `XXX`) 
   - [X] IMAGE_DB_MIG_BASE (from *liquibase:4.33-alpine* to `XXX`) 
 - [X] I overwrite pre_initialized_nexus_mvn_npm.tar.xz compare with the uploaded one.
+- [X] Update setup/gitea/initial_repos/t51devops.tar.xz
 
 
 

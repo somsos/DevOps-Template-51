@@ -22,10 +22,10 @@
 ```sh
 test -f .env && source .env || echo ".env file not found" && \
 test -z "$IMAGE_DB_MIG_BASE" && echo "ERROR, required var not found" || echo "$IMAGE_DB_MIG_BASE" && \
-test -z "$BUILDX_BUILDER" && echo "ERROR, required var not found" || echo "$BUILDX_BUILDER" && \
 test -z "$NETWORK_NAME" && echo "ERROR, required var not found" || echo "$NETWORK_NAME"
 
-docker buildx build --build-arg IMAGE_DB_MIG_BASE=liquibase:5.0.1-alpine -f ./app/db/base_db_utils.dockerfile --load -t base_db_utils:latest ./app/db
+# It's commented because I removed buildx
+#docker buildx build --build-arg IMAGE_DB_MIG_BASE=liquibase:5.0.1-alpine -f ./app/db/base_db_utils.dockerfile --load -t base_db_utils:latest ./app/db
 docker compose --progress plain build --build-arg IMAGE_DB_MIG_BASE=$IMAGE_DB_MIG_BASE db_utils
 
 docker run --rm --entrypoint sh db_utils:latest -c 'find / -iname "*postgresql*.jar" 2>/dev/null'
@@ -91,8 +91,7 @@ function t51uninstall {
   docker builder prune -af
   # CAUTION: his will make download again the images.
   docker image prune -af
-  docker buildx prune -af
-  docker buildx rm t51-builder
+  #docker buildx prune -af
 
   result=$(docker images -qa 2>/dev/null)
 
@@ -107,6 +106,10 @@ function t51uninstall {
   #sudo nano ~/.ssh/config
   #sudo nano ~/.ssh/known_hosts
   #sudo nano /etc/hosts
+
+  # restart
+  sudo systemctl stop docker containerd.service docker.socket docker.service
+  sudo systemctl start containerd.service docker.socket docker.service docker
 
   set +x
 }
@@ -206,7 +209,6 @@ test -d ./.git/ && echo "OK" || echo "SOMETHING IS WRONG"
 cd ./dep_data
 test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong path"
 # IMPORTANT: compare it with the ".env.example" file, it must be all the "IMAGE_***" variables
-docker save --output ./IMAGE_BUILDKIT.tar moby/buildkit:buildx-stable-1
 docker save --output ./IMAGE_MVN.tar maven:3.10.0-eclipse-temurin-25-alpine
 docker save --output ./IMAGE_JENKINS.tar jenkins/jenkins:2.586-jdk25
 docker save --output ./IMAGE_GITEA.tar gitea/gitea:28.2-rootless
@@ -234,7 +236,6 @@ wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/cont
 wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-ce_29.9.3-1~ubuntu.24.04~noble_amd64.deb
 wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-ce-cli_29.9.3-1~ubuntu.24.04~noble_amd64.deb
 wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-compose-plugin_5.7.0-1~ubuntu.24.04~noble_amd64.deb
-wget https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/docker-buildx-plugin_0.38.1-1~ubuntu.24.04~noble_amd64.deb
 
 
 cd ./dep_data/docker_installer_debian13
@@ -242,7 +243,6 @@ wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/con
 wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-ce_29.9.3-1~debian.13~trixie_amd64.deb
 wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-ce-cli_29.9.3-1~debian.13~trixie_amd64.deb
 wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-compose-plugin_5.7.0-1~debian.13~trixie_amd64.deb
-wget https://download.docker.com/linux/debian/dists/trixie/pool/stable/amd64/docker-buildx-plugin_0.38.1-1~debian.13~trixie_amd64.deb
 
 
 
@@ -252,7 +252,6 @@ wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/containerd
 wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-ce-29.9.3-1.el10.x86_64.rpm
 wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-ce-cli-29.9.3-1.el10.x86_64.rpm
 wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-compose-plugin-5.7.0-1.el10.x86_64.rpm
-wget https://download.docker.com/linux/rhel/10/x86_64/stable/Packages/docker-buildx-plugin-0.38.1-1.el10.x86_64.rpm
 
 
 
@@ -262,7 +261,6 @@ wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/containe
 wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-ce-29.9.3-1.fc44.x86_64.rpm
 wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-ce-cli-29.9.3-1.fc44.x86_64.rpm
 wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-compose-plugin-5.7.0-1.fc44.x86_64.rpm
-wget https://download.docker.com/linux/fedora/44/x86_64/stable/Packages/docker-buildx-plugin-0.38.1-1.fc44.x86_64.rpm
 
 
 

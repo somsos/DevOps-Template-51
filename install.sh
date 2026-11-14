@@ -10,7 +10,6 @@ check_repository_state
 
 create_env_file_and_load_it
 
-download_save_and_load_image "moby/buildkit:buildx-stable-1" "IMAGE_BUILDKIT"
 download_save_and_load_image $IMAGE_T51JENKINS "IMAGE_T51JENKINS"
 download_save_and_load_image $IMAGE_JENKINS "IMAGE_JENKINS"
 download_save_and_load_image $IMAGE_GITEA "IMAGE_GITEA"
@@ -52,8 +51,6 @@ clone_repository $FRONT_REPO ./app/front/source
 
 start_app_database_service_and_install_schema
 
-add_buildx_builder
-
 start_app_backend_service
 
 start_app_frontend_service
@@ -79,7 +76,7 @@ echo "Installation completed successfully."
 #      test
 #      example1-test.com
 #      testUser
-#      testUser
-#      testUser
+#      testPass
+#      testPass
 #      EOF
 

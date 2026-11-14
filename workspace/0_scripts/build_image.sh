@@ -59,6 +59,7 @@ function build_image {
     # it seems confusing  but this way we overwrite the latest in an more
     # compressive time
 
+    # CAREFUL: duplicated code in workspace/0_scripts/build_image.sh and setup/install_functions.sh
     if [[ "$3" == "back" ]]; then
         set -x
         BACK_IMAGE=$IMAGE_BUILD_TAG docker compose -f $PATH_MDP/docker-compose.yml --progress plain build back
