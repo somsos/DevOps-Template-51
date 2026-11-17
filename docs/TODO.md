@@ -2,16 +2,16 @@
 
 ## Doing (The upper top is the current task)
 
-- [ ] Remove buildX
-
-- [X] Test install in different distros
-  - [X] AlmaLinux10 (Community created to replace CentOS, CentOS is in EOL already)
+- [ ] Test install in different distros
+  - [ ] AlmaLinux10 (Community created to replace CentOS, CentOS is in EOL already)
   - [ ] Debian13
   - [ ] Ubuntu24
   - [ ] Fedora44 (is more for development).
   - [ ] AlpineExt3 (closer to linux kernel only)
   - [ ] OpenSUSE_MicroOS_2026
 
+- [ ] Fix Registry-actions
+- [ ] Complete docs of "Check Docker-Commands pipeline"
 
 - [ ] Create sets of steps to update an images.
 
@@ -431,7 +431,7 @@ posible.
 - [X] Updated the file IMAGE_*.tar files
 - [X] try to use the host network to reach nexus in the back jar build
 - [X] Update images
-  - [X] Check again the internet installation, something failed with IMAGE_DB_MIG_BASE
+  - [X] Check again the internet installation, something failed with IMAGE_DB_MIG_BASE_LIQUIBASE
   - [X] IMAGE_MVN (from *maven:3.9.9-eclipse-temurin-21-alpine*z to `XXX`) 
   - [X] IMAGE_JAVA (from *eclipse-temurin:21-alpine* to `XXX`) 
   - [X] IMAGE_JENKINS (from *jenkins/jenkins:2.555.1-lts-jdk25* to `XXX`) 
@@ -444,9 +444,10 @@ posible.
   - [X] IMAGE_NEXUS (from *sonatype/nexus3:3.93.0-alpine* to `XXX`) 
   - [X] IMAGE_CURL (from *curlimages/curl:8.20.0* to `XXX`) 
   - [X] IMAGE_DB (from *postgres:17.6-alpine3.22* to `XXX`) 
-  - [X] IMAGE_DB_MIG_BASE (from *liquibase:4.33-alpine* to `XXX`) 
+  - [X] IMAGE_DB_MIG_BASE_LIQUIBASE (from *liquibase:4.33-alpine* to `XXX`) 
 - [X] I overwrite pre_initialized_nexus_mvn_npm.tar.xz compare with the uploaded one.
 - [X] Update setup/gitea/initial_repos/t51devops.tar.xz
+- [X] Remove buildX
 
 
 

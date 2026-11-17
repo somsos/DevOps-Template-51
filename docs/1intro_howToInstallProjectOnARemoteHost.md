@@ -145,7 +145,7 @@ sudo systemctl start docker
 sudo systemctl status docker
 
 docker version | grep "Version:" && docker compose version && echo "OK"
-docker buildx version &> /dev/null && echo "ERROR: avoid using buildx" || echo "OK: buildx avoided"
+docker buildx version &> /dev/null && echo "ERROR: avoid using buildx" || echo "OK"
 
 sudo groupadd docker
 sudo usermod -aG docker $USER

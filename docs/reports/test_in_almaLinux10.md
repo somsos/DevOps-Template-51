@@ -142,3 +142,19 @@ sudo systemctl restart docker
 
 
 
+
+
+
+## Docker command and setup
+
+
+```bash
+# Uninstall
+sudo dnf remove -y docker-buildx-plugin
+#     Check: docker buildx version
+
+
+```
+
+
+

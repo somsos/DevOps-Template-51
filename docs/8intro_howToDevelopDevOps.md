@@ -21,14 +21,14 @@
 
 ```sh
 test -f .env && source .env || echo ".env file not found" && \
-test -z "$IMAGE_DB_MIG_BASE" && echo "ERROR, required var not found" || echo "$IMAGE_DB_MIG_BASE" && \
-test -z "$NETWORK_NAME" && echo "ERROR, required var not found" || echo "$NETWORK_NAME"
+test -z "$IMAGE_DB_MIG_BASE_LIQUIBASE" && echo "ERROR, required var not found" || echo "$IMAGE_DB_MIG_BASE_LIQUIBASE"
+test -z "$IMAGE_DB_MIG_BASE_POSTGRES" && echo "ERROR, required var not found" || echo "$IMAGE_DB_MIG_BASE_POSTGRES"
 
 # It's commented because I removed buildx
-#docker buildx build --build-arg IMAGE_DB_MIG_BASE=liquibase:5.0.1-alpine -f ./app/db/base_db_utils.dockerfile --load -t base_db_utils:latest ./app/db
-docker compose --progress plain build --build-arg IMAGE_DB_MIG_BASE=$IMAGE_DB_MIG_BASE db_utils
+docker build -t base_db_utils:latest -f ./app/db/base_db_utils.dockerfile --build-arg IMAGE_DB_MIG_BASE_LIQUIBASE=liquibase:5.0.1-alpine --build-arg IMAGE_DB_MIG_BASE_POSTGRES=postgres:18.6-alpine3.24 ./app/db
+docker compose --progress plain build --build-arg IMAGE_DB_MIG=$IMAGE_DB_MIG db_utils
 
-docker run --rm --entrypoint sh db_utils:latest -c 'find / -iname "*postgresql*.jar" 2>/dev/null'
+docker run --rm --entrypoint sh db_utils -c 'pg_dump --version && psql --version && ldd /usr/local/bin/pg_dump | grep -i "not found" && find / -iname "*postgresql*.jar" 2>/dev/null'
 # OUTPUT expected
 # /liquibase/lib/postgresql.jar
 
@@ -221,7 +221,8 @@ docker save --output ./IMAGE_HTTPD.tar httpd:2
 docker save --output ./IMAGE_NEXUS.tar sonatype/nexus3:3.96.4-alpine
 docker save --output ./IMAGE_CURL.tar curlimages/curl:8.23.0
 docker save --output ./IMAGE_DB.tar postgres:18.6-trixie
-docker save --output ./IMAGE_DB_MIG_BASE.tar liquibase:5.0.1-alpine
+docker save --output ./IMAGE_DB_MIG_BASE_POSTGRES.tar postgres:18.6-alpine3.24
+docker save --output ./IMAGE_DB_MIG_BASE_LIQUIBASE.tar liquibase:5.0.1-alpine
 docker save --output ./IMAGE_DB_MIG.tar base_db_utils:latest
 docker save --output ./IMAGE_T51JENKINS.tar t51-jenkins:latest
 #docker save --output ./IMAGE_T51DB_UTILS.tar db_utils:latest # a new one is generated every deploy, just change the liquibase scripts
@@ -282,13 +283,12 @@ tar czf ../../../dep_data/pre_initialized_nexus_mvn_npm-2.tar.gz .
 # in the compressed file, making it confusing for who uncompress it, so this
 # way the files will be in the root.
 cd ./dep_data
-test -f ./0dep_data.md && echo "[OK] Continue" || echo "WARN: seems the wrong path"
 
 # Compress
-mkdir ../temp/
+mkdir -v ../temp/
 tar cJf - ./* | split -b 1900M - ../temp/offlineDeps.tar.xz.
-mv ../temp/* ./toUpload
-rmdir ../temp
+mv -v ../temp/* ./toUpload
+rmdir -v ../temp
 ```
 
 ### Extraction

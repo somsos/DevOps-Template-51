@@ -10,6 +10,9 @@
   - [Frontend pipelines](#frontend-pipelines)
     - [Deploy Frontend](#deploy-frontend)
     - [Rollback Frontend](#rollback-frontend)
+  - [Check Database-Backup pipeline](#check-database-backup-pipeline)
+  - [Check Registry-actions pipeline](#check-registry-actions-pipeline)
+  - [Check Docker-Commands pipeline](#check-docker-commands-pipeline)
 
 
 ## Database pipelines
@@ -19,7 +22,7 @@
 In this case I have a change already prepared.
 
 ```sh
-MY_ENV=test
+MY_ENV=local
 DEV_P_ROOT=/home/mario/mine/p/example1-$MY_ENV
 MY_USER=${MY_ENV}User
 MY_PASS=${MY_ENV}Pass
@@ -243,8 +246,95 @@ firefox -new-tab http://gitea.$MY_DOMAIN/$MY_USER/t51front
 1. Notice that the look changed to the one was before on
 ```sh
 firefox -new-tab http://$MY_DOMAIN
+```
+
+
+
+<!--
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% divider %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+-->
+
+----
+
+<!--
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% divider %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+-->
+
+
+
+
+## Check Database-Backup pipeline
+
 ```sh
+firefox -new-tab http://jenkins.$MY_DOMAIN/job/Database-Backup/
+```
 
 
 
+
+
+<!--
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% divider %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+-->
+
+----
+
+<!--
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% divider %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+-->
+
+
+
+
+
+
+## Check Registry-actions pipeline
+
+```sh
+firefox -new-tab http://jenkins.$MY_DOMAIN/job/Registry-actions
+```
+
+- Click on "Build with parameters" 
+
+- From the select list click on: "front" or "back"
+
+- Go to "Console output"
+
+- Copy an image id 
+
+- click on Input requested
+
+- Paste the id in the first input and a version in the second one e.g. 1.0.1
+
+
+
+
+<!--
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% divider %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+-->
+
+----
+
+<!--
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% divider %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+-->
+
+
+
+
+
+
+## Check Docker-Commands pipeline
 

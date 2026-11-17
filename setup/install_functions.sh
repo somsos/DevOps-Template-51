@@ -413,10 +413,15 @@ function download_save_and_load_image {
     # The image $IMAGE_DB_MIG is built from a Dockerfile, so we need to build it instead of pulling it from Docker Hub.
     if [ "$IMAGE_NAME" == "$IMAGE_DB_MIG" ]; then
         echo "[INFO] Building local image $IMAGE_DB_MIG."
-        if [ -z "$IMAGE_DB_MIG_BASE" ]; then
-            echo "[ERROR] IMAGE_DB_MIG_BASE variable not set. Please set it in the environment file."
+        if [ -z "$IMAGE_DB_MIG_BASE_LIQUIBASE" ]; then
+            echo "[ERROR] IMAGE_DB_MIG_BASE_LIQUIBASE variable not set. Please set it in the environment file."
             exit 1
         fi
+        if [ -z "$IMAGE_DB_MIG_BASE_POSTGRES" ]; then
+            echo "[ERROR] IMAGE_DB_MIG_BASE_POSTGRES variable not set. Please set it in the environment file."
+            exit 1
+        fi
+
         echo "[INFO] Building $IMAGE_NAME image from $DB_DF."
         DB_DF="./app/db/base_db_utils.dockerfile"
         if [ ! -f $DB_DF ]; then
@@ -424,7 +429,11 @@ function download_save_and_load_image {
             exit 1
         fi
         
-        docker build -t $IMAGE_NAME -f $DB_DF --build-arg IMAGE_DB_MIG_BASE=$IMAGE_DB_MIG_BASE ./app/db
+        docker build -t $IMAGE_NAME -f $DB_DF \
+        --build-arg IMAGE_DB_MIG_BASE_LIQUIBASE=$IMAGE_DB_MIG_BASE_LIQUIBASE \
+        --build-arg IMAGE_DB_MIG_BASE_POSTGRES=$IMAGE_DB_MIG_BASE_POSTGRES \ 
+        ./app/db
+        
         docker save --output $TAR_FILE_PATH $IMAGE_NAME
         return
     fi
@@ -565,10 +574,10 @@ function install_nexus {
 
 function configure_nexus {
     local NEXUS_LOGS_FILE="./setup/nexus/nexus_config.log"
-    echo "[INFO] Configuring nexus logs in $NEXUS_LOGS_FILE"
-    docker compose --progress plain build front &> $NEXUS_LOGS_FILE
-    docker compose --progress plain build nexus_configurator &> $NEXUS_LOGS_FILE
-    docker compose run --rm nexus_configurator &> $NEXUS_LOGS_FILE
+    echo "[INFO] Configuring nexus trough nexus_configurator logs in $NEXUS_LOGS_FILE"
+    docker compose --progress plain build nexus_configurator 1> $NEXUS_LOGS_FILE
+    docker compose run --rm nexus_configurator 1> $NEXUS_LOGS_FILE
+    echo "[INFO] Nexus Configured"
 }
 
 

@@ -23,8 +23,8 @@ HOST_P_ROOT=/home/$HOST_USER/my-project
 MY_USER=${MY_ENV}User
 # The domain you inserted in the install.sh script and goes to your server
 MY_DOMAIN=example1-${MY_ENV}.com
-# Temp: 10.222.58.8, 192.168.1.8
-HOST_IP=localhost
+# Temp: 10.222.58.8, 192.168.1.8, 192.168.43.8
+HOST_IP=192.168.43.8
 
 sudo tee -a /etc/hosts <<EOF
 
@@ -52,6 +52,7 @@ I'm using ssh public-private keys as auth process, so we need to copy the
 private key to the PC we want to clone from.
 
 ```shell
+# local: rm -fv ~/.ssh/${MY_USER}.priv &&  mv -v /home/mario/mine/p/t51/setup/secrets/ssh_key.priv ~/.ssh/${MY_USER}.priv
 scp -r -P22 ${HOST_USER}@${MY_DOMAIN}:$HOST_P_ROOT/setup/secrets/ssh_key.priv ~/.ssh/${MY_USER}.priv
 
 cat >> ~/.ssh/config <<EOF
@@ -82,6 +83,7 @@ git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51back.git $DEV_P_ROOT/ap
 
 git clone ssh://git@gitea.${MY_DOMAIN}:222/${MY_USER}/t51front.git $DEV_P_ROOT/app/front/source
 
+# local: mv /home/mario/mine/p/t51/.env $DEV_P_ROOT/.env
 scp -r -P22 ${HOST_USER}@${MY_DOMAIN}:$HOST_P_ROOT/.env $DEV_P_ROOT/.env
 
 # Checks

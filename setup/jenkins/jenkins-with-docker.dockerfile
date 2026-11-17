@@ -22,11 +22,18 @@ RUN apt-get update && apt-get install -y docker-ce-cli
 COPY ./casc/plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
 
+# Install pgClient18 in Debian 13
 # Utils ip, nc, ping: sometime I check thinks since the perspective of a container, using this one
-RUN apt-get update && apt-get install -y tzdata iproute2 iputils-ping netcat-openbsd nano bc \
-      curl postgresql-client-17 tar
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg \
+ && install -d /usr/share/postgresql-common/pgdg \
+ && curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+      https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+ && echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt trixie-pgdg main" \
+      > /etc/apt/sources.list.d/pgdg.list \
+ && apt-get update && apt-get install -y --no-install-recommends \
+      tzdata iproute2 iputils-ping netcat-openbsd nano bc postgresql-client-18 tar \
+ && rm -rf /var/lib/apt/lists/*
 
-RUN rm -rf /var/lib/apt/lists/*
 
 # The PROBLEM with this approach it's that makes different the workflow for
 # pipeline and for developing pipeline, duplicating ways to do the same.
