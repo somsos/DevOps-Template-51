@@ -101,6 +101,16 @@ ls /etc/localtime && cat /etc/timezone
 
 ```
 
+## Create offline install files
+
+```sh
+sudo dnf install -y dnf-plugins-core
+sudo dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
+
+mkdir -p ~/docker-offline
+sudo dnf download --resolve --alldeps --destdir ~/docker-offline docker-ce docker-ce-cli containerd.io docker-compose-plugin
+```
+
 
 
 

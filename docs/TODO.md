@@ -2,14 +2,13 @@
 
 ## Doing (The upper top is the current task)
 
-- [ ] Test install in different distros
-  - [ ] AlmaLinux10 (Community created to replace CentOS, CentOS is in EOL already)
-  - [ ] Debian13
-  - [ ] Ubuntu24
-  - [ ] Fedora44 (is more for development).
-  - [ ] AlpineExt3 (closer to linux kernel only)
-  - [ ] OpenSUSE_MicroOS_2026
+- [ ] back and front and maybe DB, Put again the documentation
 
+- [ ] Update Java to avoid security issuie https://calif.io/java4shell
+    grep -m1 '^flags' /proc/cpuinfo | tr ' ' '\n' | grep -E '^(avx512f|avx512bw|avx512vbmi|bmi2)$'
+
+- [ ] Update nginx to avoid new vulneravility.
+    
 - [ ] Fix Registry-actions
 - [ ] Complete docs of "Check Docker-Commands pipeline"
 
@@ -18,12 +17,10 @@
 - [ ] Blog with title "What if we first deploy and then start to develop"
   - [ ] Add section what did I learned here.
 
-- [ ] Create a version of nexus pre-downloaded maven dependencies, **after exec test**.
-
 - [ ] Deploy in a cloud server.
 - [ ] Create a pipeline/script/documentation to setup https.
 
-- [ ] Create script/pipeline to create files to create a release in Github or similar.
+- [ ] Create script/pipeline to create files to create a release to upload in Github or similar.
 
 - [ ] MAYBE Remove confirm to continue in database
 
@@ -448,6 +445,15 @@ posible.
 - [X] I overwrite pre_initialized_nexus_mvn_npm.tar.xz compare with the uploaded one.
 - [X] Update setup/gitea/initial_repos/t51devops.tar.xz
 - [X] Remove buildX
+- [X] Create a version of nexus pre-downloaded maven dependencies, **after exec test**.
+- [X] Test install in different distros
+  - [X] AlmaLinux10 (Community created to replace CentOS, CentOS is in EOL already)
+  - [X] Debian13
+  - [X] Ubuntu24
+  - [X] Fedora44 (is more for development).
+
+
+
 
 
 

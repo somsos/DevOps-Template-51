@@ -1,13 +1,25 @@
 ## Set an Static IP
 
+```sh
 setup-interfaces
+rc-service networking restart
+rc-update add networking boot
+
+# Check
+ip addr flush dev eth0
+ifdown eth0; ifup eth0
+
+
+```
+
 
 
 ## Install docker
 
 [Source](https://wiki.alpinelinux.org/wiki/Docker?__goaway_challenge=cookie&__goaway_id=4549a6cce9273acd258a4ce06a26f2a1&__goaway_referer=https%3A%2F%2Fsearch.brave.com%2F)
 
-apk add docker-cli-compose
+```sh
+sudo apk add docker docker-cli-compose
 
 setup-apkrepos -c
 
@@ -17,6 +29,17 @@ apk add docker
 
 sudo addgroup $USER docker
 
+
+# Enable at boot + start + status
+sudo rc-update add docker default
+sudo rc-service docker start
+sudo rc-service docker status
+
+# Group (the docker package usually creates the group already)
+sudo addgroup docker 2>/dev/null || true
+sudo addgroup $USER docker
+newgrp docker
+```
 
 
 
@@ -41,3 +64,13 @@ ls /etc/localtime && cat /etc/timezone
 #   /etc/localtime
 #   America/Mexico_City
 ```
+
+
+
+# Others
+
+```sh
+sudo apk del docker-cli-buildx
+```
+
+

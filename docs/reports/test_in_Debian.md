@@ -69,52 +69,56 @@ apt update
 ## Setup network
 
 ```sh
-# Set a network interface
-cp /etc/network/interfaces /etc/network/interfaces.backup
-
-nano /etc/network/interfaces
-# CHANGE
-auto lo
-iface lo inet loopback
-
-# REMOVE OR DELETE
-allow-hotplug enp0s3
-iface enp0s3 inet dhcp
-iface enp0s3 inet6 auto
-
-nano /etc/NetworkManager/NetworkManager.conf
-# CHANGE
-managed=false
-# TO
-managed=true
-
-systemctl restart NetworkManager
-
-# Set static IP
-nmcli device status
-ip -br link
-
-
-nmcli con add type ethernet \
-  con-name cable \
-  ifname enp0s3 \
-  ipv4.method manual \
-  ipv4.addresses 192.168.1.8/24 \
-  ipv4.gateway 192.168.1.254 \
-  ipv4.dns "192.168.1.254 1.1.1.1" \
-  ipv6.method disabled \
-  connection.autoconnect yes
-
-nmcli con up cable
-
-
-# In case of mistake
-#     nmcli connection delete cable
-
+# 43
+# Check interface
 nmcli con show
-nmcli con up cable
+
+# Cable
+sudo nmcli con mod cable ipv4.addresses 192.168.1.8/24
+sudo nmcli con mod cable ipv4.gateway 192.168.1.254
+
+# CellPedorro
+sudo nmcli con mod cable ipv4.addresses 192.168.43.8/24
+sudo nmcli con mod cable ipv4.gateway 192.168.43.1
+
+#common
+sudo nmcli con mod cable ipv4.dns "8.8.8.8,8.8.4.4"
+sudo nmcli con mod cable ipv4.method manual
+
+
+# apply changes
+sudo nmcli con up cable
+
 
 curl -sSf -m 3 -I https://www.google.com >/dev/null 2>&1 && echo "There's internet" || echo "NO INTERNET"
+
+
+
+# Other way to setup the network
+# cp /etc/network/interfaces /etc/network/interfaces.backup
+# 
+# nano /etc/network/interfaces
+# # CHANGE
+# auto lo
+# iface lo inet loopback
+# 
+# # REMOVE OR DELETE
+# allow-hotplug cable
+# iface cable inet dhcp
+# iface cable inet6 auto
+# 
+# nano /etc/NetworkManager/NetworkManager.conf
+# # CHANGE
+# managed=false
+# # TO
+# managed=true
+# 
+# systemctl restart NetworkManager
+# 
+# # Set static IP
+# nmcli device status
+# ip -br link
+
 ```
 
 

@@ -73,11 +73,11 @@ cd $HOST_P_ROOT
 
 curl -L -o $HOST_P_ROOT/code.tar.xz https://github.com/somsos/DevOps-Template-51/releases/download/0.11/code.tar.xz
 
-tar xJf $HOST_P_ROOT/code.tar.xz -C . && rm -v $HOST_P_ROOT/code.tar.xz
+tar xJf $HOST_P_ROOT/code.tar.xz -C . && rm -v $HOST_P_ROOT/code.tar.xz && pwd && ls -a
 
 curl -L -o dep_data/offlineDeps.tar.gzaa https://github.com/somsos/DevOps-Template-51/releases/download/0.11/offlineDeps.tar.gzaa && curl -L -o dep_data/offlineDeps.tar.gzab https://github.com/somsos/DevOps-Template-51/releases/download/0.11/offlineDeps.tar.gzab
 
-cd $HOST_P_ROOT/dep_data/ && cat offlineDeps.tar.xz.a* | tar xJf - -C . && rm -v $HOST_P_ROOT/dep_data/offlineDeps.tar.xz.a*
+cd $HOST_P_ROOT/dep_data/ && cat offlineDeps.tar.xz.a* | tar xJf - -C . && rm -v $HOST_P_ROOT/dep_data/offlineDeps.tar.xz.a* && pwd && ls -a
 ```
 
 2, Install docker
@@ -100,17 +100,19 @@ curl -sSf -m 3 -I https://www.google.com >/dev/null 2>&1 && echo "There's intern
 
 # Ubuntu
 cd $HOST_P_ROOT/dep_data/docker_installer_ubuntu24
-sudo dpkg -i ./containerd.io_2.2.4-1~ubuntu.24.04~noble_amd64.deb \
-    ./docker-ce_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
-    ./docker-ce-cli_29.5.3-1~ubuntu.24.04~noble_amd64.deb \
-    ./docker-compose-plugin_5.1.4-1~ubuntu.24.04~noble_amd64.deb
+sudo dpkg -i containerd.io_2.4.2-3~ubuntu.24.04~noble_amd64.deb \
+  docker-ce_29.9.3-1~ubuntu.24.04~noble_amd64.deb \
+  docker-ce-cli_29.9.3-1~ubuntu.24.04~noble_amd64.deb \
+  docker-compose-plugin_5.7.0-1~ubuntu.24.04~noble_amd64.deb
+
+
 
 # Debian
 cd $HOST_P_ROOT/dep_data/docker_installer_debian13
-dpkg -i ./containerd.io_2.3.6-1~debian.13~trixie_amd64.deb \
-  ./docker-ce_29.8.2-1~debian.13~trixie_amd64.deb \
-  ./docker-ce-cli_29.8.2-1~debian.13~trixie_amd64.deb \
-  ./docker-compose-plugin_5.6.0-1~debian.13~trixie_amd64.deb
+sudo dpkg -i ./containerd.io_2.4.2-3~debian.13~trixie_amd64.deb \
+  ./docker-ce_29.9.3-1~debian.13~trixie_amd64.deb \
+  ./docker-ce-cli_29.9.3-1~debian.13~trixie_amd64.deb \
+  ./docker-compose-plugin_5.7.0-1~debian.13~trixie_amd64.deb
 
 
 # Alma10
@@ -124,10 +126,9 @@ sudo dnf install -y --disablerepo='*' ./containerd.io-2.4.2-3.el10.x86_64.rpm \
 
 # Fedora
 cd $HOST_P_ROOT/dep_data/docker_installer_fedora44
-sudo sudo dnf install -y ./containerd.io-2.3.6-1.fc44.x86_64.rpm \
-    ./docker-ce-29.8.2-1.fc44.x86_64.rpm \
-    ./docker-ce-cli-29.8.2-1.fc44.x86_64.rpm \
-    ./docker-compose-plugin-5.6.0-1.fc44.x86_64.rpm
+sudo dnf install -y --disablerepo='*' --skip-broken ./*.rpm
+sudo dnf remove -y docker-buildx-plugin
+
 
 # SUSE
 # cd $HOST_P_ROOT/dep_data/docker_installer_suse2026
@@ -139,17 +140,16 @@ sudo sudo dnf install -y ./containerd.io-2.3.6-1.fc44.x86_64.rpm \
 
 # Start Decker
 sudo systemctl enable --now docker
-
 sudo systemctl start docker
-
 sudo systemctl status docker
-
-docker version | grep "Version:" && docker compose version && echo "OK"
-docker buildx version &> /dev/null && echo "ERROR: avoid using buildx" || echo "OK"
 
 sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
+
+docker version | grep "Version:" && docker compose version && echo "OK"
+docker buildx version &> /dev/null && echo "ERROR: avoid using buildx" || echo "OK"
+
 docker run --rm --name temp-test hello-world
 # EXPECTED OUTPUT (it fails because there is no internet, what matters here is 
 # checking we have rootless access)

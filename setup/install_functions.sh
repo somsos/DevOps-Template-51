@@ -668,7 +668,7 @@ function start_app_database_service_and_install_schema {
         return
     fi
 
-    docker compose up --wait --wait-timeout 30 db
+    docker compose up -d --wait --wait-timeout 30 db
     
     tries=0
     until  nc -zv  localhost $DB_PORT &> /dev/null; do

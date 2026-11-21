@@ -22,7 +22,7 @@
 In this case I have a change already prepared.
 
 ```sh
-MY_ENV=local
+MY_ENV=test
 DEV_P_ROOT=/home/mario/mine/p/example1-$MY_ENV
 MY_USER=${MY_ENV}User
 MY_PASS=${MY_ENV}Pass
@@ -121,6 +121,7 @@ git add . && git commit -m "Change One" && git log --oneline
 # Get ready to notice the pipeline being triggered by the git push
 firefox -new-tab http://gitea.$MY_DOMAIN/$MY_USER/t51back
 firefox -new-tab http://jenkins.$MY_DOMAIN/job/Backend-Deploy-v1/
+curl http://api.$MY_DOMAIN/test | json_pp
 git push origin main
 
 # The deploy Jenkins pipeline should have been triggered and the change deployed.
@@ -235,17 +236,6 @@ firefox -new-tab http://$MY_DOMAIN
 
 ```sh
 firefox -new-tab http://jenkins.$MY_DOMAIN/job/Frontend-Rollback/
-```
-
-1. Notice how the the last commit message changed to the one was before
-
-```sh
-firefox -new-tab http://gitea.$MY_DOMAIN/$MY_USER/t51front
-```
-
-1. Notice that the look changed to the one was before on
-```sh
-firefox -new-tab http://$MY_DOMAIN
 ```
 
 
